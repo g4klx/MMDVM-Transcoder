@@ -102,8 +102,8 @@ ifndef $(OSC)
 endif
 
 # Build object lists
-CXXSRC=$(wildcard $(MMDVM_PATH)/*.cpp)
-CSRC_STD_F4=$(wildcard $(STD_LIB_F4)/*.c)
+CXXSRC=$(wildcard $(MMDVM_PATH)/*.cpp) $(wildcard $(MMDVM_PATH)/IMBE/*.cpp) $(wildcard $(MMDVM_PATH)/Codec2/*.cpp)
+CSRC_STD_F4=$(wildcard $(STD_LIB_F4)/*.c) $(wildcard $(MMDVM_PATH)/IMBE/*.c) $(wildcard $(MMDVM_PATH)/Codec2/*.c)
 SYS_F4=$(wildcard $(SYS_DIR_F4)/*.c)
 STARTUP_F4=$(wildcard $(STARTUP_DIR_F4)/*.c)
 CSRC_STD_F7=$(wildcard $(STD_LIB_F7)/*.c)

@@ -1,5 +1,5 @@
 /*
-*   Copyright (C) 2016,2018 by Jonathan Naylor G4KLX
+*   Copyright (C) 2016,2018,2023 by Jonathan Naylor G4KLX
 *
 *   This program is free software; you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 #include <cstdio>
 #include <cassert>
 
-const unsigned int ENCODING_TABLE_23127[] = {
+const uint32_t ENCODING_TABLE_23127[] = {
 	0x000000U, 0x0018EAU, 0x00293EU, 0x0031D4U, 0x004A96U, 0x00527CU, 0x0063A8U, 0x007B42U, 0x008DC6U, 0x00952CU,
 	0x00A4F8U, 0x00BC12U, 0x00C750U, 0x00DFBAU, 0x00EE6EU, 0x00F684U, 0x010366U, 0x011B8CU, 0x012A58U, 0x0132B2U,
 	0x0149F0U, 0x01511AU, 0x0160CEU, 0x017824U, 0x018EA0U, 0x01964AU, 0x01A79EU, 0x01BF74U, 0x01C436U, 0x01DCDCU,
@@ -441,7 +441,7 @@ const unsigned int IMBE_INTERLEAVE[] = {
 	4, 11, 16, 23, 28, 35, 40, 47, 52, 59, 64, 71, 76, 83, 88, 95, 100, 107, 112, 119, 124, 131, 136, 143,
 	5, 10, 17, 22, 29, 34, 41, 46, 53, 58, 65, 70, 77, 82, 89, 94, 101, 106, 113, 118, 125, 130, 137, 142};
 
-const unsigned char BIT_MASK_TABLE[] = { 0x80U, 0x40U, 0x20U, 0x10U, 0x08U, 0x04U, 0x02U, 0x01U };
+const uint8_t BIT_MASK_TABLE[] = { 0x80U, 0x40U, 0x20U, 0x10U, 0x08U, 0x04U, 0x02U, 0x01U };
 
 #define WRITE_BIT(p,i,b) p[(i)>>3] = (b) ? (p[(i)>>3] | BIT_MASK_TABLE[(i)&7]) : (p[(i)>>3] & ~BIT_MASK_TABLE[(i)&7])
 #define READ_BIT(p,i)    (p[(i)>>3] & BIT_MASK_TABLE[(i)&7])
@@ -454,7 +454,7 @@ CIMBEFEC::~CIMBEFEC()
 {
 }
 
-void CIMBEFEC::decode(const unsigned char* data, unsigned char* imbe)
+void CIMBEFEC::decode(const uint8_t* data, uint8_t* imbe)
 {
 	assert(data != NULL);
 	assert(imbe != NULL);
@@ -529,7 +529,7 @@ void CIMBEFEC::decode(const unsigned char* data, unsigned char* imbe)
 		WRITE_BIT(imbe, offset, bit[i + 137U]);
 }
 
-void CIMBEFEC::encode(unsigned char* data, const unsigned char* imbe)
+void CIMBEFEC::encode(uint8_t* data, const uint8_t* imbe)
 {
 	assert(data != NULL);
 	assert(imbe != NULL);
@@ -642,7 +642,7 @@ void CIMBEFEC::encode15113(bool* d) const
 	d[14] = d[0] ^ d[2] ^ d[4] ^ d[6] ^ d[7] ^ d[9] ^ d[10];
 }
 
-unsigned int CIMBEFEC::encode23127(unsigned int data) const
+uint32_t CIMBEFEC::encode23127(uint32_t data) const
 {
 	return ENCODING_TABLE_23127[data];
 }

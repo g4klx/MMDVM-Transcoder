@@ -1,5 +1,5 @@
 /*
-*   Copyright (C) 2016,2018 by Jonathan Naylor G4KLX
+*   Copyright (C) 2016,2018,2023 by Jonathan Naylor G4KLX
 *
 *   This program is free software; you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by
@@ -19,18 +19,20 @@
 #if !defined(IMBEFEC_H)
 #define  IMBEFEC_H
 
+#include <cstdint>
+
 class CIMBEFEC {
 public:
 	CIMBEFEC();
 	~CIMBEFEC();
 
-	void encode(unsigned char* data, const unsigned char* imbe);
+	void encode(uint8_t* data, const uint8_t* imbe);
 
-	void decode(const unsigned char* data, unsigned char* imbe);
+	void decode(const uint8_t* data, uint8_t* imbe);
 
 private:
-	void         encode15113(bool* d) const;
-	unsigned int encode23127(unsigned int data) const;
+	void     encode15113(bool* d) const;
+	uint32_t encode23127(uint32_t data) const;
 };
 
 #endif
