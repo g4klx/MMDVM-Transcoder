@@ -22,20 +22,15 @@
 #include "Globals.h"
 
 CSerialPort serial;
-CIO io;
 
 void setup()
 {
-  io.start();
-
   serial.start();
 }
 
 void loop()
 {
   serial.process();
-  
-  io.process();
 }
 
 int main()

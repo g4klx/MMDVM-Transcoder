@@ -39,10 +39,8 @@
 
 #include "SerialPort.h"
 #include "Debug.h"
-#include "IO.h"
 
 extern CSerialPort serial;
-extern CIO io;
 
 #endif
 
