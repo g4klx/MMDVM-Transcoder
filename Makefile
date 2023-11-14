@@ -102,15 +102,17 @@ ifndef $(OSC)
 endif
 
 # Build object lists
-CXXSRC=$(wildcard $(MMDVM_PATH)/*.cpp) $(wildcard $(MMDVM_PATH)/IMBE/*.cpp) $(wildcard $(MMDVM_PATH)/Codec2/*.cpp)
-CSRC_STD_F4=$(wildcard $(STD_LIB_F4)/*.c) $(wildcard $(MMDVM_PATH)/IMBE/*.c) $(wildcard $(MMDVM_PATH)/Codec2/*.c)
+CXXSRC=$(wildcard $(MMDVM_PATH)/*.cpp)
+IMBE_CXXSRC=$(wildcard $(MMDVM_PATH)/IMBE/*.cpp)
+C2_CXXSRC=$(wildcard $(MMDVM_PATH)/Codec2/*.cpp)
+CSRC_STD_F4=$(wildcard $(STD_LIB_F4)/*.c)
 SYS_F4=$(wildcard $(SYS_DIR_F4)/*.c)
 STARTUP_F4=$(wildcard $(STARTUP_DIR_F4)/*.c)
 CSRC_STD_F7=$(wildcard $(STD_LIB_F7)/*.c)
 SYS_F7=$(wildcard $(SYS_DIR_F7)/*.c)
 STARTUP_F7=$(wildcard $(STARTUP_DIR_F7)/*.c)
-OBJ_F4=$(CXXSRC:$(MMDVM_PATH)/%.cpp=$(OBJDIR_F4)/%.o) $(CSRC_STD_F4:$(STD_LIB_F4)/%.c=$(OBJDIR_F4)/%.o) $(SYS_F4:$(SYS_DIR_F4)/%.c=$(OBJDIR_F4)/%.o) $(STARTUP_F4:$(STARTUP_DIR_F4)/%.c=$(OBJDIR_F4)/%.o)
-OBJ_F7=$(CXXSRC:$(MMDVM_PATH)/%.cpp=$(OBJDIR_F7)/%.o) $(CSRC_STD_F7:$(STD_LIB_F7)/%.c=$(OBJDIR_F7)/%.o) $(SYS_F7:$(SYS_DIR_F7)/%.c=$(OBJDIR_F7)/%.o) $(STARTUP_F7:$(STARTUP_DIR_F7)/%.c=$(OBJDIR_F7)/%.o)
+OBJ_F4=$(CXXSRC:$(MMDVM_PATH)/%.cpp=$(OBJDIR_F4)/%.o) $(IMBE_CXXSRC:$(MMDVM_PATH)/IMBE/%.cpp=$(OBJDIR_F4)/%.o) $(C2_CXXSRC:$(MMDVM_PATH)/Codec2/%.cpp=$(OBJDIR_F4)/%.o) $(CSRC_STD_F4:$(STD_LIB_F4)/%.c=$(OBJDIR_F4)/%.o) $(SYS_F4:$(SYS_DIR_F4)/%.c=$(OBJDIR_F4)/%.o) $(STARTUP_F4:$(STARTUP_DIR_F4)/%.c=$(OBJDIR_F4)/%.o)
+OBJ_F7=$(CXXSRC:$(MMDVM_PATH)/%.cpp=$(OBJDIR_F7)/%.o) $(IMBE_CXXSRC:$(MMDVM_PATH)/IMBE/%.cpp=$(OBJDIR_F7)/%.o) $(C2_CXXSRC:$(MMDVM_PATH)/Codec2/%.cpp=$(OBJDIR_F7)/%.o) $(CSRC_STD_F7:$(STD_LIB_F7)/%.c=$(OBJDIR_F7)/%.o) $(SYS_F7:$(SYS_DIR_F7)/%.c=$(OBJDIR_F7)/%.o) $(STARTUP_F7:$(STARTUP_DIR_F7)/%.c=$(OBJDIR_F7)/%.o)
 
 # MCU flags
 MCFLAGS_F4=-mcpu=cortex-m4 -mthumb -mlittle-endian -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb-interwork
@@ -308,7 +310,23 @@ $(OBJDIR_F4)/%.o: $(MMDVM_PATH)/%.cpp
 	$(CXX) $(CXXFLAGS) $< -o $@
 	@echo "Compiled "$<"!\n"
 
+$(OBJDIR_F4)/%.o: $(MMDVM_PATH)/IMBE/%.cpp
+	$(CXX) $(CXXFLAGS) $< -o $@
+	@echo "Compiled "$<"!\n"
+
+$(OBJDIR_F4)/%.o: $(MMDVM_PATH)/Codec2/%.cpp
+	$(CXX) $(CXXFLAGS) $< -o $@
+	@echo "Compiled "$<"!\n"
+
 $(OBJDIR_F7)/%.o: $(MMDVM_PATH)/%.cpp
+	$(CXX) $(CXXFLAGS) $< -o $@
+	@echo "Compiled "$<"!\n"
+
+$(OBJDIR_F7)/%.o: $(MMDVM_PATH)/IMBE/%.cpp
+	$(CXX) $(CXXFLAGS) $< -o $@
+	@echo "Compiled "$<"!\n"
+
+$(OBJDIR_F7)/%.o: $(MMDVM_PATH)/Codec2/%.cpp
 	$(CXX) $(CXXFLAGS) $< -o $@
 	@echo "Compiled "$<"!\n"
 
