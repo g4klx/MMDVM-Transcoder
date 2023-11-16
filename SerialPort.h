@@ -65,7 +65,7 @@ private:
   void    reverse(uint8_t* buffer, uint8_t length) const;
   
   // Hardware versions
-  void    beginInt(uint8_t n, int speed);
+  void    beginInt(uint8_t n, int speed, bool flowControl);
   int     availableForReadInt(uint8_t n);
   int     availableForWriteInt(uint8_t n);
   uint8_t readInt(uint8_t n);

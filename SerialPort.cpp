@@ -139,10 +139,10 @@ void CSerialPort::getCapabilities()
 
 void CSerialPort::start()
 {
-  beginInt(1U, SERIAL_SPEED);
+  beginInt(1U, SERIAL_SPEED, false);
 
 #if AMBE_TYPE != 0
-  beginInt(3U, DVSI_SPEED);
+  beginInt(3U, DVSI_SPEED, true);
 #endif
 }
 

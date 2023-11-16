@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015,2016,2020 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2010,2016,2021,2023 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,22 +16,20 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(UTILS_H)
-#define  UTILS_H
+#ifndef Golay24128_H
+#define Golay24128_H
 
-#if defined(STM32F4XX)
-#include "stm32f4xx.h"
-#elif defined(STM32F7XX)
-#include "stm32f7xx.h"
+#include <cstdint>
+
+class CGolay24128 {
+public:
+	static uint32_t encode23127(uint32_t data);
+	static uint32_t encode24128(uint32_t data);
+
+	static uint32_t decode23127(uint32_t code);
+
+	static bool decode24128(uint32_t in, uint32_t& out);
+	static bool decode24128(uint8_t* in, uint32_t& out);
+};
+
 #endif
-
-uint8_t countBits8(uint8_t bits);
-
-uint8_t countBits16(uint16_t bits);
-
-uint8_t countBits32(uint32_t bits);
-
-uint8_t countBits64(uint64_t bits);
-
-#endif
-

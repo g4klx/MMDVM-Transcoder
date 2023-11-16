@@ -1,7 +1,7 @@
 /*
  *   Copyright (C) 2016 by Jim McLaughlin KI6ZUM
  *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
- *   Copyright (c) 2017 by Jonathan Naylor G4KLX
+ *   Copyright (c) 2017,2023 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ USART2 - TXD PA2  - RXD PA3  (Nucleo64 F446RE board, Morpho or Arduino header, M
 USART3 - TXD PC10 - RXD PC11 (Discovery board)
 USART3 - TXD PD8  - RXD PD9  (Nucleo144 F767ZI board)
 
-- Serial repeater:
+- AMBE communication:
 USART1 - TXD PA9  - RXD PA10 (Nucleo with Arduino header)
 UART5  - TXD PC12 - RXD PD2 (Discovery, MMDVM-Pi, MMDVM-Pi F722 board, MMDVM-F4M board, STM32F722-F7M board, STM32F4-DVM board, STM32F7-DVM board, Nucleo64 with Morpho header and Nucleo144 F767ZI, MMDVM_RPT_Hat BG4TGO/BG5HHP board)
 */
@@ -58,7 +58,7 @@ void USART1_IRQHandler()
   m_USART1.handleIRQ();
 }
 
-void InitUSART1(int speed)
+void InitUSART1(int speed, bool flowControl)
 {
    // USART1 - TXD PA9  - RXD PA10 - pins on mmdvm pi board
    GPIO_InitTypeDef GPIO_InitStructure;
@@ -92,7 +92,7 @@ void InitUSART1(int speed)
    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
    USART_InitStructure.USART_StopBits   = USART_StopBits_1;
    USART_InitStructure.USART_Parity     = USART_Parity_No;
-   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+   USART_InitStructure.USART_HardwareFlowControl = flowControl ? USART_HardwareFlowControl_RTS_CTS : USART_HardwareFlowControl_None;
    USART_InitStructure.USART_Mode       = USART_Mode_Rx | USART_Mode_Tx;
    USART_Init(USART1, &USART_InitStructure);
 
@@ -116,7 +116,7 @@ void USART2_IRQHandler()
    m_USART2.handleIRQ();
 }
 
-void InitUSART2(int speed)
+void InitUSART2(int speed, bool flowControl)
 {
    // USART2 - TXD PA2  - RXD PA3
    GPIO_InitTypeDef GPIO_InitStructure;
@@ -150,7 +150,7 @@ void InitUSART2(int speed)
    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
    USART_InitStructure.USART_StopBits   = USART_StopBits_1;
    USART_InitStructure.USART_Parity     = USART_Parity_No;
-   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+   USART_InitStructure.USART_HardwareFlowControl = flowControl ? USART_HardwareFlowControl_RTS_CTS : USART_HardwareFlowControl_None;
    USART_InitStructure.USART_Mode       = USART_Mode_Rx | USART_Mode_Tx;
    USART_Init(USART2, &USART_InitStructure);
 
@@ -191,7 +191,7 @@ void USART3_IRQHandler()
 #define USART3_RCC_Periph          RCC_AHB1Periph_GPIOC
 #endif
 
-void InitUSART3(int speed)
+void InitUSART3(int speed, bool flowControl)
 {
    GPIO_InitTypeDef GPIO_InitStructure;
    USART_InitTypeDef USART_InitStructure;
@@ -224,7 +224,7 @@ void InitUSART3(int speed)
    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
    USART_InitStructure.USART_StopBits   = USART_StopBits_1;
    USART_InitStructure.USART_Parity     = USART_Parity_No;
-   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+   USART_InitStructure.USART_HardwareFlowControl = flowControl ? USART_HardwareFlowControl_RTS_CTS : USART_HardwareFlowControl_None;
    USART_InitStructure.USART_Mode       = USART_Mode_Rx | USART_Mode_Tx;
    USART_Init(USART3, &USART_InitStructure);
 
@@ -247,7 +247,7 @@ void UART5_IRQHandler()
    m_UART5.handleIRQ();
 }
 
-void InitUART5(int speed)
+void InitUART5(int speed, bool flowControl)
 {
    // UART5 - TXD PC12 - RXD PD2
    GPIO_InitTypeDef GPIO_InitStructure;
@@ -285,7 +285,7 @@ void InitUART5(int speed)
    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
    USART_InitStructure.USART_StopBits   = USART_StopBits_1;
    USART_InitStructure.USART_Parity     = USART_Parity_No;
-   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+   USART_InitStructure.USART_HardwareFlowControl = flowControl ? USART_HardwareFlowControl_RTS_CTS : USART_HardwareFlowControl_None;
    USART_InitStructure.USART_Mode       = USART_Mode_Rx | USART_Mode_Tx;
    USART_Init(UART5, &USART_InitStructure);
 
@@ -299,27 +299,27 @@ void InitUART5(int speed)
 #endif
 /////////////////////////////////////////////////////////////////
 
-void CSerialPort::beginInt(uint8_t n, int speed)
+void CSerialPort::beginInt(uint8_t n, int speed, bool flowControl)
 {
    switch (n) {
       case 1U:
          #if defined(STM32F4_DISCOVERY) || defined(STM32F7_NUCLEO)
-         InitUSART3(speed);
+         InitUSART3(speed, flowControl);
          #elif defined(STM32F4_PI) || defined(STM32F4_F4M) || defined(STM32F722_PI) || defined(STM32F722_F7M) || defined(STM32F722_RPT_HAT) || defined(STM32F4_DVM) || defined(STM32F7_DVM) || defined(STM32F4_EDA_405) || defined(STM32F4_EDA_446)
-         InitUSART1(speed);
+         InitUSART1(speed, flowControl);
          #elif defined(STM32F4_NUCLEO) || defined(STM32F4_RPT_HAT_TGO)
-         InitUSART2(speed);
+         InitUSART2(speed, flowControl);
          #elif defined(DRCC_DVM)
-         InitUSART1(speed);
+         InitUSART1(speed, flowControl);
          #endif
          break;
       case 3U:
          #if defined(STM32F4_NUCLEO) && defined(STM32F4_NUCLEO_ARDUINO_HEADER)
-         InitUSART1(speed);
+         InitUSART1(speed, flowControl);
          #elif defined(DRCC_DVM)
-         InitUSART2(speed);
+         InitUSART2(speed, flowControl);
          #else
-         InitUART5(speed);
+         InitUART5(speed, flowControl);
          #endif
          break;
       default:

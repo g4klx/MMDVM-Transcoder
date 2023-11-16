@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015,2016,2020 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2010,2014,2016,2018,2023 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,22 +16,25 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(UTILS_H)
-#define  UTILS_H
+#if !defined(FEC_H)
+#define	FEC_H
 
-#if defined(STM32F4XX)
-#include "stm32f4xx.h"
-#elif defined(STM32F7XX)
-#include "stm32f7xx.h"
+#include <cstdint>
+
+class CFEC {
+public:
+	CFEC();
+	~CFEC();
+
+	unsigned int regenerateDMR(uint8_t* bytes) const;
+
+	unsigned int regenerateDStar(uint8_t* bytes) const;
+
+	unsigned int regenerateIMBE(uint8_t* bytes) const;
+
+private:
+	unsigned int regenerateDStar(uint32_t& a, uint32_t& b) const;
+	unsigned int regenerateDMR(uint32_t& a, uint32_t& b, uint32_t& c) const;
+};
+
 #endif
-
-uint8_t countBits8(uint8_t bits);
-
-uint8_t countBits16(uint16_t bits);
-
-uint8_t countBits32(uint32_t bits);
-
-uint8_t countBits64(uint64_t bits);
-
-#endif
-
