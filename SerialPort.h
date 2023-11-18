@@ -49,17 +49,18 @@ public:
   void writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3, int16_t n4);
 
 private:
-  uint8_t  m_buffer[512U];
-  uint16_t m_ptr;
-  uint16_t m_len;
-  OPMODE   m_opMode;
+  uint8_t m_buffer[512U];
+  uint8_t m_ptr;
+  uint8_t m_len;
+  OPMODE  m_opMode;
 
   void    sendACK();
   void    sendNAK(uint8_t err);
   void    getVersion();
   void    getCapabilities();
-  uint8_t setMode(const uint8_t* data, uint16_t length);
-  void    processMessage(uint8_t type, const uint8_t* data, uint16_t length);
+  uint8_t setMode(const uint8_t* data, uint8_t length);
+  uint8_t sendData(const uint8_t* data, uint8_t length);
+  void    processMessage(uint8_t type, const uint8_t* data, uint8_t length);
 
   uint8_t convert(int16_t num, uint8_t* buffer);
   void    reverse(uint8_t* buffer, uint8_t length) const;

@@ -24,6 +24,7 @@
 #include "GitVersion.h"
 #endif
 
+#include "ModeDefines.h"
 #include "SerialPort.h"
 #include "Version.h"
 
@@ -146,6 +147,35 @@ void CSerialPort::start()
 #endif
 }
 
+uint8_t CSerialPort::setMode(const uint8_t* buffer, uint8_t length)
+{
+  if (length != 2U) {
+    DEBUG1("Malformed SET_MODE command");
+    return 0x02U;
+  }
+
+  uint16_t mode = (buffer[0U] << 8) | buffer[1U];
+
+  switch (mode) {
+    case ((MODE_DSTAR << 8) | MODE_DSTAR):
+      return 0x00U;
+
+    default:
+      DEBUG1("Unknown mode combination");
+      return 0x02U;
+  }
+}
+
+uint8_t CSerialPort::sendData(const uint8_t* buffer, uint8_t length)
+{
+  if (m_opMode == OPMODE_NONE) {
+    DEBUG1("Received data in None mode");
+    return 0x03U;
+  }
+
+  return 0x00U;
+}
+
 void CSerialPort::process()
 {
   while (availableForReadInt(1U)) {
@@ -177,7 +207,7 @@ void CSerialPort::process()
   }
 }
 
-void CSerialPort::processMessage(uint8_t type, const uint8_t* buffer, uint16_t length)
+void CSerialPort::processMessage(uint8_t type, const uint8_t* buffer, uint8_t length)
 {
   uint8_t err;
 
@@ -199,10 +229,9 @@ void CSerialPort::processMessage(uint8_t type, const uint8_t* buffer, uint16_t l
       break;
 
     case MMDVM_DATA:
-      if (m_opMode == OPMODE_NONE) {
-        DEBUG2("Received invalid data", err);
+      err = sendData(buffer, length);
+      if (err != 0U)
         sendNAK(err);
-      }
       break;
 
     default:

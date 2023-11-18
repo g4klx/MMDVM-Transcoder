@@ -92,7 +92,7 @@ void InitUSART1(int speed, bool flowControl)
    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
    USART_InitStructure.USART_StopBits   = USART_StopBits_1;
    USART_InitStructure.USART_Parity     = USART_Parity_No;
-   USART_InitStructure.USART_HardwareFlowControl = flowControl ? USART_HardwareFlowControl_RTS_CTS : USART_HardwareFlowControl_None;
+   USART_InitStructure.USART_HardwareFlowControl = flowControl ? USART_HardwareFlowControl_RTS : USART_HardwareFlowControl_None;
    USART_InitStructure.USART_Mode       = USART_Mode_Rx | USART_Mode_Tx;
    USART_Init(USART1, &USART_InitStructure);
 
@@ -150,7 +150,7 @@ void InitUSART2(int speed, bool flowControl)
    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
    USART_InitStructure.USART_StopBits   = USART_StopBits_1;
    USART_InitStructure.USART_Parity     = USART_Parity_No;
-   USART_InitStructure.USART_HardwareFlowControl = flowControl ? USART_HardwareFlowControl_RTS_CTS : USART_HardwareFlowControl_None;
+   USART_InitStructure.USART_HardwareFlowControl = flowControl ? USART_HardwareFlowControl_RTS : USART_HardwareFlowControl_None;
    USART_InitStructure.USART_Mode       = USART_Mode_Rx | USART_Mode_Tx;
    USART_Init(USART2, &USART_InitStructure);
 
@@ -224,7 +224,7 @@ void InitUSART3(int speed, bool flowControl)
    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
    USART_InitStructure.USART_StopBits   = USART_StopBits_1;
    USART_InitStructure.USART_Parity     = USART_Parity_No;
-   USART_InitStructure.USART_HardwareFlowControl = flowControl ? USART_HardwareFlowControl_RTS_CTS : USART_HardwareFlowControl_None;
+   USART_InitStructure.USART_HardwareFlowControl = flowControl ? USART_HardwareFlowControl_RTS : USART_HardwareFlowControl_None;
    USART_InitStructure.USART_Mode       = USART_Mode_Rx | USART_Mode_Tx;
    USART_Init(USART3, &USART_InitStructure);
 
@@ -285,7 +285,7 @@ void InitUART5(int speed, bool flowControl)
    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
    USART_InitStructure.USART_StopBits   = USART_StopBits_1;
    USART_InitStructure.USART_Parity     = USART_Parity_No;
-   USART_InitStructure.USART_HardwareFlowControl = flowControl ? USART_HardwareFlowControl_RTS_CTS : USART_HardwareFlowControl_None;
+   USART_InitStructure.USART_HardwareFlowControl = flowControl ? USART_HardwareFlowControl_RTS : USART_HardwareFlowControl_None;
    USART_InitStructure.USART_Mode       = USART_Mode_Rx | USART_Mode_Tx;
    USART_Init(UART5, &USART_InitStructure);
 
