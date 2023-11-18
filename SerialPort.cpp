@@ -73,13 +73,16 @@ const char HARDWARE[] = concat(HW_TYPE, VERSION, TCXO, GITVERSION);
 const char HARDWARE[] = concat(HW_TYPE, VERSION, TCXO, __TIME__, __DATE__);
 #endif
 
-const uint8_t PROTOCOL_VERSION   = 1U;
+const uint8_t PROTOCOL_VERSION = 1U;
 
 CSerialPort::CSerialPort() :
 m_buffer(),
 m_ptr(0U),
 m_len(0U),
-m_opMode(OPMODE_NONE)
+m_opMode(OPMODE_NONE),
+m_step1(NULL),
+m_step2(NULL),
+m_step3(NULL)
 {
 }
 
@@ -154,6 +157,10 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint8_t length)
     return 0x02U;
   }
 
+  m_step1 = NULL;
+  m_step2 = NULL;
+  m_step3 = NULL;
+
   uint16_t mode = (buffer[0U] << 8) | buffer[1U];
 
   switch (mode) {
@@ -168,12 +175,54 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint8_t length)
 
 uint8_t CSerialPort::sendData(const uint8_t* buffer, uint8_t length)
 {
-  if (m_opMode == OPMODE_NONE) {
-    DEBUG1("Received data in None mode");
-    return 0x03U;
-  }
+  switch (m_opMode) {
+    case OPMODE_NONE:
+      DEBUG1("Received data in None mode");
+      return 0x03U;
 
-  return 0x00U;
+    case OPMODE_PASSTHROUGH:
+      // FIXME TODO
+      return 0x00U;
+
+    case OPMODE_TRANSCODING:
+    default:
+      if (m_step1 != NULL)
+        return m_step1->input(buffer, length);
+      else
+        return 0x00U;
+  }
+}
+
+void CSerialPort::processData()
+{
+  if (m_opMode == OPMODE_TRANSCODING) {
+    uint8_t buffer[250U];
+    uint8_t length = 0U;
+
+    if (m_step1 != NULL)
+      length = m_step1->output(buffer);
+
+    if ((m_step2 != NULL) && (length > 0U)) {
+      m_step2->input(buffer, length);
+      length = 0U;
+    }
+
+    if (m_step2 != NULL)
+      length = m_step2->output(buffer);
+
+    if ((m_step3 != NULL) && (length > 0U)) {
+      m_step3->input(buffer, length);
+      length = 0U;
+    }
+
+    if (m_step3 != NULL)
+      length = m_step3->output(buffer);
+
+    if (length > 0U)
+      writeData(buffer, length);
+  } else if (m_opMode == OPMODE_PASSTHROUGH) {
+    // FIXME TODO
+  }
 }
 
 void CSerialPort::process()
@@ -205,6 +254,8 @@ void CSerialPort::process()
         processMessage(m_buffer[2U], m_buffer + 3U, m_len - 3U);
     }
   }
+
+  processData();
 }
 
 void CSerialPort::processMessage(uint8_t type, const uint8_t* buffer, uint8_t length)
@@ -222,7 +273,7 @@ void CSerialPort::processMessage(uint8_t type, const uint8_t* buffer, uint8_t le
 
     case MMDVM_SET_MODE:
       err = setMode(buffer, length);
-      if (err == 0U)
+      if (err == 0x00U)
         sendACK();
       else
         sendNAK(err);
@@ -230,7 +281,7 @@ void CSerialPort::processMessage(uint8_t type, const uint8_t* buffer, uint8_t le
 
     case MMDVM_DATA:
       err = sendData(buffer, length);
-      if (err != 0U)
+      if (err != 0x00U)
         sendNAK(err);
       break;
 

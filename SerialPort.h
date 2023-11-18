@@ -21,6 +21,7 @@
 
 #include "Config.h"
 #include "Globals.h"
+#include "Processor.h"
 
 #if !defined(SERIAL_SPEED)
 #define SERIAL_SPEED 230400
@@ -54,6 +55,10 @@ private:
   uint8_t m_len;
   OPMODE  m_opMode;
 
+  IProcessor* m_step1;
+  IProcessor* m_step2;
+  IProcessor* m_step3;
+
   void    sendACK();
   void    sendNAK(uint8_t err);
   void    getVersion();
@@ -61,6 +66,7 @@ private:
   uint8_t setMode(const uint8_t* data, uint8_t length);
   uint8_t sendData(const uint8_t* data, uint8_t length);
   void    processMessage(uint8_t type, const uint8_t* data, uint8_t length);
+  void    processData();
 
   uint8_t convert(int16_t num, uint8_t* buffer);
   void    reverse(uint8_t* buffer, uint8_t length) const;
