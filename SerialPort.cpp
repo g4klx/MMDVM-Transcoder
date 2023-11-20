@@ -28,6 +28,25 @@
 #include "SerialPort.h"
 #include "Version.h"
 
+const struct {
+  uint8_t     m_input;
+  uint8_t     m_output;
+  uint8_t     m_length;
+  IProcessor* m_step1;
+  IProcessor* m_step2;
+  IProcessor* m_step3;
+} PROCESSOR_TABLE[] = {
+  {MODE_DSTAR,       MODE_DSTAR,       9U, NULL, NULL, NULL},
+  {MODE_DMR_NXDN,    MODE_DMR_NXDN,    9U, NULL, NULL, NULL},
+  {MODE_YSFDN,       MODE_YSFDN,       9U, NULL, NULL, NULL},
+  {MODE_YSFVW_P25,   MODE_YSFVW_P25,  11U, NULL, NULL, NULL},
+  {MODE_CODEC2_3200, MODE_CODEC2_3200, 9U, NULL, NULL, NULL},
+  {MODE_CODEC2_1600, MODE_CODEC2_1600, 9U, NULL, NULL, NULL},
+  {MODE_PCM,         MODE_PCM,         9U, NULL, NULL, NULL}
+};
+
+const uint8_t PROCESSOR_LENGTH = sizeof(PROCESSOR_TABLE) / sizeof(PROCESSOR_TABLE[0U]);
+
 const uint8_t MMDVM_FRAME_START         = 0xE1U;
 
 const uint8_t MMDVM_GET_VERSION         = 0x00U;
@@ -80,6 +99,7 @@ m_buffer(),
 m_ptr(0U),
 m_len(0U),
 m_opMode(OPMODE_NONE),
+m_length(0U),
 m_step1(NULL),
 m_step2(NULL),
 m_step3(NULL)
@@ -157,20 +177,31 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint8_t length)
     return 0x02U;
   }
 
-  m_step1 = NULL;
-  m_step2 = NULL;
-  m_step3 = NULL;
+  m_opMode = OPMODE_NONE;
+  m_length = 0U;
+  m_step1  = NULL;
+  m_step2  = NULL;
+  m_step3  = NULL;
 
-  uint16_t mode = (buffer[0U] << 8) | buffer[1U];
-
-  switch (mode) {
-    case ((MODE_DSTAR << 8) | MODE_DSTAR):
-      return 0x00U;
-
-    default:
-      DEBUG1("Unknown mode combination");
-      return 0x02U;
+  if ((buffer[0U] == MODE_PASS_THROUGH) && (buffer[1U] == MODE_PASS_THROUGH)) {
+    m_opMode = OPMODE_PASSTHROUGH;
+    return 0x00U;
   }
+
+  for (uint8_t i = 0U; i < PROCESSOR_LENGTH; i++) {
+    if ((PROCESSOR_TABLE[i].m_input == buffer[0U]) && (PROCESSOR_TABLE[i].m_output == buffer[1U])) {
+      m_opMode = OPMODE_TRANSCODING;
+      m_length = PROCESSOR_TABLE[i].m_length;
+      m_step1  = PROCESSOR_TABLE[i].m_step1;
+      m_step2  = PROCESSOR_TABLE[i].m_step2;
+      m_step3  = PROCESSOR_TABLE[i].m_step3;
+      return 0x00U;
+    }
+  }
+
+  DEBUG3("Unknown SET_MODE command", buffer[0U], buffer[1U]);
+
+  return 0x02U;
 }
 
 uint8_t CSerialPort::sendData(const uint8_t* buffer, uint8_t length)
@@ -186,6 +217,11 @@ uint8_t CSerialPort::sendData(const uint8_t* buffer, uint8_t length)
 
     case OPMODE_TRANSCODING:
     default:
+      if (length != m_length) {
+        DEBUG3("Invalid data length for the mode", length, m_length);
+        return 0x04U;
+      }
+
       if (m_step1 != NULL)
         return m_step1->input(buffer, length);
       else
