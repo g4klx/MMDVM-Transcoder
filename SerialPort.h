@@ -69,8 +69,8 @@ private:
   void    processMessage(uint8_t type, const uint8_t* data, uint16_t length);
   void    processData();
 
-  uint8_t convert(int16_t num, uint8_t* buffer);
-  void    reverse(uint8_t* buffer, uint16_t length) const;
+  uint16_t convert(int16_t num, uint8_t* buffer);
+  void     reverse(uint8_t* buffer, uint16_t length) const;
   
   // Hardware versions
   void    beginInt(uint8_t n, int speed, bool flowControl);

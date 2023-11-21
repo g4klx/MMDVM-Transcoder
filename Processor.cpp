@@ -22,3 +22,7 @@ IProcessor::~IProcessor()
 {
 }
 
+void IProcessor::init()
+{
+}
+

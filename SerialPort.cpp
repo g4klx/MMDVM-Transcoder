@@ -164,25 +164,27 @@ m_step3(NULL)
 
 void CSerialPort::sendACK()
 {
-  uint8_t reply[3U];
+  uint8_t reply[4U];
 
   reply[0U] = MMDVM_FRAME_START;
-  reply[1U] = 3U;
-  reply[2U] = MMDVM_ACK;
+  reply[1U] = 0U;
+  reply[2U] = 4U;
+  reply[3U] = MMDVM_ACK;
 
-  writeInt(1U, reply, 3);
+  writeInt(1U, reply, 4);
 }
 
 void CSerialPort::sendNAK(uint8_t err)
 {
-  uint8_t reply[4U];
+  uint8_t reply[5U];
 
   reply[0U] = MMDVM_FRAME_START;
-  reply[1U] = 4U;
-  reply[2U] = MMDVM_NAK;
-  reply[3U] = err;
+  reply[1U] = 0U;
+  reply[2U] = 5U;
+  reply[3U] = MMDVM_NAK;
+  reply[4U] = err;
 
-  writeInt(1U, reply, 4);
+  writeInt(1U, reply, 5);
 }
 
 void CSerialPort::getVersion()
@@ -191,30 +193,33 @@ void CSerialPort::getVersion()
 
   reply[0U] = MMDVM_FRAME_START;
   reply[1U] = 0U;
-  reply[2U] = MMDVM_RETURN_VERSION;
+  reply[2U] = 0U;
+  reply[3U] = MMDVM_RETURN_VERSION;
 
-  reply[3U] = PROTOCOL_VERSION;
+  reply[4U] = PROTOCOL_VERSION;
 
-  uint8_t count = 4U;
-  for (uint8_t i = 0U; HARDWARE[i] != 0x00U; i++, count++)
+  uint16_t count = 5U;
+  for (uint16_t i = 0U; HARDWARE[i] != 0x00U; i++, count++)
     reply[count] = HARDWARE[i];
 
-  reply[1U] = count;
+  reply[1U] = (count >> 8) & 0xFFU;
+  reply[2U] = (count >> 0) & 0xFFU;
 
   writeInt(1U, reply, count);
 }
 
 void CSerialPort::getCapabilities()
 {
-  uint8_t reply[4U];
+  uint8_t reply[5U];
 
   reply[0U] = MMDVM_FRAME_START;
-  reply[1U] = 4U;
-  reply[2U] = MMDVM_RETURN_CAPABILITIES;
+  reply[1U] = 0U;
+  reply[2U] = 5U;
+  reply[3U] = MMDVM_RETURN_CAPABILITIES;
 
-  reply[3U] = AMBE_TYPE;
+  reply[4U] = AMBE_TYPE;
 
-  writeInt(1U, reply, 4);
+  writeInt(1U, reply, 5);
 }
 
 void CSerialPort::start()
@@ -251,6 +256,14 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
       m_step1  = PROCESSOR_TABLE[i].m_step1;
       m_step2  = PROCESSOR_TABLE[i].m_step2;
       m_step3  = PROCESSOR_TABLE[i].m_step3;
+
+      if (m_step1 != NULL)
+        m_step1->init();
+      if (m_step2 != NULL)
+        m_step2->init();
+      if (m_step3 != NULL)
+        m_step3->init();
+
       return 0x00U;
     }
   }
@@ -338,8 +351,14 @@ void CSerialPort::process()
       }
     } else if (m_ptr == 1U) {
       // Handle the frame length
-      m_len = m_buffer[m_ptr] = c;
+      c = m_buffer[m_ptr] = c;
+      m_len = (c << 8) & 0xFF00U;
       m_ptr = 2U;
+    } else if (m_ptr == 2U) {
+      // Handle the frame length
+      c = m_buffer[m_ptr] = c;
+      m_len |= (c << 0) & 0x00FFU;
+      m_ptr  = 3U;
     } else {
       // Any other bytes are added to the buffer
       m_buffer[m_ptr] = c;
@@ -347,7 +366,7 @@ void CSerialPort::process()
 
       // The full packet has been received, process it
       if (m_ptr == m_len)
-        processMessage(m_buffer[2U], m_buffer + 3U, m_len - 3U);
+        processMessage(m_buffer[3U], m_buffer + 4U, m_len - 4U);
     }
   }
 
@@ -396,68 +415,75 @@ void CSerialPort::writeData(const uint8_t* data, uint16_t length)
   if (m_opMode == OPMODE_NONE)
     return;
 
-  uint8_t reply[130U];
+  uint8_t reply[500U];
 
   reply[0U] = MMDVM_FRAME_START;
   reply[1U] = 0U;
-  reply[2U] = MMDVM_DATA;
+  reply[2U] = 0U;
+  reply[3U] = MMDVM_DATA;
 
-  uint8_t count = 3U;
-  for (uint8_t i = 0U; i < length; i++, count++)
+  uint16_t count = 4U;
+  for (uint16_t i = 0U; i < length; i++, count++)
     reply[count] = data[i];
 
-  reply[1U] = count;
+  reply[1U] = (count >> 8) & 0xFFU;
+  reply[2U] = (count >> 0) & 0xFFU;
 
   writeInt(1U, reply, count);
 }
 
 void CSerialPort::writeDebug(const char* text)
 {
-  uint8_t reply[250U];
+  uint8_t reply[300U];
 
   reply[0U] = MMDVM_FRAME_START;
   reply[1U] = 0U;
-  reply[2U] = MMDVM_DEBUG;
+  reply[2U] = 0U;
+  reply[3U] = MMDVM_DEBUG;
 
-  uint8_t count = 3U;
-  for (uint8_t i = 0U; text[i] != '\x0'; i++, count++)
+  uint16_t count = 4U;
+  for (uint16_t i = 0U; text[i] != '\x0'; i++, count++)
     reply[count] = text[i];
 
-  reply[1U] = count;
+  reply[1U] = (count >> 8) & 0xFFU;
+  reply[2U] = (count >> 0) & 0xFFU;
 
   writeInt(1U, reply, count);
 }
 
 void CSerialPort::writeDebug(const char* text, int16_t n1)
 {
-  uint8_t reply[250U];
+  uint8_t reply[300U];
 
   reply[0U] = MMDVM_FRAME_START;
   reply[1U] = 0U;
-  reply[2U] = MMDVM_DEBUG;
+  reply[2U] = 0U;
+  reply[3U] = MMDVM_DEBUG;
 
-  uint8_t count = 3U;
-  for (uint8_t i = 0U; text[i] != '\x0'; i++, count++)
+  uint16_t count = 4U;
+  for (uint16_t i = 0U; text[i] != '\x0'; i++, count++)
     reply[count] = text[i];
 
   reply[count++] = ' ';
   count += convert(n1, reply + count);
 
-  reply[1U] = count;
+  reply[1U] = (count >> 8) & 0xFFU;
+  reply[2U] = (count >> 0) & 0xFFU;
 
   writeInt(1U, reply, count);
 }
 
 void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2)
 {
-  uint8_t reply[250U];
+  uint8_t reply[300U];
 
   reply[0U] = MMDVM_FRAME_START;
   reply[1U] = 0U;
-  reply[2U] = MMDVM_DEBUG;
+  reply[2U] = 0U;
+  reply[3U] = MMDVM_DEBUG;
 
-  uint8_t count = 3U;
-  for (uint8_t i = 0U; text[i] != '\x0'; i++, count++)
+  uint16_t count = 4U;
+  for (uint16_t i = 0U; text[i] != '\x0'; i++, count++)
     reply[count] = text[i];
 
   reply[count++] = ' ';
@@ -466,21 +492,23 @@ void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2)
   reply[count++] = ' ';
   count += convert(n2, reply + count);
 
-  reply[1U] = count;
+  reply[1U] = (count >> 8) & 0xFFU;
+  reply[2U] = (count >> 0) & 0xFFU;
 
   writeInt(1U, reply, count);
 }
 
 void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3)
 {
-  uint8_t reply[250U];
+  uint8_t reply[300U];
 
   reply[0U] = MMDVM_FRAME_START;
   reply[1U] = 0U;
-  reply[2U] = MMDVM_DEBUG;
+  reply[2U] = 0U;
+  reply[3U] = MMDVM_DEBUG;
 
-  uint8_t count = 3U;
-  for (uint8_t i = 0U; text[i] != '\x0'; i++, count++)
+  uint16_t count = 4U;
+  for (uint16_t i = 0U; text[i] != '\x0'; i++, count++)
     reply[count] = text[i];
 
   reply[count++] = ' ';
@@ -492,21 +520,23 @@ void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n
   reply[count++] = ' ';
   count += convert(n3, reply + count);
 
-  reply[1U] = count;
+  reply[1U] = (count >> 8) & 0xFFU;
+  reply[2U] = (count >> 0) & 0xFFU;
 
   writeInt(1U, reply, count);
 }
 
 void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3, int16_t n4)
 {
-  uint8_t reply[250U];
+  uint8_t reply[300U];
 
   reply[0U] = MMDVM_FRAME_START;
   reply[1U] = 0U;
-  reply[2U] = MMDVM_DEBUG;
+  reply[2U] = 0U;
+  reply[3U] = MMDVM_DEBUG;
 
-  uint8_t count = 3U;
-  for (uint8_t i = 0U; text[i] != '\x0'; i++, count++)
+  uint16_t count = 4U;
+  for (uint16_t i = 0U; text[i] != '\x0'; i++, count++)
     reply[count] = text[i];
 
   reply[count++] = ' ';
@@ -521,12 +551,13 @@ void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n
   reply[count++] = ' ';
   count += convert(n4, reply + count);
 
-  reply[1U] = count;
+  reply[1U] = (count >> 8) & 0xFFU;
+  reply[2U] = (count >> 0) & 0xFFU;
 
   writeInt(1U, reply, count);
 }
 
-uint8_t CSerialPort::convert(int16_t num, uint8_t* buffer)
+uint16_t CSerialPort::convert(int16_t num, uint8_t* buffer)
 {
   if (num == 0) {
     *buffer = '0';
