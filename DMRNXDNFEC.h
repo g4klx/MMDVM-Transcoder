@@ -26,9 +26,9 @@ class CDMRNXDNFEC : public IProcessor {
     CDMRNXDNFEC();
     virtual ~CDMRNXDNFEC();
 
-    virtual uint8_t input(const uint8_t* buffer, uint8_t length);
+    virtual uint8_t  input(const uint8_t* buffer, uint8_t length);
 
-    virtual uint8_t output(uint8_t* buffer);
+    virtual uint16_t output(uint8_t* buffer);
 
   private:
 };

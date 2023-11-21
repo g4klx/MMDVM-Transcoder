@@ -26,9 +26,11 @@ class CPCMDStar : public IProcessor {
     CPCMDStar();
     virtual ~CPCMDStar();
 
-    virtual uint8_t input(const uint8_t* buffer, uint8_t length);
+    virtual void     init();
 
-    virtual uint8_t output(uint8_t* buffer);
+    virtual uint8_t  input(const uint8_t* buffer, uint8_t length);
+
+    virtual uint16_t output(uint8_t* buffer);
 
   private:
 };

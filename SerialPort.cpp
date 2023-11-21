@@ -36,81 +36,81 @@ const struct {
   IProcessor* m_step2;
   IProcessor* m_step3;
 } PROCESSOR_TABLE[] = {
-  {MODE_DSTAR,       MODE_DSTAR,       9U, &dstarfec,      NULL,           NULL},
+  {MODE_DSTAR,       MODE_DSTAR,       DSTAR_DATA_LENGTH,     &dstarfec,      NULL,           NULL},
 #if AMBE_TYPE > 1
-  {MODE_DSTAR,       MODE_DMR_NXDN,    9U, &dstarpcm,      &pcmdmrnxdn,    NULL},
-  {MODE_DSTAR,       MODE_YSFDN,       9U, &dstarpcm,      &pcmdmrnxdn,    &dmrnxdnysfdn},
+  {MODE_DSTAR,       MODE_DMR_NXDN,    DSTAR_DATA_LENGTH,     &dstarpcm,      &pcmdmrnxdn,    NULL},
+  {MODE_DSTAR,       MODE_YSFDN,       DSTAR_DATA_LENGTH,     &dstarpcm,      &pcmdmrnxdn,    &dmrnxdnysfdn},
 #endif
 #if AMBE_TYPE > 0
-  {MODE_DSTAR,       MODE_YSFVW_P25,   9U, &dstarpcm,      &pcmysfvwp25,   NULL},
-  {MODE_DSTAR,       MODE_CODEC2_3200, 9U, &dstarpcm,      &pcmcodec23200, NULL},
-  {MODE_DSTAR,       MODE_CODEC2_1600, 9U, &dstarpcm,      &pcmcodec21600, NULL},
-  {MODE_DSTAR,       MODE_PCM,         9U, &dstarpcm,      NULL,           NULL},
-#endif
-
-#if AMBE_TYPE > 1
-  {MODE_DMR_NXDN,    MODE_DSTAR,       9U, &dmrnxdnpcm,    &pcmdstar,      NULL},
-#endif
-  {MODE_DMR_NXDN,    MODE_DMR_NXDN,    9U, &dmrnxdnfec,    NULL,           NULL},
-  {MODE_DMR_NXDN,    MODE_YSFDN,       9U, &dmrnxdnysfdn,  NULL,           NULL},
-#if AMBE_TYPE > 0
-  {MODE_DMR_NXDN,    MODE_YSFVW_P25,   9U, &dmrnxdnpcm,    &pcmysfvwp25,   NULL},
-  {MODE_DMR_NXDN,    MODE_CODEC2_3200, 9U, &dmrnxdnpcm,    &pcmcodec23200, NULL},
-  {MODE_DMR_NXDN,    MODE_CODEC2_1600, 9U, &dmrnxdnpcm,    &pcmcodec21600, NULL},
-  {MODE_DMR_NXDN,    MODE_PCM,         9U, &dmrnxdnpcm,    NULL,           NULL},
+  {MODE_DSTAR,       MODE_YSFVW_P25,   DSTAR_DATA_LENGTH,     &dstarpcm,      &pcmysfvwp25,   NULL},
+  {MODE_DSTAR,       MODE_CODEC2_3200, DSTAR_DATA_LENGTH,     &dstarpcm,      &pcmcodec23200, NULL},
+  {MODE_DSTAR,       MODE_CODEC2_1600, DSTAR_DATA_LENGTH,     &dstarpcm,      &pcmcodec21600, NULL},
+  {MODE_DSTAR,       MODE_PCM,         DSTAR_DATA_LENGTH,     &dstarpcm,      NULL,           NULL},
 #endif
 
 #if AMBE_TYPE > 1
-  {MODE_YSFDN,       MODE_DSTAR,       9U, &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmdstar},
+  {MODE_DMR_NXDN,    MODE_DSTAR,       DMR_NXDN_DATA_LENGTH,  &dmrnxdnpcm,    &pcmdstar,      NULL},
 #endif
-  {MODE_YSFDN,       MODE_DMR_NXDN,    9U, &ysfdndmrnxdn,  NULL,           NULL},
-  {MODE_YSFDN,       MODE_YSFDN,       9U, &ysfdnfec,      NULL,           NULL},
+  {MODE_DMR_NXDN,    MODE_DMR_NXDN,    DMR_NXDN_DATA_LENGTH,  &dmrnxdnfec,    NULL,           NULL},
+  {MODE_DMR_NXDN,    MODE_YSFDN,       DMR_NXDN_DATA_LENGTH,  &dmrnxdnysfdn,  NULL,           NULL},
 #if AMBE_TYPE > 0
-  {MODE_YSFDN,       MODE_YSFVW_P25,   9U, &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmysfvwp25},	// FIXME TODO length
-  {MODE_YSFDN,       MODE_CODEC2_3200, 9U, &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmcodec23200},
-  {MODE_YSFDN,       MODE_CODEC2_1600, 9U, &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmcodec21600},
-  {MODE_YSFDN,       MODE_PCM,         9U, &ysfdndmrnxdn,  &dmrnxdnpcm,    NULL},
+  {MODE_DMR_NXDN,    MODE_YSFVW_P25,   DMR_NXDN_DATA_LENGTH,  &dmrnxdnpcm,    &pcmysfvwp25,   NULL},
+  {MODE_DMR_NXDN,    MODE_CODEC2_3200, DMR_NXDN_DATA_LENGTH,  &dmrnxdnpcm,    &pcmcodec23200, NULL},
+  {MODE_DMR_NXDN,    MODE_CODEC2_1600, DMR_NXDN_DATA_LENGTH,  &dmrnxdnpcm,    &pcmcodec21600, NULL},
+  {MODE_DMR_NXDN,    MODE_PCM,         DMR_NXDN_DATA_LENGTH,  &dmrnxdnpcm,    NULL,           NULL},
+#endif
+
+#if AMBE_TYPE > 1
+  {MODE_YSFDN,       MODE_DSTAR,       YSFDN_DATA_LENGTH,     &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmdstar},
+#endif
+  {MODE_YSFDN,       MODE_DMR_NXDN,    YSFDN_DATA_LENGTH,     &ysfdndmrnxdn,  NULL,           NULL},
+  {MODE_YSFDN,       MODE_YSFDN,       YSFDN_DATA_LENGTH,     &ysfdnfec,      NULL,           NULL},
+#if AMBE_TYPE > 0
+  {MODE_YSFDN,       MODE_YSFVW_P25,   YSFDN_DATA_LENGTH,     &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmysfvwp25},
+  {MODE_YSFDN,       MODE_CODEC2_3200, YSFDN_DATA_LENGTH,     &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmcodec23200},
+  {MODE_YSFDN,       MODE_CODEC2_1600, YSFDN_DATA_LENGTH,     &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmcodec21600},
+  {MODE_YSFDN,       MODE_PCM,         YSFDN_DATA_LENGTH,     &ysfdndmrnxdn,  &dmrnxdnpcm,    NULL},
 #endif
 
 #if AMBE_TYPE > 0
-  {MODE_YSFVW_P25,   MODE_DSTAR,      11U, &ysfvwp25pcm,   &pcmdstar,      NULL},
-  {MODE_YSFVW_P25,   MODE_DMR_NXDN,   11U, &ysfvwp25pcm,   &pcmdmrnxdn,    NULL},
-  {MODE_YSFVW_P25,   MODE_YSFDN,      11U, &ysfvwp25pcm,   &pcmdmrnxdn,    &dmrnxdnysfdn},
+  {MODE_YSFVW_P25,   MODE_DSTAR,       YSFVW_P25_DATA_LENGTH, &ysfvwp25pcm,   &pcmdstar,      NULL},
+  {MODE_YSFVW_P25,   MODE_DMR_NXDN,    YSFVW_P25_DATA_LENGTH, &ysfvwp25pcm,   &pcmdmrnxdn,    NULL},
+  {MODE_YSFVW_P25,   MODE_YSFDN,       YSFVW_P25_DATA_LENGTH, &ysfvwp25pcm,   &pcmdmrnxdn,    &dmrnxdnysfdn},
 #endif
-  {MODE_YSFVW_P25,   MODE_YSFVW_P25,  11U, &ysfvwp25fec,   NULL,           NULL},
-  {MODE_YSFVW_P25,   MODE_CODEC2_3200, 9U, &ysfvwp25pcm,   &pcmcodec23200, NULL},	// FIXME TODO length
-  {MODE_YSFVW_P25,   MODE_CODEC2_1600, 9U, &ysfvwp25pcm,   &pcmcodec21600, NULL},
-  {MODE_YSFVW_P25,   MODE_PCM,         9U, &ysfvwp25pcm,   NULL,           NULL},
+  {MODE_YSFVW_P25,   MODE_YSFVW_P25,   YSFVW_P25_DATA_LENGTH, &ysfvwp25fec,   NULL,           NULL},
+  {MODE_YSFVW_P25,   MODE_CODEC2_3200, YSFVW_P25_DATA_LENGTH, &ysfvwp25pcm,   &pcmcodec23200, NULL},
+  {MODE_YSFVW_P25,   MODE_CODEC2_1600, YSFVW_P25_DATA_LENGTH, &ysfvwp25pcm,   &pcmcodec21600, NULL},
+  {MODE_YSFVW_P25,   MODE_PCM,         YSFVW_P25_DATA_LENGTH, &ysfvwp25pcm,   NULL,           NULL},
 
 #if AMBE_TYPE > 0
-  {MODE_CODEC2_3200, MODE_DSTAR,       9U, &codec23200pcm, &pcmdstar,      NULL},
-  {MODE_CODEC2_3200, MODE_DMR_NXDN,    9U, &codec23200pcm, &pcmdmrnxdn,    NULL},
-  {MODE_CODEC2_3200, MODE_YSFDN,       9U, &codec23200pcm, &pcmdmrnxdn,    &dmrnxdnysfdn},
+  {MODE_CODEC2_3200, MODE_DSTAR,       CODEC2_3200_LENGTH,    &codec23200pcm, &pcmdstar,      NULL},
+  {MODE_CODEC2_3200, MODE_DMR_NXDN,    CODEC2_3200_LENGTH,    &codec23200pcm, &pcmdmrnxdn,    NULL},
+  {MODE_CODEC2_3200, MODE_YSFDN,       CODEC2_3200_LENGTH,    &codec23200pcm, &pcmdmrnxdn,    &dmrnxdnysfdn},
 #endif
-  {MODE_CODEC2_3200, MODE_YSFVW_P25,   9U, &codec23200pcm, &pcmysfvwp25,   NULL},
-  {MODE_CODEC2_3200, MODE_CODEC2_3200, 9U, NULL,           NULL,           NULL},	// FIXME TODO length
-  {MODE_CODEC2_3200, MODE_CODEC2_1600, 9U, &codec23200pcm, &pcmcodec21600, NULL},
-  {MODE_CODEC2_3200, MODE_PCM,         9U, &codec23200pcm, NULL,           NULL},
+  {MODE_CODEC2_3200, MODE_YSFVW_P25,   CODEC2_3200_LENGTH,    &codec23200pcm, &pcmysfvwp25,   NULL},
+  {MODE_CODEC2_3200, MODE_CODEC2_3200, CODEC2_3200_LENGTH,    NULL,           NULL,           NULL},
+  {MODE_CODEC2_3200, MODE_CODEC2_1600, CODEC2_3200_LENGTH,    &codec23200pcm, &pcmcodec21600, NULL},
+  {MODE_CODEC2_3200, MODE_PCM,         CODEC2_3200_LENGTH,    &codec23200pcm, NULL,           NULL},
 
 #if AMBE_TYPE > 0
-  {MODE_CODEC2_1600, MODE_DSTAR,       9U, &codec21600pcm, &pcmdstar,      NULL},
-  {MODE_CODEC2_1600, MODE_DMR_NXDN,    9U, &codec21600pcm, &pcmdmrnxdn,    NULL},
-  {MODE_CODEC2_1600, MODE_YSFDN,       9U, &codec21600pcm, &pcmdmrnxdn,    &dmrnxdnysfdn},
+  {MODE_CODEC2_1600, MODE_DSTAR,       CODEC2_1600_LENGTH,    &codec21600pcm, &pcmdstar,      NULL},
+  {MODE_CODEC2_1600, MODE_DMR_NXDN,    CODEC2_1600_LENGTH,    &codec21600pcm, &pcmdmrnxdn,    NULL},
+  {MODE_CODEC2_1600, MODE_YSFDN,       CODEC2_1600_LENGTH,    &codec21600pcm, &pcmdmrnxdn,    &dmrnxdnysfdn},
 #endif
-  {MODE_CODEC2_1600, MODE_YSFVW_P25,   9U, &codec21600pcm, &pcmysfvwp25,   NULL},
-  {MODE_CODEC2_1600, MODE_CODEC2_3200, 9U, &codec21600pcm, &pcmcodec23200, NULL},
-  {MODE_CODEC2_1600, MODE_CODEC2_1600, 9U, NULL,           NULL,           NULL},	// FIXME TODO length
-  {MODE_CODEC2_1600, MODE_PCM,         9U, &codec21600pcm, NULL,           NULL},
+  {MODE_CODEC2_1600, MODE_YSFVW_P25,   CODEC2_1600_LENGTH,    &codec21600pcm, &pcmysfvwp25,   NULL},
+  {MODE_CODEC2_1600, MODE_CODEC2_3200, CODEC2_1600_LENGTH,    &codec21600pcm, &pcmcodec23200, NULL},
+  {MODE_CODEC2_1600, MODE_CODEC2_1600, CODEC2_1600_LENGTH,    NULL,           NULL,           NULL},
+  {MODE_CODEC2_1600, MODE_PCM,         CODEC2_1600_LENGTH,    &codec21600pcm, NULL,           NULL},
 
 #if AMBE_TYPE > 0
-  {MODE_PCM,         MODE_DSTAR,       320U, &pcmdstar,      NULL,           NULL},
-  {MODE_PCM,         MODE_DMR_NXDN,    320U, &pcmdmrnxdn,    NULL,           NULL},
-  {MODE_PCM,         MODE_YSFDN,       320U, &pcmdmrnxdn,    &dmrnxdnysfdn,  NULL},
+  {MODE_PCM,         MODE_DSTAR,       PCM_DATA_LENGTH,       &pcmdstar,      NULL,           NULL},
+  {MODE_PCM,         MODE_DMR_NXDN,    PCM_DATA_LENGTH,       &pcmdmrnxdn,    NULL,           NULL},
+  {MODE_PCM,         MODE_YSFDN,       PCM_DATA_LENGTH,       &pcmdmrnxdn,    &dmrnxdnysfdn,  NULL},
 #endif
-  {MODE_PCM,         MODE_YSFVW_P25,   320U, &pcmysfvwp25,   NULL,           NULL},
-  {MODE_PCM,         MODE_CODEC2_3200, 320U, &pcmcodec23200, NULL,           NULL},
-  {MODE_PCM,         MODE_CODEC2_1600, 320U, &pcmcodec21600, NULL,           NULL},	// FIXME TODO length
-  {MODE_PCM,         MODE_PCM,         320U, NULL,           NULL,           NULL}
+  {MODE_PCM,         MODE_YSFVW_P25,   PCM_DATA_LENGTH,       &pcmysfvwp25,   NULL,           NULL},
+  {MODE_PCM,         MODE_CODEC2_3200, PCM_DATA_LENGTH,       &pcmcodec23200, NULL,           NULL},
+  {MODE_PCM,         MODE_CODEC2_1600, PCM_DATA_LENGTH,       &pcmcodec21600, NULL,           NULL},
+  {MODE_PCM,         MODE_PCM,         PCM_DATA_LENGTH,       NULL,           NULL,           NULL}
 };
 
 const uint8_t PROCESSOR_LENGTH = sizeof(PROCESSOR_TABLE) / sizeof(PROCESSOR_TABLE[0U]);
@@ -128,24 +128,12 @@ const uint8_t MMDVM_DATA                = 0x05U;
 
 const uint8_t MMDVM_DEBUG               = 0xFFU;
 
-#if EXTERNAL_OSC == 12000000
-#define TCXO "12.0000 MHz"
-#elif EXTERNAL_OSC == 12288000
-#define TCXO "12.2880 MHz"
-#elif EXTERNAL_OSC == 14400000
-#define TCXO "14.4000 MHz"
-#elif EXTERNAL_OSC == 19200000
-#define TCXO "19.2000 Mhz"
-#else
-#define TCXO "NO TCXO"
-#endif
-
 #if defined(GITVERSION)
-#define concat(a, b, c) a " " b " GitID #" c ""
-const char HARDWARE[] = concat(VERSION, TCXO, GITVERSION);
+#define concat(a, b) a " GitID #" b ""
+const char HARDWARE[] = concat(VERSION, GITVERSION);
 #else
-#define concat(a, b, c, d) a " " b " (Build: " c " " d ")"
-const char HARDWARE[] = concat(VERSION, TCXO, __TIME__, __DATE__);
+#define concat(a, b, c) a " (Build: " b " " c ")"
+const char HARDWARE[] = concat(VERSION, __TIME__, __DATE__);
 #endif
 
 const uint8_t PROTOCOL_VERSION = 1U;
@@ -351,13 +339,13 @@ void CSerialPort::process()
       }
     } else if (m_ptr == 1U) {
       // Handle the frame length
-      c = m_buffer[m_ptr] = c;
-      m_len = (c << 8) & 0xFF00U;
+      uint8_t val = m_buffer[m_ptr] = c;
+      m_len = (val << 8) & 0xFF00U;
       m_ptr = 2U;
     } else if (m_ptr == 2U) {
       // Handle the frame length
-      c = m_buffer[m_ptr] = c;
-      m_len |= (c << 0) & 0x00FFU;
+      uint8_t val = m_buffer[m_ptr] = c;
+      m_len |= (val << 0) & 0x00FFU;
       m_ptr  = 3U;
     } else {
       // Any other bytes are added to the buffer
