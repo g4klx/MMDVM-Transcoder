@@ -23,6 +23,28 @@
 
 CSerialPort serial;
 
+CDStarFEC    dstarfec;
+CDMRNXDNFEC  dmrnxdnfec;
+CYSFDNFEC    ysfdnfec;
+CYSFVWP25FEC ysfvwp25fec;
+
+CDStarPCM      dstarpcm;
+CDMRNXDNPCM    dmrnxdnpcm;
+CYSFDNPCM      ysfdnpcm;
+CYSFVWP25PCM   ysfvwp25pcm;
+CCodec23200PCM codec23200pcm;
+CCodec21600PCM codec21600pcm;
+
+CPCMDStar      pcmdstar;
+CPCMDMRNXDN    pcmdmrnxdn;
+CPCMYSFDN      pcmysfdn;
+CPCMYSFVWP25   pcmysfvwp25;
+CPCMCodec23200 pcmcodec23200;
+CPCMCodec21600 pcmcodec21600;
+
+CYSFDNDMRNXDN  ysfdndmrnxdn;
+CDMRNXDNYSFDN  dmrnxdnysfdn;
+
 void setup()
 {
   serial.start();

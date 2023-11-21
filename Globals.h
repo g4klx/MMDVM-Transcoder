@@ -37,10 +37,50 @@
 
 #include <arm_math.h>
 
+#include "Codec21600PCM.h"
+#include "Codec23200PCM.h"
+#include "PCMCodec21600.h"
+#include "PCMCodec23200.h"
+#include "YSFDNDMRNXDN.h"
+#include "DMRNXDNYSFDN.h"
+#include "YSFVWP25FEC.h"
+#include "YSFVWP25PCM.h"
+#include "PCMYSFVWP25.h"
+#include "DMRNXDNFEC.h"
+#include "DMRNXDNPCM.h"
+#include "PCMDMRNXDN.h"
 #include "SerialPort.h"
+#include "YSFDNFEC.h"
+#include "YSFDNPCM.h"
+#include "PCMYSFDN.h"
+#include "DStarFEC.h"
+#include "DStarPCM.h"
+#include "PCMDStar.h"
 #include "Debug.h"
 
 extern CSerialPort serial;
+
+extern CDStarFEC      dstarfec;
+extern CDMRNXDNFEC    dmrnxdnfec;
+extern CYSFDNFEC      ysfdnfec;
+extern CYSFVWP25FEC   ysfvwp25fec;
+
+extern CDStarPCM      dstarpcm;
+extern CDMRNXDNPCM    dmrnxdnpcm;
+extern CYSFDNPCM      ysfdnpcm;
+extern CYSFVWP25PCM   ysfvwp25pcm;
+extern CCodec23200PCM codec23200pcm;
+extern CCodec21600PCM codec21600pcm;
+
+extern CPCMDStar      pcmdstar;
+extern CPCMDMRNXDN    pcmdmrnxdn;
+extern CPCMYSFDN      pcmysfdn;
+extern CPCMYSFVWP25   pcmysfvwp25;
+extern CPCMCodec23200 pcmcodec23200;
+extern CPCMCodec21600 pcmcodec21600;
+
+extern CYSFDNDMRNXDN  ysfdndmrnxdn;
+extern CDMRNXDNYSFDN  dmrnxdnysfdn;
 
 #endif
 

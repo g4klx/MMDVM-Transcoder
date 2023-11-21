@@ -29,20 +29,88 @@
 #include "Version.h"
 
 const struct {
-  uint8_t     m_input;
-  uint8_t     m_output;
-  uint8_t     m_length;
+  uint16_t    m_input;
+  uint16_t    m_output;
+  uint16_t    m_length;
   IProcessor* m_step1;
   IProcessor* m_step2;
   IProcessor* m_step3;
 } PROCESSOR_TABLE[] = {
-  {MODE_DSTAR,       MODE_DSTAR,       9U, NULL, NULL, NULL},
-  {MODE_DMR_NXDN,    MODE_DMR_NXDN,    9U, NULL, NULL, NULL},
-  {MODE_YSFDN,       MODE_YSFDN,       9U, NULL, NULL, NULL},
-  {MODE_YSFVW_P25,   MODE_YSFVW_P25,  11U, NULL, NULL, NULL},
-  {MODE_CODEC2_3200, MODE_CODEC2_3200, 9U, NULL, NULL, NULL},
-  {MODE_CODEC2_1600, MODE_CODEC2_1600, 9U, NULL, NULL, NULL},
-  {MODE_PCM,         MODE_PCM,         9U, NULL, NULL, NULL}
+  {MODE_DSTAR,       MODE_DSTAR,       9U, &dstarfec,      NULL,           NULL},
+#if AMBE_TYPE > 1
+  {MODE_DSTAR,       MODE_DMR_NXDN,    9U, &dstarpcm,      &pcmdmrnxdn,    NULL},
+  {MODE_DSTAR,       MODE_YSFDN,       9U, &dstarpcm,      &pcmdmrnxdn,    &dmrnxdnysfdn},
+#endif
+#if AMBE_TYPE > 0
+  {MODE_DSTAR,       MODE_YSFVW_P25,   9U, &dstarpcm,      &pcmysfvwp25,   NULL},
+  {MODE_DSTAR,       MODE_CODEC2_3200, 9U, &dstarpcm,      &pcmcodec23200, NULL},
+  {MODE_DSTAR,       MODE_CODEC2_1600, 9U, &dstarpcm,      &pcmcodec21600, NULL},
+  {MODE_DSTAR,       MODE_PCM,         9U, &dstarpcm,      NULL,           NULL},
+#endif
+
+#if AMBE_TYPE > 1
+  {MODE_DMR_NXDN,    MODE_DSTAR,       9U, &dmrnxdnpcm,    &pcmdstar,      NULL},
+#endif
+  {MODE_DMR_NXDN,    MODE_DMR_NXDN,    9U, &dmrnxdnfec,    NULL,           NULL},
+  {MODE_DMR_NXDN,    MODE_YSFDN,       9U, &dmrnxdnysfdn,  NULL,           NULL},
+#if AMBE_TYPE > 0
+  {MODE_DMR_NXDN,    MODE_YSFVW_P25,   9U, &dmrnxdnpcm,    &pcmysfvwp25,   NULL},
+  {MODE_DMR_NXDN,    MODE_CODEC2_3200, 9U, &dmrnxdnpcm,    &pcmcodec23200, NULL},
+  {MODE_DMR_NXDN,    MODE_CODEC2_1600, 9U, &dmrnxdnpcm,    &pcmcodec21600, NULL},
+  {MODE_DMR_NXDN,    MODE_PCM,         9U, &dmrnxdnpcm,    NULL,           NULL},
+#endif
+
+#if AMBE_TYPE > 1
+  {MODE_YSFDN,       MODE_DSTAR,       9U, &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmdstar},
+#endif
+  {MODE_YSFDN,       MODE_DMR_NXDN,    9U, &ysfdndmrnxdn,  NULL,           NULL},
+  {MODE_YSFDN,       MODE_YSFDN,       9U, &ysfdnfec,      NULL,           NULL},
+#if AMBE_TYPE > 0
+  {MODE_YSFDN,       MODE_YSFVW_P25,   9U, &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmysfvwp25},	// FIXME TODO length
+  {MODE_YSFDN,       MODE_CODEC2_3200, 9U, &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmcodec23200},
+  {MODE_YSFDN,       MODE_CODEC2_1600, 9U, &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmcodec21600},
+  {MODE_YSFDN,       MODE_PCM,         9U, &ysfdndmrnxdn,  &dmrnxdnpcm,    NULL},
+#endif
+
+#if AMBE_TYPE > 0
+  {MODE_YSFVW_P25,   MODE_DSTAR,      11U, &ysfvwp25pcm,   &pcmdstar,      NULL},
+  {MODE_YSFVW_P25,   MODE_DMR_NXDN,   11U, &ysfvwp25pcm,   &pcmdmrnxdn,    NULL},
+  {MODE_YSFVW_P25,   MODE_YSFDN,      11U, &ysfvwp25pcm,   &pcmdmrnxdn,    &dmrnxdnysfdn},
+#endif
+  {MODE_YSFVW_P25,   MODE_YSFVW_P25,  11U, &ysfvwp25fec,   NULL,           NULL},
+  {MODE_YSFVW_P25,   MODE_CODEC2_3200, 9U, &ysfvwp25pcm,   &pcmcodec23200, NULL},	// FIXME TODO length
+  {MODE_YSFVW_P25,   MODE_CODEC2_1600, 9U, &ysfvwp25pcm,   &pcmcodec21600, NULL},
+  {MODE_YSFVW_P25,   MODE_PCM,         9U, &ysfvwp25pcm,   NULL,           NULL},
+
+#if AMBE_TYPE > 0
+  {MODE_CODEC2_3200, MODE_DSTAR,       9U, &codec23200pcm, &pcmdstar,      NULL},
+  {MODE_CODEC2_3200, MODE_DMR_NXDN,    9U, &codec23200pcm, &pcmdmrnxdn,    NULL},
+  {MODE_CODEC2_3200, MODE_YSFDN,       9U, &codec23200pcm, &pcmdmrnxdn,    &dmrnxdnysfdn},
+#endif
+  {MODE_CODEC2_3200, MODE_YSFVW_P25,   9U, &codec23200pcm, &pcmysfvwp25,   NULL},
+  {MODE_CODEC2_3200, MODE_CODEC2_3200, 9U, NULL,           NULL,           NULL},	// FIXME TODO length
+  {MODE_CODEC2_3200, MODE_CODEC2_1600, 9U, &codec23200pcm, &pcmcodec21600, NULL},
+  {MODE_CODEC2_3200, MODE_PCM,         9U, &codec23200pcm, NULL,           NULL},
+
+#if AMBE_TYPE > 0
+  {MODE_CODEC2_1600, MODE_DSTAR,       9U, &codec21600pcm, &pcmdstar,      NULL},
+  {MODE_CODEC2_1600, MODE_DMR_NXDN,    9U, &codec21600pcm, &pcmdmrnxdn,    NULL},
+  {MODE_CODEC2_1600, MODE_YSFDN,       9U, &codec21600pcm, &pcmdmrnxdn,    &dmrnxdnysfdn},
+#endif
+  {MODE_CODEC2_1600, MODE_YSFVW_P25,   9U, &codec21600pcm, &pcmysfvwp25,   NULL},
+  {MODE_CODEC2_1600, MODE_CODEC2_3200, 9U, &codec21600pcm, &pcmcodec23200, NULL},
+  {MODE_CODEC2_1600, MODE_CODEC2_1600, 9U, NULL,           NULL,           NULL},	// FIXME TODO length
+  {MODE_CODEC2_1600, MODE_PCM,         9U, &codec21600pcm, NULL,           NULL},
+
+#if AMBE_TYPE > 0
+  {MODE_PCM,         MODE_DSTAR,       320U, &pcmdstar,      NULL,           NULL},
+  {MODE_PCM,         MODE_DMR_NXDN,    320U, &pcmdmrnxdn,    NULL,           NULL},
+  {MODE_PCM,         MODE_YSFDN,       320U, &pcmdmrnxdn,    &dmrnxdnysfdn,  NULL},
+#endif
+  {MODE_PCM,         MODE_YSFVW_P25,   320U, &pcmysfvwp25,   NULL,           NULL},
+  {MODE_PCM,         MODE_CODEC2_3200, 320U, &pcmcodec23200, NULL,           NULL},
+  {MODE_PCM,         MODE_CODEC2_1600, 320U, &pcmcodec21600, NULL,           NULL},	// FIXME TODO length
+  {MODE_PCM,         MODE_PCM,         320U, NULL,           NULL,           NULL}
 };
 
 const uint8_t PROCESSOR_LENGTH = sizeof(PROCESSOR_TABLE) / sizeof(PROCESSOR_TABLE[0U]);
@@ -72,24 +140,12 @@ const uint8_t MMDVM_DEBUG               = 0xFFU;
 #define TCXO "NO TCXO"
 #endif
 
-#if defined(DRCC_DVM_NQF)
-#define	HW_TYPE	"MMDVM DRCC_DVM_NQF"
-#elif defined(DRCC_DVM_HHP446)
-#define	HW_TYPE	"MMDVM DRCC_DVM_HHP(446)"
-#elif defined(DRCC_DVM_722)
-#define HW_TYPE "MMDVM RB_STM32_DVM(722)"
-#elif defined(DRCC_DVM_446)
-#define HW_TYPE "MMDVM RB_STM32_DVM(446)"
-#else
-#define	HW_TYPE	"MMDVM"
-#endif
-
 #if defined(GITVERSION)
-#define concat(h, a, b, c) h " " a " " b " GitID #" c ""
-const char HARDWARE[] = concat(HW_TYPE, VERSION, TCXO, GITVERSION);
+#define concat(a, b, c) a " " b " GitID #" c ""
+const char HARDWARE[] = concat(VERSION, TCXO, GITVERSION);
 #else
-#define concat(h, a, b, c, d) h " " a " " b " (Build: " c " " d ")"
-const char HARDWARE[] = concat(HW_TYPE, VERSION, TCXO, __TIME__, __DATE__);
+#define concat(a, b, c, d) a " " b " (Build: " c " " d ")"
+const char HARDWARE[] = concat(VERSION, TCXO, __TIME__, __DATE__);
 #endif
 
 const uint8_t PROTOCOL_VERSION = 1U;
@@ -170,7 +226,7 @@ void CSerialPort::start()
 #endif
 }
 
-uint8_t CSerialPort::setMode(const uint8_t* buffer, uint8_t length)
+uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
 {
   if (length != 2U) {
     DEBUG1("Malformed SET_MODE command");
@@ -204,7 +260,7 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint8_t length)
   return 0x02U;
 }
 
-uint8_t CSerialPort::sendData(const uint8_t* buffer, uint8_t length)
+uint8_t CSerialPort::sendData(const uint8_t* buffer, uint16_t length)
 {
   switch (m_opMode) {
     case OPMODE_NONE:
@@ -222,18 +278,22 @@ uint8_t CSerialPort::sendData(const uint8_t* buffer, uint8_t length)
         return 0x04U;
       }
 
-      if (m_step1 != NULL)
+      if (m_step1 != NULL) {
+        // Start the pipeline
         return m_step1->input(buffer, length);
-      else
+      } else {
+        // Nothing to do, just send back out
+        writeData(buffer, length);
         return 0x00U;
+      }
   }
 }
 
 void CSerialPort::processData()
 {
   if (m_opMode == OPMODE_TRANSCODING) {
-    uint8_t buffer[250U];
-    uint8_t length = 0U;
+    uint8_t  buffer[250U];
+    uint16_t length = 0U;
 
     if (m_step1 != NULL)
       length = m_step1->output(buffer);
@@ -294,7 +354,7 @@ void CSerialPort::process()
   processData();
 }
 
-void CSerialPort::processMessage(uint8_t type, const uint8_t* buffer, uint8_t length)
+void CSerialPort::processMessage(uint8_t type, const uint8_t* buffer, uint16_t length)
 {
   uint8_t err;
 
@@ -331,7 +391,7 @@ void CSerialPort::processMessage(uint8_t type, const uint8_t* buffer, uint8_t le
   m_len = 0U;
 }
 
-void CSerialPort::writeData(const uint8_t* data, uint8_t length)
+void CSerialPort::writeData(const uint8_t* data, uint16_t length)
 {
   if (m_opMode == OPMODE_NONE)
     return;
@@ -480,7 +540,7 @@ uint8_t CSerialPort::convert(int16_t num, uint8_t* buffer)
     num = -num;
   }
 
-  uint8_t pos = 0U;
+  uint16_t pos = 0U;
 
   while (num != 0) {
     int16_t rem = num % 10;
@@ -496,10 +556,10 @@ uint8_t CSerialPort::convert(int16_t num, uint8_t* buffer)
   return pos;
 }
 
-void CSerialPort::reverse(uint8_t* buffer, uint8_t length) const
+void CSerialPort::reverse(uint8_t* buffer, uint16_t length) const
 {
-  uint8_t start = 0U;
-  uint8_t end = length - 1U;
+  uint16_t start = 0U;
+  uint16_t end = length - 1U;
 
   while (start < end) {
     uint8_t temp  = buffer[start];

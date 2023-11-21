@@ -41,7 +41,7 @@ public:
 
   void process();
 
-  void writeData(const uint8_t* data, uint8_t length);
+  void writeData(const uint8_t* data, uint16_t length);
 
   void writeDebug(const char* text);
   void writeDebug(const char* text, int16_t n1);
@@ -50,12 +50,12 @@ public:
   void writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3, int16_t n4);
 
 private:
-  uint8_t m_buffer[512U];
-  uint8_t m_ptr;
-  uint8_t m_len;
-  OPMODE  m_opMode;
+  uint8_t  m_buffer[512U];
+  uint16_t m_ptr;
+  uint16_t m_len;
+  OPMODE   m_opMode;
 
-  uint8_t     m_length;
+  uint16_t    m_length;
   IProcessor* m_step1;
   IProcessor* m_step2;
   IProcessor* m_step3;
@@ -64,13 +64,13 @@ private:
   void    sendNAK(uint8_t err);
   void    getVersion();
   void    getCapabilities();
-  uint8_t setMode(const uint8_t* data, uint8_t length);
-  uint8_t sendData(const uint8_t* data, uint8_t length);
-  void    processMessage(uint8_t type, const uint8_t* data, uint8_t length);
+  uint8_t setMode(const uint8_t* data, uint16_t length);
+  uint8_t sendData(const uint8_t* data, uint16_t length);
+  void    processMessage(uint8_t type, const uint8_t* data, uint16_t length);
   void    processData();
 
   uint8_t convert(int16_t num, uint8_t* buffer);
-  void    reverse(uint8_t* buffer, uint8_t length) const;
+  void    reverse(uint8_t* buffer, uint16_t length) const;
   
   // Hardware versions
   void    beginInt(uint8_t n, int speed, bool flowControl);
