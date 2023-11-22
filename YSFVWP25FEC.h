@@ -21,16 +21,20 @@
 
 #include "Processor.h"
 
+#include "ModeDefines.h"
+
 class CYSFVWP25FEC : public IProcessor {
   public:
     CYSFVWP25FEC();
     virtual ~CYSFVWP25FEC();
 
-    virtual uint8_t  input(const uint8_t* buffer, uint8_t length);
+    virtual uint8_t  input(const uint8_t* buffer, uint16_t length);
 
     virtual uint16_t output(uint8_t* buffer);
 
   private:
+    uint8_t m_buffer[YSFVW_P25_DATA_LENGTH];
+    bool    m_inUse;
 };
 
 #endif

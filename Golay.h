@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2010,2014,2016,2018,2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2010,2016,2021,2023 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,25 +16,20 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(FEC_H)
-#define	FEC_H
+#ifndef Golay_H
+#define Golay_H
 
 #include <cstdint>
 
-class CFEC {
+class CGolay {
 public:
-	CFEC();
-	~CFEC();
+	static uint32_t encode23127(uint32_t data);
+	static uint32_t encode24128(uint32_t data);
 
-	unsigned int regenerateDMR(uint8_t* bytes) const;
+	static uint32_t decode23127(uint32_t code);
 
-	unsigned int regenerateDStar(uint8_t* bytes) const;
-
-	unsigned int regenerateIMBE(uint8_t* bytes) const;
-
-private:
-	unsigned int regenerateDStar(uint32_t& a, uint32_t& b) const;
-	unsigned int regenerateDMR(uint32_t& a, uint32_t& b, uint32_t& c) const;
+	static bool decode24128(uint32_t in, uint32_t& out);
+	static bool decode24128(uint8_t* in, uint32_t& out);
 };
 
 #endif

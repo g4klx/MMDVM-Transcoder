@@ -3,7 +3,8 @@
  *   Copyright (C) 2002 by Robert H. Morelos-Zaragoza. All rights reserved.
  */
 
-#include "Golay24128.h"
+#include "Golay.h"
+
 #include "Utils.h"
 
 const uint32_t ENCODING_TABLE_23127[] = {
@@ -1067,17 +1068,17 @@ static uint32_t get_syndrome_23127(uint32_t pattern)
 	return pattern;
 }
 
-uint32_t CGolay24128::encode23127(uint32_t data)
+uint32_t CGolay::encode23127(uint32_t data)
 {
 	return ENCODING_TABLE_23127[data];
 }
 
-uint32_t CGolay24128::encode24128(uint32_t data)
+uint32_t CGolay::encode24128(uint32_t data)
 {
 	return ENCODING_TABLE_24128[data];
 }
 
-uint32_t CGolay24128::decode23127(uint32_t code)
+uint32_t CGolay::decode23127(uint32_t code)
 {
 	uint32_t syndrome = ::get_syndrome_23127(code);
 	uint32_t error_pattern = DECODING_TABLE_23127[syndrome];
@@ -1087,7 +1088,7 @@ uint32_t CGolay24128::decode23127(uint32_t code)
 	return code >> 11;
 }
 
-bool CGolay24128::decode24128(uint32_t in, uint32_t& out)
+bool CGolay::decode24128(uint32_t in, uint32_t& out)
 {
 	uint32_t syndrome = ::get_syndrome_23127(in >> 1);
 	uint32_t error_pattern = DECODING_TABLE_23127[syndrome] << 1;
@@ -1101,7 +1102,7 @@ bool CGolay24128::decode24128(uint32_t in, uint32_t& out)
 	return valid;
 }
 
-bool CGolay24128::decode24128(uint8_t* in, uint32_t& out)
+bool CGolay::decode24128(uint8_t* in, uint32_t& out)
 {
 	uint32_t code = (in[0U] << 16) | (in[1U] << 8) | (in[2U] << 0);
 

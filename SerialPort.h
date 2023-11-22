@@ -55,7 +55,6 @@ private:
   uint16_t m_len;
   OPMODE   m_opMode;
 
-  uint16_t    m_length;
   IProcessor* m_step1;
   IProcessor* m_step2;
   IProcessor* m_step3;

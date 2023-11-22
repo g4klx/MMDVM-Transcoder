@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2010,2016,2021,2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,20 +16,12 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef Golay24128_H
-#define Golay24128_H
+#if !defined(AMBEPRNGTable_H)
+#define	AMBEPRNHTable_H
 
 #include <cstdint>
 
-class CGolay24128 {
-public:
-	static uint32_t encode23127(uint32_t data);
-	static uint32_t encode24128(uint32_t data);
-
-	static uint32_t decode23127(uint32_t code);
-
-	static bool decode24128(uint32_t in, uint32_t& out);
-	static bool decode24128(uint8_t* in, uint32_t& out);
-};
+extern const uint32_t AMBE_PRNG_TABLE[];
 
 #endif
+

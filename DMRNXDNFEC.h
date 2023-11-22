@@ -21,16 +21,22 @@
 
 #include "Processor.h"
 
+#include "ModeDefines.h"
+
 class CDMRNXDNFEC : public IProcessor {
   public:
     CDMRNXDNFEC();
     virtual ~CDMRNXDNFEC();
 
-    virtual uint8_t  input(const uint8_t* buffer, uint8_t length);
+    virtual uint8_t  input(const uint8_t* buffer, uint16_t length);
 
     virtual uint16_t output(uint8_t* buffer);
 
   private:
+    uint8_t m_buffer[DMR_NXDN_DATA_LENGTH];
+    bool    m_inUse;
+
+    bool regenerateDMR(uint32_t& a, uint32_t& b, uint32_t& c) const;
 };
 
 #endif

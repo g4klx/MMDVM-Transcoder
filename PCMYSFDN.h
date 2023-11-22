@@ -26,9 +26,9 @@ class CPCMYSFDN : public IProcessor {
     CPCMYSFDN();
     virtual ~CPCMYSFDN();
 
-    virtual void     init();
+    virtual void     init(uint8_t n);
 
-    virtual uint8_t  input(const uint8_t* buffer, uint8_t length);
+    virtual uint8_t  input(const uint8_t* buffer, uint16_t length);
 
     virtual uint16_t output(uint8_t* buffer);
 

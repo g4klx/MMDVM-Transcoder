@@ -26,7 +26,7 @@ class CYSFVWP25PCM : public IProcessor {
     CYSFVWP25PCM();
     virtual ~CYSFVWP25PCM();
 
-    virtual uint8_t  input(const uint8_t* buffer, uint8_t length);
+    virtual uint8_t  input(const uint8_t* buffer, uint16_t length);
 
     virtual uint16_t output(uint8_t* buffer);
 

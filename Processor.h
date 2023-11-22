@@ -25,9 +25,9 @@ class IProcessor {
   public:
     virtual ~IProcessor() = 0;
 
-    virtual void     init();
+    virtual void     init(uint8_t n);
 
-    virtual uint8_t  input(const uint8_t* buffer, uint8_t length) = 0;
+    virtual uint8_t  input(const uint8_t* buffer, uint16_t length) = 0;
 
     virtual uint16_t output(uint8_t* buffer) = 0;
 

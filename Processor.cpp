@@ -22,7 +22,7 @@ IProcessor::~IProcessor()
 {
 }
 
-void IProcessor::init()
+void IProcessor::init(uint8_t n)
 {
 }
 
