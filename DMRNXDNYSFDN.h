@@ -21,6 +21,8 @@
 
 #include "Processor.h"
 
+#include "ModeDefines.h"
+
 class CDMRNXDNYSFDN : public IProcessor {
   public:
     CDMRNXDNYSFDN();
@@ -31,6 +33,8 @@ class CDMRNXDNYSFDN : public IProcessor {
     virtual uint16_t output(uint8_t* buffer);
 
   private:
+    uint8_t m_buffer[YSFDN_DATA_LENGTH];
+    bool    m_inUse;
 };
 
 #endif

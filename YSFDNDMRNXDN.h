@@ -21,6 +21,8 @@
 
 #include "Processor.h"
 
+#include "ModeDefines.h"
+
 class CYSFDNDMRNXDN : public IProcessor {
   public:
     CYSFDNDMRNXDN();
@@ -31,7 +33,8 @@ class CYSFDNDMRNXDN : public IProcessor {
     virtual uint16_t output(uint8_t* buffer);
 
   private:
-};
+    uint8_t m_buffer[DMR_NXDN_DATA_LENGTH];
+    bool    m_inUse;};
 
 #endif
 

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2010,2014,2016,2018,2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,12 +16,11 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "DMRNXDNFEC.h"
+#include "YSFDNDMRNXDN.h"
 
 #include "AMBEPRNGTable.h"
 #include "Golay.h"
 #include "Debug.h"
-#include "Utils.h"
 
 const uint8_t BIT_MASK_TABLE[] = {0x80U, 0x40U, 0x20U, 0x10U, 0x08U, 0x04U, 0x02U, 0x01U};
 
@@ -35,59 +34,66 @@ const uint8_t DMR_B_TABLE[] = {25U, 29U, 33U, 37U, 41U, 45U, 49U, 53U, 57U, 61U,
 const uint8_t DMR_C_TABLE[] = {46U, 50U, 54U, 58U, 62U, 66U, 70U,  3U,  7U, 11U, 15U, 19U,
                                23U, 27U, 31U, 35U, 39U, 43U, 47U, 51U, 55U, 59U, 63U, 67U, 71U};
 
-CDMRNXDNFEC::CDMRNXDNFEC() :
+CYSFDNDMRNXDN::CYSFDNDMRNXDN() :
 m_buffer(),
 m_inUse(false)
 {
 }
 
-CDMRNXDNFEC::~CDMRNXDNFEC()
+CYSFDNDMRNXDN::~CYSFDNDMRNXDN()
 {
 }
 
-uint8_t CDMRNXDNFEC::input(const uint8_t* buffer, uint16_t length)
+uint8_t CYSFDNDMRNXDN::input(const uint8_t* buffer, uint16_t length)
 {
   if (m_inUse) {
     DEBUG1("DMR/NXDN frame is being overwritten");
     return 0x04U;
   }
 
-  if (length != DMR_NXDN_DATA_LENGTH) {
-    DEBUG2("DMR/NXDN frame length is invalid", length);
+  if (length != YSFDN_DATA_LENGTH) {
+    DEBUG2("YSF DN frame length is invalid", length);
     return 0x04U;
   }
 
-  uint32_t a = 0U;
+  uint32_t data = 0U;
+  uint32_t datb = 0U;
+  uint32_t datc = 0U;
+
+  for (uint8_t i = 0U; i < 12U; i++) {
+    data <<= 1;
+
+    if (READ_BIT1(buffer, 3U * i + 1U))
+      data |= 0x01U;
+  }
+    
+  for (uint8_t i = 0U; i < 12U; i++) {
+    datb <<= 1;
+
+    if (READ_BIT1(buffer, 3U * (i + 12U) + 1U))
+      datb |= 0x01U;;
+  }
+    
+  for (uint8_t i = 0U; i < 3U; i++) {
+    datc <<= 1;
+
+    if (READ_BIT1(buffer, 3U * (i + 24U) + 1U))
+      datc |= 0x01U;;
+  }
+
+  for (uint8_t i = 0U; i < 22U; i++) {
+    datc <<= 1;
+
+    if (READ_BIT1(buffer, i + 81U))
+      datc |= 0x01U;;
+  }
+
+  uint8_t a = CGolay::encode24128(data);
+  uint8_t p = CAMBEPRNGTable::TABLE[data] >> 1;
+  uint8_t b = CGolay::encode23127(datb) >> 1;
+  b ^= p;
+
   uint32_t MASK = 0x800000U;
-  for (uint8_t i = 0U; i < 24U; i++, MASK >>= 1) {
-    uint8_t aPos = DMR_A_TABLE[i];
-    if (READ_BIT1(buffer, aPos))
-      a |= MASK;
-  }
-
-  uint32_t b = 0U;
-  MASK = 0x400000U;
-  for (uint8_t i = 0U; i < 23U; i++, MASK >>= 1) {
-    uint8_t bPos = DMR_B_TABLE[i];
-    if (READ_BIT1(buffer, bPos))
-      b |= MASK;
-  }
-
-  uint32_t c = 0U;
-  MASK = 0x1000000U;
-  for (uint8_t i = 0U; i < 25U; i++, MASK >>= 1) {
-    uint8_t cPos = DMR_C_TABLE[i];
-    if (READ_BIT1(buffer, cPos))
-      c |= MASK;
-  }
-
-  bool ret = regenerateDMR(a, b, c);
-  if (!ret) {
-    DEBUG1("DMR/NXDN frame has uncorrectable errors");
-    return 0x04U;
-  }
-
-  MASK = 0x800000U;
   for (uint8_t i = 0U; i < 24U; i++, MASK >>= 1) {
     uint8_t aPos = DMR_A_TABLE[i];
     WRITE_BIT1(m_buffer, aPos, a & MASK);
@@ -102,7 +108,7 @@ uint8_t CDMRNXDNFEC::input(const uint8_t* buffer, uint16_t length)
   MASK = 0x1000000U;
   for (uint8_t i = 0U; i < 25U; i++, MASK >>= 1) {
     uint8_t cPos = DMR_C_TABLE[i];
-    WRITE_BIT1(m_buffer, cPos, c & MASK);
+    WRITE_BIT1(m_buffer, cPos, datc & MASK);
   }
 
   m_inUse = true;
@@ -110,7 +116,7 @@ uint8_t CDMRNXDNFEC::input(const uint8_t* buffer, uint16_t length)
   return 0x00U;
 }
 
-uint16_t CDMRNXDNFEC::output(uint8_t* buffer)
+uint16_t CYSFDNDMRNXDN::output(uint8_t* buffer)
 {
   if (!m_inUse)
     return 0U;
@@ -119,40 +125,5 @@ uint16_t CDMRNXDNFEC::output(uint8_t* buffer)
   m_inUse = false;
 
   return DMR_NXDN_DATA_LENGTH;
-}
-
-bool CDMRNXDNFEC::regenerateDMR(uint32_t& a, uint32_t& b, uint32_t& c) const
-{
-  uint32_t orig_a = a;
-  uint32_t orig_b = b;
-
-  uint32_t data;
-  bool valid = CGolay::decode24128(a, data);
-  if (!valid)
-    return false;
-
-  a = CGolay::encode24128(data);
-
-  // The PRNG
-  uint32_t p = CAMBEPRNGTable::TABLE[data] >> 1;
-
-  b ^= p;
-
-  uint32_t datb = CGolay::decode23127(b);
-
-  b = CGolay::encode23127(datb) >> 1;
-
-  b ^= p;
-
-  uint32_t v = a ^ orig_a;
-  unsigned int errsA = ::countBits32(v);
-
-  v = b ^ orig_b;
-  unsigned int errsB = ::countBits32(v);
-
-  if (errsA >= 4U || ((errsA + errsB) >= 6U && errsA >= 2U))
-    return false;
-
-  return true;
 }
 

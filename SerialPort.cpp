@@ -51,7 +51,7 @@ const struct {
   {MODE_DMR_NXDN,    MODE_DSTAR,       &dmrnxdnpcm,    &pcmdstar,      NULL},
 #endif
   {MODE_DMR_NXDN,    MODE_DMR_NXDN,    &dmrnxdnfec,    NULL,           NULL},
-  {MODE_DMR_NXDN,    MODE_YSFDN,       &dmrnxdnysfdn,  NULL,           NULL},
+  {MODE_DMR_NXDN,    MODE_YSFDN,       &dmrnxdnfec,    &dmrnxdnysfdn,  NULL},
 #if AMBE_TYPE > 0
   {MODE_DMR_NXDN,    MODE_YSFVW_P25,   &dmrnxdnpcm,    &pcmysfvwp25,   NULL},
   {MODE_DMR_NXDN,    MODE_CODEC2_3200, &dmrnxdnpcm,    &pcmcodec23200, NULL},
@@ -62,7 +62,7 @@ const struct {
 #if AMBE_TYPE > 1
   {MODE_YSFDN,       MODE_DSTAR,       &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmdstar},
 #endif
-  {MODE_YSFDN,       MODE_DMR_NXDN,    &ysfdndmrnxdn,  NULL,           NULL},
+  {MODE_YSFDN,       MODE_DMR_NXDN,    &ysfdnfec,      &ysfdndmrnxdn,  NULL},
   {MODE_YSFDN,       MODE_YSFDN,       &ysfdnfec,      NULL,           NULL},
 #if AMBE_TYPE > 0
   {MODE_YSFDN,       MODE_YSFVW_P25,   &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmysfvwp25},

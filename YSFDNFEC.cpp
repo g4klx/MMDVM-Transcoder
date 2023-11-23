@@ -71,12 +71,10 @@ uint8_t CYSFDNFEC::input(const uint8_t* buffer, uint16_t length)
     }
   }
 
-  for (uint8_t i = 81U; i < 103U; i++) {
+  for (uint8_t i = 81U; i < 104U; i++) {
     bool b = READ_BIT1(buffer, i) != 0U;
     WRITE_BIT1(m_buffer, i, b);
   }
-
-  WRITE_BIT1(m_buffer, 103U, false);
 
   m_inUse = true;
 

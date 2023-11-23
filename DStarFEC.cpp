@@ -112,7 +112,7 @@ bool CDStarFEC::regenerateDStar(uint32_t& a, uint32_t& b) const
     return false;
 
   // The PRNG
-  uint32_t p = AMBE_PRNG_TABLE[data];
+  uint32_t p = CAMBEPRNGTable::TABLE[data];
 
   b ^= p;
 

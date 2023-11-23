@@ -21,7 +21,12 @@
 
 #include <cstdint>
 
-extern const uint32_t AMBE_PRNG_TABLE[];
+class CAMBEPRNGTable {
+  public:
+    static const uint32_t TABLE[];
+
+  private:
+};
 
 #endif
 
