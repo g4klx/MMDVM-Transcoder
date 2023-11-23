@@ -21,6 +21,9 @@
 
 #include "Processor.h"
 
+#include "ModeDefines.h"
+#include "Codec2/codec2.h"
+
 class CPCMCodec23200 : public IProcessor {
   public:
     CPCMCodec23200();
@@ -31,6 +34,9 @@ class CPCMCodec23200 : public IProcessor {
     virtual uint16_t output(uint8_t* buffer);
 
   private:
+    uint8_t m_buffer[CODEC2_3200_DATA_LENGTH];
+    bool    m_inUse;
+    CCodec2 m_codec;
 };
 
 #endif

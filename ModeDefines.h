@@ -32,15 +32,14 @@ const uint8_t MODE_CODEC2_1600  = 0x06U;
 
 const uint8_t MODE_PCM          = 0xFFU;
 
-// FIXME TOTO Check lengths
-const uint16_t DSTAR_DATA_LENGTH     = 9U;
-const uint16_t DMR_NXDN_DATA_LENGTH  = 9U;
-const uint16_t YSFDN_DATA_LENGTH     = 13U;
-const uint16_t YSFVW_P25_DATA_LENGTH = 18U;
-const uint16_t CODEC2_3200_LENGTH    = 9U;
-const uint16_t CODEC2_1600_LENGTH    = 9U;
+const uint16_t DSTAR_DATA_LENGTH       = 9U;
+const uint16_t DMR_NXDN_DATA_LENGTH    = 9U;
+const uint16_t YSFDN_DATA_LENGTH       = 13U;
+const uint16_t YSFVW_P25_DATA_LENGTH   = 18U;
+const uint16_t CODEC2_3200_DATA_LENGTH = 8U;
+const uint16_t CODEC2_1600_DATA_LENGTH = 4U;
 
-const uint16_t PCM_DATA_LENGTH       = 320U;
+const uint16_t PCM_DATA_LENGTH         = 320U;
 
 #endif
 

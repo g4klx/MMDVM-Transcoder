@@ -16,28 +16,48 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	PCMCodec21600_H
-#define	PCMCodec21600_H
+#include "PCMCodec21600.h"
 
-#include "Processor.h"
+#include "Debug.h"
 
-#include "ModeDefines.h"
-#include "Codec2/codec2.h"
+CPCMCodec21600::CPCMCodec21600() :
+m_buffer(),
+m_inUse(false),
+m_codec(false)
+{
+}
 
-class CPCMCodec21600 : public IProcessor {
-  public:
-    CPCMCodec21600();
-    virtual ~CPCMCodec21600();
+CPCMCodec21600::~CPCMCodec21600()
+{
+}
 
-    virtual uint8_t  input(const uint8_t* buffer, uint16_t length);
+uint8_t CPCMCodec21600::input(const uint8_t* buffer, uint16_t length)
+{
+  if (m_inUse) {
+    DEBUG1("Codec2 1600 frame is being overwritten");
+    return 0x04U;
+  }
 
-    virtual uint16_t output(uint8_t* buffer);
+  if (length != PCM_DATA_LENGTH) {
+    DEBUG2("PCM frame length is invalid", length);
+    return 0x04U;
+  }
 
-  private:
-    uint8_t m_buffer[CODEC2_1600_DATA_LENGTH];
-    bool    m_inUse;
-    CCodec2 m_codec;
-};
+  m_codec.codec2_encode((unsigned char*)m_buffer, (short*)buffer);
 
-#endif
+  m_inUse = true;
+
+  return 0x00U;
+}
+
+uint16_t CPCMCodec21600::output(uint8_t* buffer)
+{
+  if (!m_inUse)
+    return 0U;
+
+  ::memcpy(buffer, m_buffer, CODEC2_1600_DATA_LENGTH);
+  m_inUse = false;
+
+  return CODEC2_1600_DATA_LENGTH;
+}
 
