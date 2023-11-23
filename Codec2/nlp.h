@@ -44,6 +44,7 @@
 #define PE_FFT_SIZE 512		/* DFT size for pitch estimation        */
 #define DEC         5		/* decimation factor                    */
 #define SAMPLE_RATE 8000
+#undef	PI
 #define PI          3.141592654	/* mathematical constant                */
 //#define T           0.1         /* threshold for local minima candidate */
 #define F0_MAX      500

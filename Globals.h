@@ -51,8 +51,6 @@
 #include "PCMDMRNXDN.h"
 #include "SerialPort.h"
 #include "YSFDNFEC.h"
-#include "YSFDNPCM.h"
-#include "PCMYSFDN.h"
 #include "DStarFEC.h"
 #include "DStarPCM.h"
 #include "PCMDStar.h"
@@ -67,14 +65,12 @@ extern CYSFVWP25FEC   ysfvwp25fec;
 
 extern CDStarPCM      dstarpcm;
 extern CDMRNXDNPCM    dmrnxdnpcm;
-extern CYSFDNPCM      ysfdnpcm;
 extern CYSFVWP25PCM   ysfvwp25pcm;
 extern CCodec23200PCM codec23200pcm;
 extern CCodec21600PCM codec21600pcm;
 
 extern CPCMDStar      pcmdstar;
 extern CPCMDMRNXDN    pcmdmrnxdn;
-extern CPCMYSFDN      pcmysfdn;
 extern CPCMYSFVWP25   pcmysfvwp25;
 extern CPCMCodec23200 pcmcodec23200;
 extern CPCMCodec21600 pcmcodec21600;
