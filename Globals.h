@@ -37,6 +37,7 @@
 
 #include <arm_math.h>
 
+#include "IMBE/imbe_vocoder.h"
 #include "Codec2/codec2.h"
 #include "Codec21600PCM.h"
 #include "Codec23200PCM.h"
@@ -79,6 +80,7 @@ extern CPCMCodec21600 pcmcodec21600;
 extern CYSFDNDMRNXDN  ysfdndmrnxdn;
 extern CDMRNXDNYSFDN  dmrnxdnysfdn;
 
+extern imbe_vocoder   imbe;
 extern CCodec2        codec23200;
 extern CCodec2        codec21600;
 

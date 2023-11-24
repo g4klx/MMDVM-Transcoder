@@ -158,15 +158,15 @@ uint8_t CYSFVWP25FEC::input(const uint8_t* buffer, uint16_t length)
   bit += 23U;
 
   // c4
-  CHamming::decode15113_1(bit);
+  CHamming::decode15113(bit);
   bit += 15U;
 
   // c5
-  CHamming::decode15113_1(bit);
+  CHamming::decode15113(bit);
   bit += 15U;
 
   // c6
-  CHamming::decode15113_1(bit);
+  CHamming::decode15113(bit);
 
   // Whiten some bits
   for (uint8_t i = 0U; i < 114U; i++)

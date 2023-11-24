@@ -43,6 +43,7 @@ CPCMCodec21600 pcmcodec21600;
 CYSFDNDMRNXDN  ysfdndmrnxdn;
 CDMRNXDNYSFDN  dmrnxdnysfdn;
 
+imbe_vocoder   imbe;
 CCodec2        codec23200(true);
 CCodec2        codec21600(false);
 

@@ -21,6 +21,8 @@
 
 #include "Processor.h"
 
+#include "ModeDefines.h"
+
 class CYSFVWP25PCM : public IProcessor {
   public:
     CYSFVWP25PCM();
@@ -31,6 +33,8 @@ class CYSFVWP25PCM : public IProcessor {
     virtual uint16_t output(uint8_t* buffer);
 
   private:
+    uint8_t m_buffer[PCM_DATA_LENGTH];
+    bool    m_inUse;
 };
 
 #endif

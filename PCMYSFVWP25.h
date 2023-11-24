@@ -21,6 +21,8 @@
 
 #include "Processor.h"
 
+#include "ModeDefines.h"
+
 class CPCMYSFVWP25 : public IProcessor {
   public:
     CPCMYSFVWP25();
@@ -31,7 +33,8 @@ class CPCMYSFVWP25 : public IProcessor {
     virtual uint16_t output(uint8_t* buffer);
 
   private:
-};
+    uint8_t m_buffer[YSFVW_P25_DATA_LENGTH];
+    bool    m_inUse;};
 
 #endif
 
