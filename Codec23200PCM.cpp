@@ -22,8 +22,7 @@
 
 CCodec23200PCM::CCodec23200PCM() :
 m_buffer(),
-m_inUse(false),
-m_codec(true)
+m_inUse(false)
 {
 }
 
@@ -43,7 +42,7 @@ uint8_t CCodec23200PCM::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-  m_codec.codec2_decode((short*)m_buffer, (unsigned char*)buffer);
+  codec23200.codec2_decode((short*)m_buffer, (unsigned char*)buffer);
 
   m_inUse = true;
 

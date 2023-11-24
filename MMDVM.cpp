@@ -43,6 +43,10 @@ CPCMCodec21600 pcmcodec21600;
 CYSFDNDMRNXDN  ysfdndmrnxdn;
 CDMRNXDNYSFDN  dmrnxdnysfdn;
 
+CCodec2        codec23200(true);
+CCodec2        codec21600(false);
+
+
 void setup()
 {
   serial.start();

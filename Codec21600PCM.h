@@ -22,7 +22,6 @@
 #include "Processor.h"
 
 #include "ModeDefines.h"
-#include "Codec2/codec2.h"
 
 class CCodec21600PCM : public IProcessor {
   public:
@@ -36,7 +35,6 @@ class CCodec21600PCM : public IProcessor {
   private:
     uint8_t m_buffer[PCM_DATA_LENGTH];
     bool    m_inUse;
-    CCodec2 m_codec;
 };
 
 #endif

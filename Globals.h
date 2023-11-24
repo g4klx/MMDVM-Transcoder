@@ -37,6 +37,7 @@
 
 #include <arm_math.h>
 
+#include "Codec2/codec2.h"
 #include "Codec21600PCM.h"
 #include "Codec23200PCM.h"
 #include "PCMCodec21600.h"
@@ -77,6 +78,9 @@ extern CPCMCodec21600 pcmcodec21600;
 
 extern CYSFDNDMRNXDN  ysfdndmrnxdn;
 extern CDMRNXDNYSFDN  dmrnxdnysfdn;
+
+extern CCodec2        codec23200;
+extern CCodec2        codec21600;
 
 #endif
 
