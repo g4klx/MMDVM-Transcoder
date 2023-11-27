@@ -16,24 +16,23 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	DMRNXDNPCM_H
-#define	DMRNXDNPCM_H
+#ifndef	DVSIDriver_H
+#define	DVSIDriver_H
 
-#include "Processor.h"
+#include <cstdint>
 
-class CDMRNXDNPCM : public IProcessor {
+class CDVSIDriver {
   public:
-    CDMRNXDNPCM();
-    virtual ~CDMRNXDNPCM();
+    CDVSIDriver();
 
-    virtual void     init(uint8_t n);
+    void     write(const uint8_t* buffer, uint16_t length);
 
-    virtual uint8_t  input(const uint8_t* buffer, uint16_t length);
-
-    virtual uint16_t output(uint8_t* buffer);
+    uint16_t read(uint8_t* buffer);
 
   private:
-    uint8_t m_n;
+    uint8_t  m_buffer[512U];
+    uint16_t m_len;
+    uint16_t m_ptr;
 };
 
 #endif

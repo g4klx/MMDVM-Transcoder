@@ -211,10 +211,6 @@ void CSerialPort::getCapabilities()
 void CSerialPort::start()
 {
   beginInt(1U, SERIAL_SPEED, false);
-
-#if AMBE_TYPE != 0
-  beginInt(3U, DVSI_SPEED, true);
-#endif
 }
 
 uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
@@ -265,7 +261,7 @@ uint8_t CSerialPort::sendData(const uint8_t* buffer, uint16_t length)
       return 0x03U;
 
     case OPMODE_PASSTHROUGH:
-      // FIXME TODO
+      dvsi.write(buffer, length);
       return 0x00U;
 
     case OPMODE_TRANSCODING:
@@ -283,10 +279,10 @@ uint8_t CSerialPort::sendData(const uint8_t* buffer, uint16_t length)
 
 void CSerialPort::processData()
 {
-  if (m_opMode == OPMODE_TRANSCODING) {
-    uint8_t  buffer[250U];
-    uint16_t length = 0U;
+  uint8_t  buffer[500U];
+  uint16_t length = 0U;
 
+  if (m_opMode == OPMODE_TRANSCODING) {
     if (m_step1 != NULL)
       length = m_step1->output(buffer);
 
@@ -309,7 +305,10 @@ void CSerialPort::processData()
     if (length > 0U)
       writeData(buffer, length);
   } else if (m_opMode == OPMODE_PASSTHROUGH) {
-    // FIXME TODO
+    length = dvsi.read(buffer);
+
+    if (length > 0U)
+      writeData(buffer, length);
   }
 }
 

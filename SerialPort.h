@@ -49,6 +49,13 @@ public:
   void writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3);
   void writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3, int16_t n4);
 
+  // Hardware versions
+  void    beginInt(uint8_t n, int speed, bool flowControl);
+  int     availableForReadInt(uint8_t n);
+  int     availableForWriteInt(uint8_t n);
+  uint8_t readInt(uint8_t n);
+  void    writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool flush = false);
+
 private:
   uint8_t  m_buffer[512U];
   uint16_t m_ptr;
@@ -70,13 +77,6 @@ private:
 
   uint16_t convert(int16_t num, uint8_t* buffer);
   void     reverse(uint8_t* buffer, uint16_t length) const;
-  
-  // Hardware versions
-  void    beginInt(uint8_t n, int speed, bool flowControl);
-  int     availableForReadInt(uint8_t n);
-  int     availableForWriteInt(uint8_t n);
-  uint8_t readInt(uint8_t n);
-  void    writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool flush = false);
 };
 
 #endif

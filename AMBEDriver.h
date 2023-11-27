@@ -16,24 +16,39 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	DMRNXDNPCM_H
-#define	DMRNXDNPCM_H
+#ifndef	AMBEDriver_H
+#define	AMBEDriver_H
 
-#include "Processor.h"
+#include <cstdint>
 
-class CDMRNXDNPCM : public IProcessor {
+enum AMBE_MODE {
+  MODE_NONE,
+  DSTAR_TO_PCM,
+  DMR_NXDN_TO_PCM,
+  PCM_TO_DSTAR,
+  PCM_TO_DMR_NXDN
+};
+
+enum AMBE_STATE {
+  AS_NONE
+};
+
+class CAMBEDriver {
   public:
-    CDMRNXDNPCM();
-    virtual ~CDMRNXDNPCM();
+    CAMBEDriver();
 
-    virtual void     init(uint8_t n);
+    void init(uint8_t n, AMBE_MODE mode);
 
-    virtual uint8_t  input(const uint8_t* buffer, uint16_t length);
+    void write(uint8_t n, const uint8_t* buffer, uint16_t length);
 
-    virtual uint16_t output(uint8_t* buffer);
+    bool read(uint8_t n, uint8_t* buffer);
 
   private:
-    uint8_t m_n;
+    uint8_t    m_n;
+    AMBE_MODE  m_mode;
+    AMBE_STATE m_state;
+
+    void setN(uint8_t n);
 };
 
 #endif

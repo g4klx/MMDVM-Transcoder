@@ -51,6 +51,8 @@
 #include "DMRNXDNFEC.h"
 #include "DMRNXDNPCM.h"
 #include "PCMDMRNXDN.h"
+#include "DVSIDriver.h"
+#include "AMBEDriver.h"
 #include "SerialPort.h"
 #include "YSFDNFEC.h"
 #include "DStarFEC.h"
@@ -83,6 +85,9 @@ extern CDMRNXDNYSFDN  dmrnxdnysfdn;
 extern imbe_vocoder   imbe;
 extern CCodec2        codec23200;
 extern CCodec2        codec21600;
+
+extern CDVSIDriver    dvsi;
+extern CAMBEDriver    ambe;
 
 #endif
 

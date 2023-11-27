@@ -47,6 +47,8 @@ imbe_vocoder   imbe;
 CCodec2        codec23200(true);
 CCodec2        codec21600(false);
 
+CDVSIDriver    dvsi;
+CAMBEDriver    ambe;
 
 void setup()
 {

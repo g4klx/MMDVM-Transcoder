@@ -16,25 +16,45 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	DMRNXDNPCM_H
-#define	DMRNXDNPCM_H
+#include "PCMDStar.h"
 
-#include "Processor.h"
+#include "ModeDefines.h"
+#include "Debug.h"
 
-class CDMRNXDNPCM : public IProcessor {
-  public:
-    CDMRNXDNPCM();
-    virtual ~CDMRNXDNPCM();
+CPCMDStar::CPCMDStar() :
+m_n(0U)
+{
+}
 
-    virtual void     init(uint8_t n);
+CPCMDStar::~CPCMDStar()
+{
+}
 
-    virtual uint8_t  input(const uint8_t* buffer, uint16_t length);
+void CPCMDStar::init(uint8_t n)
+{
+  m_n = n;
+  
+  ambe.init(n, PCM_TO_DSTAR);
+}
 
-    virtual uint16_t output(uint8_t* buffer);
+uint8_t CPCMDStar::input(const uint8_t* buffer, uint16_t length)
+{
+  if (length != PCM_DATA_LENGTH) {
+    DEBUG2("PCM frame length is invalid", length);
+    return 0x04U;
+  }
 
-  private:
-    uint8_t m_n;
-};
+  ambe.write(m_n, buffer, length);
 
-#endif
+  return 0x00U;
+}
+
+uint16_t CPCMDStar::output(uint8_t* buffer)
+{
+  bool ret = ambe.read(m_n, buffer);
+  if (!ret)
+    return 0U;
+
+  return DSTAR_DATA_LENGTH;
+}
 

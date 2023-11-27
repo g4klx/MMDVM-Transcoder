@@ -16,25 +16,45 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	DMRNXDNPCM_H
-#define	DMRNXDNPCM_H
+#include "DMRNXDNPCM.h"
 
-#include "Processor.h"
+#include "ModeDefines.h"
+#include "Debug.h"
 
-class CDMRNXDNPCM : public IProcessor {
-  public:
-    CDMRNXDNPCM();
-    virtual ~CDMRNXDNPCM();
+CDMRNXDNPCM::CDMRNXDNPCM() :
+m_n(0U)
+{
+}
 
-    virtual void     init(uint8_t n);
+CDMRNXDNPCM::~CDMRNXDNPCM()
+{
+}
 
-    virtual uint8_t  input(const uint8_t* buffer, uint16_t length);
+void CDMRNXDNPCM::init(uint8_t n)
+{
+  m_n = n;
+  
+  ambe.init(n, DMR_NXDN_TO_PCM);
+}
 
-    virtual uint16_t output(uint8_t* buffer);
+uint8_t CDMRNXDNPCM::input(const uint8_t* buffer, uint16_t length)
+{
+  if (length != DMR_NXDN_DATA_LENGTH) {
+    DEBUG2("DMR/NXDN frame length is invalid", length);
+    return 0x04U;
+  }
 
-  private:
-    uint8_t m_n;
-};
+  ambe.write(m_n, buffer, length);
 
-#endif
+  return 0x00U;
+}
+
+uint16_t CDMRNXDNPCM::output(uint8_t* buffer)
+{
+  bool ret = ambe.read(m_n, buffer);
+  if (!ret)
+    return 0U;
+
+  return PCM_DATA_LENGTH;
+}
 
