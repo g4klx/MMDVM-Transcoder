@@ -21,6 +21,8 @@
 
 #include <cstdint>
 
+#include "Config.h"
+
 enum AMBE_MODE {
   MODE_NONE,
   DSTAR_TO_PCM,
@@ -29,26 +31,30 @@ enum AMBE_MODE {
   PCM_TO_DMR_NXDN
 };
 
-enum AMBE_STATE {
-  AS_NONE
-};
-
 class CAMBEDriver {
   public:
     CAMBEDriver();
 
+    void startup();
+
     void init(uint8_t n, AMBE_MODE mode);
+
+    void process();
 
     void write(uint8_t n, const uint8_t* buffer, uint16_t length);
 
     bool read(uint8_t n, uint8_t* buffer);
 
   private:
-    uint8_t    m_n;
+    uint8_t    m_buffer0[500U];
+    uint16_t   m_length0;
+#if AMBE_TYPE == 2
+    uint8_t    m_buffer1[500U];
+    uint16_t   m_length1;
+    uint8_t    m_buffer2[500U];
+    uint16_t   m_length2;
+#endif
     AMBE_MODE  m_mode;
-    AMBE_STATE m_state;
-
-    void setN(uint8_t n);
 };
 
 #endif

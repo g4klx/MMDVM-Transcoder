@@ -31,6 +31,11 @@ m_ptr(0U)
   serial.beginInt(3U, DVSI_SPEED, true);
 }
 
+void CDVSIDriver::reset()
+{
+  // FIXME TODO Twiddle the GPIO pin
+}
+
 void CDVSIDriver::write(const uint8_t* buffer, uint16_t length)
 {
   serial.writeInt(3U, buffer, length);

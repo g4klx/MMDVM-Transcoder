@@ -53,11 +53,19 @@ CAMBEDriver    ambe;
 void setup()
 {
   serial.start();
+
+#if AMBE_TYPE > 0
+  ambe.startup();
+#endif
 }
 
 void loop()
 {
   serial.process();
+
+#if AMBE_TYPE > 0
+  ambe.process();
+#endif
 }
 
 int main()

@@ -227,6 +227,7 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
 
   if ((buffer[0U] == MODE_PASS_THROUGH) && (buffer[1U] == MODE_PASS_THROUGH)) {
     m_opMode = OPMODE_PASSTHROUGH;
+    dvsi.reset();
     return 0x00U;
   }
 
