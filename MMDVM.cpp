@@ -55,6 +55,7 @@ void setup()
   serial.start();
 
 #if AMBE_TYPE > 0
+  dvsi.startup();
   ambe.startup();
 #endif
 }

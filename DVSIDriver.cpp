@@ -21,6 +21,8 @@
 #include "Globals.h"
 #include "Config.h"
 
+// Reset   PA8    output
+
 const uint8_t DVSI_START_BYTE = 0x61U;
 
 CDVSIDriver::CDVSIDriver() :
@@ -28,12 +30,40 @@ m_buffer(),
 m_len(0U),
 m_ptr(0U)
 {
+}
+
+void CDVSIDriver::startup()
+{
   serial.beginInt(3U, DVSI_SPEED, true);
+
+  GPIO_InitTypeDef GPIO_InitStruct;
+  GPIO_StructInit(&GPIO_InitStruct);
+
+  GPIO_InitStruct.GPIO_Speed = GPIO_Fast_Speed;
+  GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_DOWN;
+
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+
+  GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_8;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_OUT;
+
+  GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  GPIO_WriteBit(GPIOA, GPIO_Pin_8, Bit_SET);
 }
 
 void CDVSIDriver::reset()
 {
-  // FIXME TODO Twiddle the GPIO pin
+  GPIO_WriteBit(GPIOA, GPIO_Pin_8, Bit_RESET);
+
+  // FIXME TODO Wait for approximately 100ms
+  for (uint32_t i = 0U; i < 100U; i++) {
+    for (uint32_t j = 0U; j < 100000U; j++)
+      __NOP();
+  }
+
+  GPIO_WriteBit(GPIOA, GPIO_Pin_8, Bit_SET);
 }
 
 void CDVSIDriver::write(const uint8_t* buffer, uint16_t length)

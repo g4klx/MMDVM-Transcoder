@@ -25,6 +25,8 @@ class CDVSIDriver {
   public:
     CDVSIDriver();
 
+    void     startup();
+
     void     reset();
 
     void     write(const uint8_t* buffer, uint16_t length);
