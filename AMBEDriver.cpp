@@ -260,6 +260,7 @@ void CAMBEDriver::process()
 
 uint8_t CAMBEDriver::write(uint8_t n, const uint8_t* buffer, uint16_t length)
 {
+  // If the RTS pin is high, then the chip does not expect any more data to be sent through
   if (dvsi.RTS()) {
     DEBUG1("The DVSI chip is not ready to receive any more data");
     return 0x05U;
