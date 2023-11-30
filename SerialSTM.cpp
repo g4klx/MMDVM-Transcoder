@@ -30,7 +30,7 @@ Pin definitions:
 USART1 - TXD PA9  - RXD PA10
 
 - AMBE communication:
-USART2 - TXD PA2  - RXD PA3  - RTS PA1
+USART2 - TXD PA2  - RXD PA3
 */
 
 #include "STMUART.h"
@@ -39,8 +39,6 @@ extern "C" {
    void USART1_IRQHandler();
    void USART2_IRQHandler();
 }
-
-// FIXME TODO Check the function of the RTS pin
 
 /* ************* USART1 ***************** */
 
@@ -51,7 +49,7 @@ void USART1_IRQHandler()
   m_USART1.handleIRQ();
 }
 
-void InitUSART1(int speed, bool flowControl)
+void InitUSART1(int speed)
 {
    GPIO_InitTypeDef GPIO_InitStructure;
    USART_InitTypeDef USART_InitStructure;
@@ -104,7 +102,7 @@ void USART2_IRQHandler()
    m_USART2.handleIRQ();
 }
 
-void InitUSART2(int speed, bool flowControl)
+void InitUSART2(int speed)
 {
    GPIO_InitTypeDef GPIO_InitStructure;
    USART_InitTypeDef USART_InitStructure;
@@ -112,8 +110,6 @@ void InitUSART2(int speed, bool flowControl)
 
    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
-   if (flowControl)
-     GPIO_PinAFConfig(GPIOA, GPIO_PinSource1, GPIO_AF_USART2);
    GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_USART2);
    GPIO_PinAFConfig(GPIOA, GPIO_PinSource3, GPIO_AF_USART2);
 
@@ -129,10 +125,7 @@ void InitUSART2(int speed, bool flowControl)
    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
-   if (flowControl)
-     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3; //  RTS | Tx | Rx
-   else
-     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3; //  Tx | Rx
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3; //  Tx | Rx
    GPIO_InitStructure.GPIO_Speed = GPIO_Fast_Speed;
    GPIO_Init(GPIOA, &GPIO_InitStructure);
 
@@ -142,7 +135,7 @@ void InitUSART2(int speed, bool flowControl)
    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
    USART_InitStructure.USART_StopBits   = USART_StopBits_1;
    USART_InitStructure.USART_Parity     = USART_Parity_No;
-   USART_InitStructure.USART_HardwareFlowControl = flowControl ? USART_HardwareFlowControl_RTS : USART_HardwareFlowControl_None;
+   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
    USART_InitStructure.USART_Mode       = USART_Mode_Rx | USART_Mode_Tx;
    USART_Init(USART2, &USART_InitStructure);
 
@@ -155,14 +148,14 @@ void InitUSART2(int speed, bool flowControl)
 
 /////////////////////////////////////////////////////////////////
 
-void CSerialPort::beginInt(uint8_t n, int speed, bool flowControl)
+void CSerialPort::beginInt(uint8_t n, int speed)
 {
    switch (n) {
       case 1U:
-         InitUSART1(speed, flowControl);
+         InitUSART1(speed);
          break;
       case 3U:
-         InitUSART2(speed, flowControl);
+         InitUSART2(speed);
          break;
       default:
          break;

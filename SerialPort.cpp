@@ -210,7 +210,7 @@ void CSerialPort::getCapabilities()
 
 void CSerialPort::start()
 {
-  beginInt(1U, SERIAL_SPEED, false);
+  beginInt(1U, SERIAL_SPEED);
 }
 
 uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
@@ -225,11 +225,13 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
   m_step2  = NULL;
   m_step3  = NULL;
 
+#if AMBE_TYPE > 0
   if ((buffer[0U] == MODE_PASS_THROUGH) && (buffer[1U] == MODE_PASS_THROUGH)) {
     m_opMode = OPMODE_PASSTHROUGH;
     dvsi.reset();
     return 0x00U;
   }
+#endif
 
   for (uint8_t i = 0U; i < PROCESSOR_LENGTH; i++) {
     if ((PROCESSOR_TABLE[i].m_input == buffer[0U]) && (PROCESSOR_TABLE[i].m_output == buffer[1U])) {

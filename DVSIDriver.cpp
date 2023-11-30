@@ -34,7 +34,7 @@ m_ptr(0U)
 
 void CDVSIDriver::startup()
 {
-  serial.beginInt(3U, DVSI_SPEED, true);
+  serial.beginInt(3U, DVSI_SPEED);
 
   GPIO_InitTypeDef GPIO_InitStruct;
   GPIO_StructInit(&GPIO_InitStruct);
@@ -45,8 +45,15 @@ void CDVSIDriver::startup()
 
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 
+  // The reset pin
   GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_8;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_OUT;
+
+  GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  // The RTS input, ignored
+  GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_0;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_IN;
 
   GPIO_Init(GPIOA, &GPIO_InitStruct);
 
