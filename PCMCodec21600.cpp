@@ -34,7 +34,7 @@ uint8_t CPCMCodec21600::input(const uint8_t* buffer, uint16_t length)
 {
   if (m_inUse) {
     DEBUG1("Codec2 1600 frame is being overwritten");
-    return 0x04U;
+    return 0x05U;
   }
 
   if (length != PCM_DATA_LENGTH) {

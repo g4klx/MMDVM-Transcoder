@@ -39,7 +39,7 @@ uint8_t CYSFDNFEC::input(const uint8_t* buffer, uint16_t length)
 {
   if (m_inUse) {
     DEBUG1("YSF DN frame is being overwritten");
-    return 0x04U;
+    return 0x05U;
   }
 
   if (length != YSFDN_DATA_LENGTH) {

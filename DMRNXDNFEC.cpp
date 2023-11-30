@@ -49,7 +49,7 @@ uint8_t CDMRNXDNFEC::input(const uint8_t* buffer, uint16_t length)
 {
   if (m_inUse) {
     DEBUG1("DMR/NXDN frame is being overwritten");
-    return 0x04U;
+    return 0x05U;
   }
 
   if (length != DMR_NXDN_DATA_LENGTH) {

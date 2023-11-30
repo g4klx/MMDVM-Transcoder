@@ -50,7 +50,7 @@ uint8_t CPCMYSFVWP25::input(const uint8_t* buffer, uint16_t length)
 {
   if (m_inUse) {
     DEBUG1("YSF VW/P25 frame is being overwritten");
-    return 0x04U;
+    return 0x05U;
   }
 
   if (length != PCM_DATA_LENGTH) {

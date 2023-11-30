@@ -47,7 +47,7 @@ uint8_t CDMRNXDNYSFDN::input(const uint8_t* buffer, uint16_t length)
 {
   if (m_inUse) {
     DEBUG1("YSF DN frame is being overwritten");
-    return 0x04U;
+    return 0x05U;
   }
 
   if (length != DMR_NXDN_DATA_LENGTH) {

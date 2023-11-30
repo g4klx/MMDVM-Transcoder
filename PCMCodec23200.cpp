@@ -34,7 +34,7 @@ uint8_t CPCMCodec23200::input(const uint8_t* buffer, uint16_t length)
 {
   if (m_inUse) {
     DEBUG1("Codec2 3200 frame is being overwritten");
-    return 0x04U;
+    return 0x05U;
   }
 
   if (length != PCM_DATA_LENGTH) {

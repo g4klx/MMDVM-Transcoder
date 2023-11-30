@@ -48,7 +48,7 @@ uint8_t CYSFVWP25PCM::input(const uint8_t* buffer, uint16_t length)
 {
   if (m_inUse) {
     DEBUG1("PCM frame is being overwritten");
-    return 0x04U;
+    return 0x05U;
   }
 
   if (length != YSFVW_P25_DATA_LENGTH) {

@@ -49,7 +49,7 @@ uint8_t CDStarFEC::input(const uint8_t* buffer, uint16_t length)
 {
   if (m_inUse) {
     DEBUG1("D-Star frame is being overwritten");
-    return 0x04U;
+    return 0x05U;
   }
 
   if (length != DSTAR_DATA_LENGTH) {
