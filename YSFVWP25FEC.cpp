@@ -53,7 +53,7 @@ uint8_t CYSFVWP25FEC::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-  if (length != DSTAR_DATA_LENGTH) {
+  if (length != YSFVW_P25_DATA_LENGTH) {
     DEBUG2("YSF VW/P25 frame length is invalid", length);
     return 0x04U;
   }

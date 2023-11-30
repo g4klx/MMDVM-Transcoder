@@ -23,6 +23,9 @@
 
 #include "Config.h"
 
+// Define this on little-endian architectures
+#define	SWAP_BYTES
+
 enum AMBE_MODE {
   MODE_NONE,
   DSTAR_TO_PCM,
@@ -55,6 +58,10 @@ class CAMBEDriver {
     uint16_t   m_length2;
 #endif
     AMBE_MODE  m_mode;
+
+#if defined(SWAP_BYTES)
+    void swapBytes(uint8_t* out, const uint8_t* in, uint16_t length) const;
+#endif
 };
 
 #endif

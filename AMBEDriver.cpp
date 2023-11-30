@@ -221,16 +221,28 @@ void CAMBEDriver::process()
       switch (buffer[4U]) {
         case DVSI_PKT_CHANNEL0:
 #endif
+#if defined(SWAP_BYTES)
+          swapBytes(m_buffer0, buffer + pos + 1U, length);
+#else
           ::memcpy(m_buffer0, buffer + pos + 1U, length);
+#endif
           m_length0 = length;
 #if AMBE_TYPE == 2
           break;
         case DVSI_PKT_CHANNEL1:
+#if defined(SWAP_BYTES)
+          swapBytes(m_buffer1, buffer + pos + 1U, length);
+#else
           ::memcpy(m_buffer1, buffer + pos + 1U, length);
+#endif
           m_length1 = length;
           break;
         case DVSI_PKT_CHANNEL2:
+#if defined(SWAP_BYTES)
+          swapBytes(m_buffer2, buffer + pos + 1U, length);
+#else
           ::memcpy(m_buffer2, buffer + pos + 1U, length);
+#endif
           m_length2 = length;
           break;
         default:
@@ -315,7 +327,11 @@ void CAMBEDriver::write(uint8_t n, const uint8_t* buffer, uint16_t length)
       out[pos++] = 0x00U;
       out[pos++] = length / sizeof(int16_t);
 
+#if defined(SWAP_BYTES)
+      swapBytes(out + pos, buffer, length);
+#else
       ::memcpy(out + pos, buffer, length);
+#endif
       pos += length;
 
       out[1U] = (pos - 4U) / 256U;
@@ -366,4 +382,14 @@ bool CAMBEDriver::read(uint8_t n, uint8_t* buffer)
 
   return false;
 }
+
+#if defined(SWAP_BYTES)
+void CAMBEDriver::swapBytes(uint8_t* out, const uint8_t* in, uint16_t length) const
+{
+  for (uint16_t i = 0U; i < length; i += 2U) {
+    out[i + 0U] = in[i + 1U];
+    out[i + 1U] = in[i + 0U];
+  }
+}
+#endif
 
