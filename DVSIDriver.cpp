@@ -73,6 +73,11 @@ void CDVSIDriver::reset()
   GPIO_WriteBit(GPIOA, GPIO_Pin_8, Bit_SET);
 }
 
+bool CDVSIDriver::RTS() const
+{
+  return GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) == Bit_SET;
+}
+
 void CDVSIDriver::write(const uint8_t* buffer, uint16_t length)
 {
   serial.writeInt(3U, buffer, length);

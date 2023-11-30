@@ -44,9 +44,7 @@ uint8_t CDMRNXDNPCM::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-  ambe.write(m_n, buffer, length);
-
-  return 0x00U;
+  return ambe.write(m_n, buffer, length);
 }
 
 uint16_t CDMRNXDNPCM::output(uint8_t* buffer)

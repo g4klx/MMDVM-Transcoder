@@ -44,7 +44,7 @@ class CAMBEDriver {
 
     void process();
 
-    void write(uint8_t n, const uint8_t* buffer, uint16_t length);
+    uint8_t write(uint8_t n, const uint8_t* buffer, uint16_t length);
 
     bool read(uint8_t n, uint8_t* buffer);
 

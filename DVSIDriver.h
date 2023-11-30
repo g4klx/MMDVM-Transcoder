@@ -29,6 +29,8 @@ class CDVSIDriver {
 
     void     reset();
 
+    bool     RTS() const;
+
     void     write(const uint8_t* buffer, uint16_t length);
 
     uint16_t read(uint8_t* buffer);

@@ -258,8 +258,13 @@ void CAMBEDriver::process()
   }
 }
 
-void CAMBEDriver::write(uint8_t n, const uint8_t* buffer, uint16_t length)
+uint8_t CAMBEDriver::write(uint8_t n, const uint8_t* buffer, uint16_t length)
 {
+  if (dvsi.RTS()) {
+    DEBUG1("The DVSI chip is not ready to receive any more data");
+    return 0x05U;
+  }
+
   uint8_t out[500U];
   uint16_t pos = 0U;
 
@@ -340,6 +345,8 @@ void CAMBEDriver::write(uint8_t n, const uint8_t* buffer, uint16_t length)
       dvsi.write(out, pos);
       break;
   }
+
+  return 0x00U;
 }
 
 bool CAMBEDriver::read(uint8_t n, uint8_t* buffer)
