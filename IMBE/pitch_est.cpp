@@ -32,7 +32,13 @@
 #include "dsp_sub.h"
 #include "imbe_vocoder_impl.h"
 
-
+#if defined(STM32F4XX)
+#define  ARM_MATH_CM4
+#include <arm_math.h>
+#elif defined(STM32F7xx)
+#define  ARM_MATH_CM7
+#include <arm_math.h>
+#endif
 
 static const UWord16 min_max_tbl[203] = 
 {
@@ -70,6 +76,43 @@ void imbe_vocoder_impl::pitch_est_init(void)
 }
 
 
+#if defined(STM32F4XX) || defined(STM32F7xx)
+
+Word32 imbe_vocoder_impl::autocorr(Word16 *sigin, Word16 shift, Word16 scale_shift)
+{
+	Word32 sum = 0;
+
+	Word16 count = PITCH_EST_FRAME - shift;
+
+	Word32* p1 = (Word32*)sigin;
+	Word32* p2 = (Word32*)(sigin + shift);
+
+	for (Word16 i = 0; i < (count / 4); i++) {
+		sum = __SMLAD(*p1, *p2, sum);
+		p1++, p2++;
+
+		sum = __SMLAD(*p1, *p2, sum);
+		p1++, p2++;
+	}
+
+	if ((count % 4) > 1) {
+		sum = __SMLAD(*p1, *p2, sum);
+		p1++, p2++;
+	}
+
+	if ((count % 2) > 0) {
+		Word16* p3 = (Word16*)p1;
+		Word16* p4 = (Word16*)p2;
+		sum += *p3 * *p4;
+	}
+
+	if (scale_shift > 0)
+		sum >>= scale_shift;
+
+	return sum;
+}
+
+#else
 
 Word32 imbe_vocoder_impl::autocorr(Word16 *sigin, Word16 shift, Word16 scale_shift)
 {
@@ -83,6 +126,7 @@ Word32 imbe_vocoder_impl::autocorr(Word16 *sigin, Word16 shift, Word16 scale_shi
 	return L_sum;
 }
 
+#endif
 
 
 void imbe_vocoder_impl::e_p(Word16 *sigin, Word16 *res_buf)
