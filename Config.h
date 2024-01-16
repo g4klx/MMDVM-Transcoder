@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015,2016,2017,2018,2020,2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2015,2016,2017,2018,2020,2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -41,13 +41,17 @@
 // Select use of debugging messages
 #define	DEBUGGING
 
-// Baud rate for DVSI AMBE chip
-#define DVSI_SPEED	230400
+// Baud rate for DVSI AMBE3000/3003R chip
+#define DVSI_AMBE3000_SPEED	230400
+
+// Baud rate for DVSI AMBE4020 chip
+#define DVSI_AMBE4020_SPEED	230400
 
 // Type of DVSI AMBE chip
 // 0=None
 // 1=AMBE3000R
 // 2=AMBE3003R
+// 3=AMBE3000R + AMBE4020
 #define	AMBE_TYPE	1
 
 // For ST Nucleo-64 STM32F446RE board

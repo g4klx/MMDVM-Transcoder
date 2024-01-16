@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ void CDMRNXDNPCM::init(uint8_t n)
 {
   m_n = n;
   
-  ambe.init(n, DMR_NXDN_TO_PCM);
+  ambe3000.init(n, DMR_NXDN_TO_PCM);
 }
 
 uint8_t CDMRNXDNPCM::input(const uint8_t* buffer, uint16_t length)
@@ -44,12 +44,12 @@ uint8_t CDMRNXDNPCM::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-  return ambe.write(m_n, buffer, length);
+  return ambe3000.write(m_n, buffer, length);
 }
 
 uint16_t CDMRNXDNPCM::output(uint8_t* buffer)
 {
-  bool ret = ambe.read(m_n, buffer);
+  bool ret = ambe3000.read(m_n, buffer);
   if (!ret)
     return 0U;
 

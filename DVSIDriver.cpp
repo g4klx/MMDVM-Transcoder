@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,20 +21,24 @@
 #include "Globals.h"
 #include "Config.h"
 
-// Reset   PA8    output
+// Reset   AMBE3000	PA8    output
+// Reset   AMBE4020	       output
 
 const uint8_t DVSI_START_BYTE = 0x61U;
 
 CDVSIDriver::CDVSIDriver() :
-m_buffer(),
-m_len(0U),
-m_ptr(0U)
+m_buffer3000(),
+m_len3000(0U),
+m_ptr3000(0U),
+m_buffer4020(),
+m_len4020(0U),
+m_ptr4020(0U)
 {
 }
 
-void CDVSIDriver::startup()
+void CDVSIDriver::startup3000()
 {
-  serial.beginInt(3U, DVSI_SPEED);
+  serial.beginInt(2U, DVSI_AMBE3000_SPEED);
 
   GPIO_InitTypeDef GPIO_InitStruct;
   GPIO_StructInit(&GPIO_InitStruct);
@@ -60,7 +64,14 @@ void CDVSIDriver::startup()
   GPIO_WriteBit(GPIOA, GPIO_Pin_8, Bit_SET);
 }
 
-void CDVSIDriver::reset()
+void CDVSIDriver::startup4020()
+{
+  serial.beginInt(3U, DVSI_AMBE4020_SPEED);
+
+  // Setup AMBE4020 RTS and Reset pins
+}
+
+void CDVSIDriver::reset3000()
 {
   GPIO_WriteBit(GPIOA, GPIO_Pin_8, Bit_RESET);
 
@@ -73,54 +84,115 @@ void CDVSIDriver::reset()
   GPIO_WriteBit(GPIOA, GPIO_Pin_8, Bit_SET);
 }
 
-bool CDVSIDriver::RTS() const
+void CDVSIDriver::reset4020()
+{
+}
+
+bool CDVSIDriver::RTS3000() const
 {
   return GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) == Bit_SET;
 }
 
-void CDVSIDriver::write(const uint8_t* buffer, uint16_t length)
+bool CDVSIDriver::RTS4020() const
+{
+  return false;
+}
+
+void CDVSIDriver::write3000(const uint8_t* buffer, uint16_t length)
+{
+  serial.writeInt(2U, buffer, length);
+}
+
+void CDVSIDriver::write4020(const uint8_t* buffer, uint16_t length)
 {
   serial.writeInt(3U, buffer, length);
 }
 
-uint16_t CDVSIDriver::read(uint8_t* buffer)
+uint16_t CDVSIDriver::read3000(uint8_t* buffer)
+{
+  while (serial.availableForReadInt(2U)) {
+    uint8_t c = serial.readInt(2U);
+
+    if (m_ptr3000 == 0U) {
+      if (c == DVSI_START_BYTE) {
+        // Handle the frame start correctly
+        m_buffer3000[0U] = c;
+        m_ptr3000 = 1U;
+        m_len3000 = 0U;
+      } else {
+        m_ptr3000 = 0U;
+        m_len3000 = 0U;
+      }
+    } else if (m_ptr3000 == 1U) {
+      // Handle the frame length MSB
+      uint8_t val = m_buffer3000[m_ptr3000] = c;
+      m_len3000 = (val << 8) & 0xFF00U;
+      m_ptr3000 = 2U;
+    } else if (m_ptr3000 == 2U) {
+      // Handle the frame length LSB
+      uint8_t val = m_buffer3000[m_ptr3000] = c;
+      m_len3000 |= (val << 0) & 0x00FFU;
+      m_len3000 += 4U;	// The length in the DVSI message doesn't include the first four bytes
+      m_ptr3000  = 3U;
+    } else {
+      // Any other bytes are added to the buffer
+      m_buffer3000[m_ptr3000] = c;
+      m_ptr3000++;
+
+      // The full packet has been received, process it
+      if (m_ptr3000 == m_len3000) {
+        ::memcpy(buffer, m_buffer3000, m_len3000);
+        uint16_t length = m_len3000;
+
+        m_ptr3000 = 0U;
+        m_len3000 = 0U;
+
+        return length;
+      }
+    }
+  }
+
+  return 0U;
+}
+
+uint16_t CDVSIDriver::read4020(uint8_t* buffer)
 {
   while (serial.availableForReadInt(3U)) {
     uint8_t c = serial.readInt(3U);
 
-    if (m_ptr == 0U) {
+    if (m_ptr4020 == 0U) {
       if (c == DVSI_START_BYTE) {
         // Handle the frame start correctly
-        m_buffer[0U] = c;
-        m_ptr = 1U;
-        m_len = 0U;
+        m_buffer4020[0U] = c;
+        m_ptr4020 = 1U;
+        m_len4020 = 0U;
       } else {
-        m_ptr = 0U;
-        m_len = 0U;
+        m_ptr4020 = 0U;
+        m_len4020 = 0U;
       }
-    } else if (m_ptr == 1U) {
+    } else if (m_ptr4020 == 1U) {
       // Handle the frame length MSB
-      uint8_t val = m_buffer[m_ptr] = c;
-      m_len = (val << 8) & 0xFF00U;
-      m_ptr = 2U;
-    } else if (m_ptr == 2U) {
+      uint8_t val = m_buffer4020[m_ptr4020] = c;
+      m_len4020 = (val << 8) & 0xFF00U;
+      m_ptr4020 = 2U;
+    } else if (m_ptr4020 == 2U) {
       // Handle the frame length LSB
-      uint8_t val = m_buffer[m_ptr] = c;
-      m_len |= (val << 0) & 0x00FFU;
-      m_len += 4U;	// The length in the DVSI message doesn't include the first four bytes
-      m_ptr  = 3U;
+      uint8_t val = m_buffer4020[m_ptr4020] = c;
+      m_len4020 |= (val << 0) & 0x00FFU;
+      m_len4020 += 4U;	// The length in the DVSI message doesn't include the first four bytes
+      m_ptr4020  = 3U;
     } else {
       // Any other bytes are added to the buffer
-      m_buffer[m_ptr] = c;
-      m_ptr++;
+      m_buffer4020[m_ptr4020] = c;
+      m_ptr4020++;
 
       // The full packet has been received, process it
-      if (m_ptr == m_len) {
-        ::memcpy(buffer, m_buffer, m_len);
-        uint16_t length = m_len;
+      if (m_ptr4020 == m_len4020) {
+        ::memcpy(buffer, m_buffer4020, m_len4020);
+        uint16_t length = m_len4020;
 
-        m_ptr = 0U;
-        m_len = 0U;
+        m_ptr4020 = 0U;
+        m_len4020 = 0U;
 
         return length;
       }

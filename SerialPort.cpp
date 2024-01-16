@@ -1,6 +1,5 @@
 /*
- *   Copyright (C) 2013,2015-2021,2023 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016 by Colin Durbridge G4EML
+ *   Copyright (C) 2013,2015-2021,2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -228,7 +227,10 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
 #if AMBE_TYPE > 0
   if ((buffer[0U] == MODE_PASS_THROUGH) && (buffer[1U] == MODE_PASS_THROUGH)) {
     m_opMode = OPMODE_PASSTHROUGH;
-    dvsi.reset();
+    dvsi.reset3000();
+#if AMBE_TYPE == 3
+    dvsi.reset4020();
+#endif
     return 0x00U;
   }
 #endif
@@ -265,11 +267,11 @@ uint8_t CSerialPort::sendData(const uint8_t* buffer, uint16_t length)
 
     case OPMODE_PASSTHROUGH:
       // If the RTS pin is high, then the chip does not expect any more data to be sent through
-      if (dvsi.RTS()) {
-        DEBUG1("The DVSI chip is not ready to receive any more data");
+      if (dvsi.RTS3000()) {
+        DEBUG1("The AMBE3000 chip is not ready to receive any more data");
         return 0x05U;
       }
-      dvsi.write(buffer, length);
+      dvsi.write3000(buffer, length);
       return 0x00U;
 
     case OPMODE_TRANSCODING:
@@ -313,7 +315,7 @@ void CSerialPort::processData()
     if (length > 0U)
       writeData(buffer, length);
   } else if (m_opMode == OPMODE_PASSTHROUGH) {
-    length = dvsi.read(buffer);
+    length = dvsi.read3000(buffer);
 
     if (length > 0U)
       writeData(buffer, length);

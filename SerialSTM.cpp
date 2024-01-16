@@ -1,7 +1,7 @@
 /*
  *   Copyright (C) 2016 by Jim McLaughlin KI6ZUM
  *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
- *   Copyright (c) 2017,2023 by Jonathan Naylor G4KLX
+ *   Copyright (c) 2017,2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ USART1 - TXD PA9  - RXD PA10
 
 - AMBE communication:
 USART2 - TXD PA2  - RXD PA3
+USART3 - TXD      - RXD 
 */
 
 #include "STMUART.h"
@@ -38,6 +39,7 @@ USART2 - TXD PA2  - RXD PA3
 extern "C" {
    void USART1_IRQHandler();
    void USART2_IRQHandler();
+   void USART3_IRQHandler();
 }
 
 /* ************* USART1 ***************** */
@@ -146,6 +148,59 @@ void InitUSART2(int speed)
    m_USART2.init(USART2);
 }
 
+/* ************* USART3 ***************** */
+
+static CSTMUART m_USART3;
+
+void USART3_IRQHandler()
+{
+   m_USART3.handleIRQ();
+}
+
+void InitUSART3(int speed)
+{
+   GPIO_InitTypeDef GPIO_InitStructure;
+   USART_InitTypeDef USART_InitStructure;
+   NVIC_InitTypeDef NVIC_InitStructure;
+
+   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
+   GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_USART3);
+   GPIO_PinAFConfig(GPIOA, GPIO_PinSource3, GPIO_AF_USART3);
+
+   // USART IRQ init
+   NVIC_InitStructure.NVIC_IRQChannel    = USART3_IRQn;
+   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+   NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 1;
+   NVIC_Init(&NVIC_InitStructure);
+
+   // Configure USART as alternate function
+   GPIO_StructInit(&GPIO_InitStructure);
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3; //  Tx | Rx
+   GPIO_InitStructure.GPIO_Speed = GPIO_Fast_Speed;
+   GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+   // Configure USART baud rate
+   USART_StructInit(&USART_InitStructure);
+   USART_InitStructure.USART_BaudRate   = speed;
+   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+   USART_InitStructure.USART_StopBits   = USART_StopBits_1;
+   USART_InitStructure.USART_Parity     = USART_Parity_No;
+   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+   USART_InitStructure.USART_Mode       = USART_Mode_Rx | USART_Mode_Tx;
+   USART_Init(USART3, &USART_InitStructure);
+
+   USART_Cmd(USART3, ENABLE);
+
+   USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);
+
+   m_USART3.init(USART3);
+}
+
 /////////////////////////////////////////////////////////////////
 
 void CSerialPort::beginInt(uint8_t n, int speed)
@@ -154,8 +209,11 @@ void CSerialPort::beginInt(uint8_t n, int speed)
       case 1U:
          InitUSART1(speed);
          break;
-      case 3U:
+      case 2U:
          InitUSART2(speed);
+         break;
+      case 3U:
+         InitUSART3(speed);
          break;
       default:
          break;
@@ -167,8 +225,10 @@ int CSerialPort::availableForReadInt(uint8_t n)
    switch (n) {
       case 1U:
          return m_USART1.available();
-      case 3U:
+      case 2U:
          return m_USART2.available();
+      case 3U:
+         return m_USART3.available();
       default:
          return 0;
    }
@@ -179,8 +239,10 @@ int CSerialPort::availableForWriteInt(uint8_t n)
    switch (n) {
       case 1U:
          return m_USART1.availableForWrite();
-      case 3U:
+      case 2U:
          return m_USART2.availableForWrite();
+      case 3U:
+         return m_USART3.availableForWrite();
       default:
          return 0;
    }
@@ -191,8 +253,10 @@ uint8_t CSerialPort::readInt(uint8_t n)
    switch (n) {
       case 1U:
          return m_USART1.read();
-      case 3U:
+      case 2U:
          return m_USART2.read();
+      case 3U:
+         return m_USART3.read();
       default:
          return 0U;
    }
@@ -206,10 +270,15 @@ void CSerialPort::writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool
          if (flush)
             m_USART1.flush();
          break;
-      case 3U:
+      case 2U:
          m_USART2.write(data, length);
          if (flush)
             m_USART2.flush();
+         break;
+      case 3U:
+         m_USART3.write(data, length);
+         if (flush)
+            m_USART3.flush();
          break;
       default:
          break;

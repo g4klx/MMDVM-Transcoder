@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 #include "PCMDStar.h"
 
 #include "ModeDefines.h"
+#include "Config.h"
 #include "Debug.h"
 
 CPCMDStar::CPCMDStar() :
@@ -33,8 +34,12 @@ CPCMDStar::~CPCMDStar()
 void CPCMDStar::init(uint8_t n)
 {
   m_n = n;
-  
-  ambe.init(n, PCM_TO_DSTAR);
+
+#if AMBE_TYPE == 3
+  ambe4020.init(PCM_TO_DSTAR);
+#else
+  ambe3000.init(n, PCM_TO_DSTAR);
+#endif
 }
 
 uint8_t CPCMDStar::input(const uint8_t* buffer, uint16_t length)
@@ -44,12 +49,20 @@ uint8_t CPCMDStar::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-  return ambe.write(m_n, buffer, length);
+#if AMBE_TYPE == 3
+  return ambe4020.write(buffer, length);
+#else
+  return ambe3000.write(m_n, buffer, length);
+#endif
 }
 
 uint16_t CPCMDStar::output(uint8_t* buffer)
 {
-  bool ret = ambe.read(m_n, buffer);
+#if AMBE_TYPE == 3
+  bool ret = ambe4020.read(buffer);
+#else
+  bool ret = ambe3000.read(m_n, buffer);
+#endif
   if (!ret)
     return 0U;
 

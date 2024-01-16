@@ -16,37 +16,52 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	DVSIDriver_H
-#define	DVSIDriver_H
+#ifndef	AMBE3000Driver_H
+#define	AMBE3000Driver_H
 
 #include <cstdint>
 
-class CDVSIDriver {
+#include "Config.h"
+
+// Define this on little-endian architectures
+#define	SWAP_BYTES
+
+enum AMBE_MODE {
+  MODE_NONE,
+  DSTAR_TO_PCM,
+  DMR_NXDN_TO_PCM,
+  PCM_TO_DSTAR,
+  PCM_TO_DMR_NXDN
+};
+
+class CAMBE3000Driver {
   public:
-    CDVSIDriver();
+    CAMBE3000Driver();
 
-    void     startup3000();
-    void     startup4020();
+    void startup();
 
-    void     reset3000();
-    void     reset4020();
+    void init(uint8_t n, AMBE_MODE mode);
 
-    bool     RTS3000() const;
-    bool     RTS4020() const;
+    void process();
 
-    void     write3000(const uint8_t* buffer, uint16_t length);
-    void     write4020(const uint8_t* buffer, uint16_t length);
+    uint8_t write(uint8_t n, const uint8_t* buffer, uint16_t length);
 
-    uint16_t read3000(uint8_t* buffer);
-    uint16_t read4020(uint8_t* buffer);
+    bool read(uint8_t n, uint8_t* buffer);
 
   private:
-    uint8_t  m_buffer3000[512U];
-    uint16_t m_len3000;
-    uint16_t m_ptr3000;
-    uint8_t  m_buffer4020[512U];
-    uint16_t m_len4020;
-    uint16_t m_ptr4020;
+    uint8_t    m_buffer0[500U];
+    uint16_t   m_length0;
+#if AMBE_TYPE == 2
+    uint8_t    m_buffer1[500U];
+    uint16_t   m_length1;
+    uint8_t    m_buffer2[500U];
+    uint16_t   m_length2;
+#endif
+    AMBE_MODE  m_mode;
+
+#if defined(SWAP_BYTES)
+    void swapBytes(uint8_t* out, const uint8_t* in, uint16_t length) const;
+#endif
 };
 
 #endif

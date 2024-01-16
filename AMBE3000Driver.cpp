@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "AMBEDriver.h"
+#include "AMBE3000Driver.h"
 
 #include "Globals.h"
 #include "Debug.h"
@@ -59,7 +59,7 @@ const uint16_t DVSI_AUDIO_HEADER_LEN = 6U;
 const uint8_t DVSI_AMBE_HEADER[]     = {DVSI_START_BYTE, 0x00U, 0x00U, DVSI_TYPE_AMBE, 0x01U, 0x00U};
 const uint16_t DVSI_AMBE_HEADER_LEN  = 6U;
 
-CAMBEDriver::CAMBEDriver() :
+CAMBE3000Driver::CAMBE3000Driver() :
 m_buffer0(),
 m_length0(0U),
 #if AMBE_TYPE == 2
@@ -72,12 +72,12 @@ m_mode(MODE_NONE)
 {
 }
 
-void CAMBEDriver::startup()
+void CAMBE3000Driver::startup()
 {
-  dvsi.reset();
+  dvsi.reset3000();
 }
 
-void CAMBEDriver::init(uint8_t n, AMBE_MODE mode)
+void CAMBE3000Driver::init(uint8_t n, AMBE_MODE mode)
 {
   uint8_t  buffer[100U];
   uint16_t length = 0U;
@@ -116,7 +116,7 @@ void CAMBEDriver::init(uint8_t n, AMBE_MODE mode)
       length += DVSI_PKT_DMR_NXDN_FEC_LEN;
       break;
     default:
-      DEBUG2("Unknown mode received ", mode);
+      DEBUG2("Unknown AMBE3030/3000 mode received ", mode);
       return;
   }
 
@@ -125,15 +125,15 @@ void CAMBEDriver::init(uint8_t n, AMBE_MODE mode)
 
   buffer[2U] = uint8_t(length - 4U);
 
-  dvsi.write(buffer, length);
+  dvsi.write3000(buffer, length);
 
   m_mode = mode;
 }
 
-void CAMBEDriver::process()
+void CAMBE3000Driver::process()
 {
   uint8_t buffer[500U];
-  uint16_t length = dvsi.read(buffer);
+  uint16_t length = dvsi.read3000(buffer);
   if (length == 0U)
     return;
 
@@ -147,25 +147,25 @@ void CAMBEDriver::process()
           case DVSI_PKT_CHANNEL0:
           case DVSI_PKT_CHANNEL1:
           case DVSI_PKT_CHANNEL2:
-            DEBUG2("Response to PKT_CHANNELn ", buffer[pos] - 0x40U);
+            DEBUG2("Response AMBE3030/3000 to PKT_CHANNELn ", buffer[pos] - 0x40U);
             pos += 2U;
             break;
 
           case DVSI_PKT_INIT:
             if (buffer[pos + 1U] != 0x00U)
-              DEBUG2("Response to PKT_INIT is ", buffer[pos + 1U]);
+              DEBUG2("Response AMBE3030/3000 to PKT_INIT is ", buffer[pos + 1U]);
             pos += 2U;
             break;
 
           case DVSI_PKT_RATET:
             if (buffer[pos + 1U] != 0x00U)
-              DEBUG2("Response to PKT_RATET is ", buffer[pos + 1U]);
+              DEBUG2("Response AMBE3030/3000 to PKT_RATET is ", buffer[pos + 1U]);
             pos += 2U;
             break;
 
           case DVSI_PKT_RATEP:
             if (buffer[pos + 1U] != 0x00U)
-              DEBUG2("Response to PKT_RATEP is ", buffer[pos + 1U]);
+              DEBUG2("Response AMBE3030/3000 to PKT_RATEP is ", buffer[pos + 1U]);
             pos += 2U;
             break;
 
@@ -174,7 +174,7 @@ void CAMBEDriver::process()
             break;
 
           default:
-            DEBUG2("Unknown control type response of ", buffer[pos]);
+            DEBUG2("Unknown AMBE3030/3000 control type response of ", buffer[pos]);
             return;
         }
       }
@@ -253,16 +253,16 @@ void CAMBEDriver::process()
       break;
 
     default:
-      DEBUG2("Unknown type from the AMBE chip ", buffer[3U]);
+      DEBUG2("Unknown AMBE3030/3000 type from the AMBE chip ", buffer[3U]);
       break;
   }
 }
 
-uint8_t CAMBEDriver::write(uint8_t n, const uint8_t* buffer, uint16_t length)
+uint8_t CAMBE3000Driver::write(uint8_t n, const uint8_t* buffer, uint16_t length)
 {
   // If the RTS pin is high, then the chip does not expect any more data to be sent through
-  if (dvsi.RTS()) {
-    DEBUG1("The DVSI chip is not ready to receive any more data");
+  if (dvsi.RTS3000()) {
+    DEBUG1("The AMBE3000/3030 chip is not ready to receive any more data");
     return 0x05U;
   }
 
@@ -303,7 +303,7 @@ uint8_t CAMBEDriver::write(uint8_t n, const uint8_t* buffer, uint16_t length)
       out[1U] = (pos - 4U) / 256U;
       out[2U] = (pos - 4U) % 256U;
 
-      dvsi.write(out, pos);
+      dvsi.write3000(out, pos);
       break;
 
     case PCM_TO_DSTAR:
@@ -343,14 +343,14 @@ uint8_t CAMBEDriver::write(uint8_t n, const uint8_t* buffer, uint16_t length)
       out[1U] = (pos - 4U) / 256U;
       out[2U] = (pos - 4U) % 256U;
 
-      dvsi.write(out, pos);
+      dvsi.write3000(out, pos);
       break;
   }
 
   return 0x00U;
 }
 
-bool CAMBEDriver::read(uint8_t n, uint8_t* buffer)
+bool CAMBE3000Driver::read(uint8_t n, uint8_t* buffer)
 {
   switch (n) {
     case 0U:
@@ -392,7 +392,7 @@ bool CAMBEDriver::read(uint8_t n, uint8_t* buffer)
 }
 
 #if defined(SWAP_BYTES)
-void CAMBEDriver::swapBytes(uint8_t* out, const uint8_t* in, uint16_t length) const
+void CAMBE3000Driver::swapBytes(uint8_t* out, const uint8_t* in, uint16_t length) const
 {
   for (uint16_t i = 0U; i < length; i += 2U) {
     out[i + 0U] = in[i + 1U];
