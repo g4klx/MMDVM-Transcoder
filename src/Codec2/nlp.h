@@ -42,6 +42,7 @@
 #define PMAX_M      320		/* maximum NLP analysis window size     */
 #define COEFF       0.95	/* notch filter parameter               */
 #define PE_FFT_SIZE 512		/* DFT size for pitch estimation        */
+#undef DEC
 #define DEC         5		/* decimation factor                    */
 #define SAMPLE_RATE 8000
 #undef	PI

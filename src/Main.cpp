@@ -49,37 +49,30 @@ CDVSIDriver     dvsi;
 CAMBE3000Driver ambe3000;
 CAMBE4020Driver ambe4020;
 
-void setup()
-{
-  serial.start();
+extern "C" {
+  void setup()
+  {
+    serial.start();
 
-#if AMBE_TYPE > 0
-  dvsi.startup3000();
-  ambe3000.startup();
-#endif
-#if AMBE_TYPE == 3
-  dvsi.startup4020();
-  ambe4020.startup();
-#endif
-}
+    #if AMBE_TYPE > 0
+      dvsi.startup3000();
+      ambe3000.startup();
+    #endif
+    #if AMBE_TYPE == 3
+      dvsi.startup4020();
+      ambe4020.startup();
+    #endif
+  }
 
-void loop()
-{
-  serial.process();
+  void loop()
+  {
+    serial.process();
 
-#if AMBE_TYPE > 0
-  ambe3000.process();
-#endif
-#if AMBE_TYPE == 3
-  ambe4020.process();
-#endif
-}
-
-int main()
-{
-  setup();
-
-  for (;;)
-    loop();
-}
-
+    #if AMBE_TYPE > 0
+      ambe3000.process();
+    #endif
+    #if AMBE_TYPE == 3
+      ambe4020.process();
+    #endif
+  }
+};

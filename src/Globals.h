@@ -19,24 +19,6 @@
 #if !defined(GLOBALS_H)
 #define  GLOBALS_H
 
-#if defined(STM32F4XX)
-#include "stm32f4xx.h"
-#elif defined(STM32F7XX)
-#include "stm32f7xx.h"
-#else
-#error "Unknown processor type"
-#endif
-
-#if defined(STM32F7XX)
-#define  ARM_MATH_CM7
-#elif defined(STM32F4XX)
-#define  ARM_MATH_CM4
-#else
-#error "Unknown processor type"
-#endif
-
-#include <arm_math.h>
-
 #include "IMBE/imbe_vocoder.h"
 
 #include "Codec2/codec2.h"

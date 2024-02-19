@@ -15,6 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#include <Arduino.h>
 
 #include "DVSIDriver.h"
 
@@ -24,7 +25,15 @@
 // Reset   AMBE3000	PA8    output
 // Reset   AMBE4020	       output
 
+#define USART6_TX PG14      // Arduino D1
+#define USART6_RX PG9       // Arduino D0
+
+#define AMBE3000_RESET  PF13    // Arduino D7
+#define AMBE3000_RTS    PA8     // Arduino 
+
 const uint8_t DVSI_START_BYTE = 0x61U;
+
+HardwareSerial SerialAMBE(USART6_RX, USART6_TX);
 
 CDVSIDriver::CDVSIDriver() :
 m_buffer3000(),
@@ -38,50 +47,26 @@ m_ptr4020(0U)
 
 void CDVSIDriver::startup3000()
 {
-  serial.beginInt(2U, DVSI_AMBE3000_SPEED);
+  SerialAMBE.begin(DVSI_AMBE3000_SPEED);
 
-  GPIO_InitTypeDef GPIO_InitStruct;
-  GPIO_StructInit(&GPIO_InitStruct);
-
-  GPIO_InitStruct.GPIO_Speed = GPIO_Fast_Speed;
-  GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_DOWN;
-
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-
-  // The reset pin
-  GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_8;
-  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_OUT;
-
-  GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  // The RTS input, ignored
-  GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_0;
-  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_IN;
-
-  GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  GPIO_WriteBit(GPIOA, GPIO_Pin_8, Bit_SET);
+  pinMode(AMBE3000_RESET, OUTPUT);
+  pinMode(AMBE3000_RTS, INPUT);
 }
 
 void CDVSIDriver::startup4020()
 {
-  serial.beginInt(3U, DVSI_AMBE4020_SPEED);
+  // serial.beginInt(3U, DVSI_AMBE4020_SPEED);
 
   // Setup AMBE4020 RTS and Reset pins
 }
 
 void CDVSIDriver::reset3000()
 {
-  GPIO_WriteBit(GPIOA, GPIO_Pin_8, Bit_RESET);
+  digitalWrite(AMBE3000_RESET, LOW);
 
-  // FIXME TODO Wait for approximately 100ms
-  for (uint32_t i = 0U; i < 100U; i++) {
-    for (uint32_t j = 0U; j < 100000U; j++)
-      __NOP();
-  }
+  delay(100);
 
-  GPIO_WriteBit(GPIOA, GPIO_Pin_8, Bit_SET);
+  digitalWrite(AMBE3000_RESET, HIGH);
 }
 
 void CDVSIDriver::reset4020()
@@ -90,7 +75,8 @@ void CDVSIDriver::reset4020()
 
 bool CDVSIDriver::RTS3000() const
 {
-  return GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) == Bit_SET;
+  // return digitalRead(AMBE3000_RTS) == HIGH;
+  return true;
 }
 
 bool CDVSIDriver::RTS4020() const
@@ -100,18 +86,18 @@ bool CDVSIDriver::RTS4020() const
 
 void CDVSIDriver::write3000(const uint8_t* buffer, uint16_t length)
 {
-  serial.writeInt(2U, buffer, length);
+  SerialAMBE.write(buffer, length);
 }
 
 void CDVSIDriver::write4020(const uint8_t* buffer, uint16_t length)
 {
-  serial.writeInt(3U, buffer, length);
+  // serial.writeInt(3U, buffer, length);
 }
 
 uint16_t CDVSIDriver::read3000(uint8_t* buffer)
 {
-  while (serial.availableForReadInt(2U)) {
-    uint8_t c = serial.readInt(2U);
+  while (SerialAMBE.available()) {
+    uint8_t c = SerialAMBE.read();
 
     if (m_ptr3000 == 0U) {
       if (c == DVSI_START_BYTE) {
@@ -201,4 +187,3 @@ uint16_t CDVSIDriver::read4020(uint8_t* buffer)
 
   return 0U;
 }
-

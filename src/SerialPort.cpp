@@ -16,6 +16,8 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <Arduino.h>
+
 #include "Config.h"
 #include "Globals.h"
 
@@ -156,7 +158,7 @@ void CSerialPort::sendACK()
   reply[2U] = 0U;
   reply[3U] = MMDVM_ACK;
 
-  writeInt(1U, reply, 4);
+  SerialUSB.write(reply, 4);
 }
 
 void CSerialPort::sendNAK(uint8_t err)
@@ -169,7 +171,7 @@ void CSerialPort::sendNAK(uint8_t err)
   reply[3U] = MMDVM_NAK;
   reply[4U] = err;
 
-  writeInt(1U, reply, 5);
+  SerialUSB.write(reply, 5);
 }
 
 void CSerialPort::getVersion()
@@ -190,7 +192,7 @@ void CSerialPort::getVersion()
   reply[1U] = (count >> 0) & 0xFFU;
   reply[2U] = (count >> 8) & 0xFFU;
 
-  writeInt(1U, reply, count);
+  SerialUSB.write(reply, count);
 }
 
 void CSerialPort::getCapabilities()
@@ -204,12 +206,12 @@ void CSerialPort::getCapabilities()
 
   reply[4U] = AMBE_TYPE;
 
-  writeInt(1U, reply, 5);
+  SerialUSB.write(reply, 5);
 }
 
 void CSerialPort::start()
 {
-  beginInt(1U, SERIAL_SPEED);
+  SerialUSB.begin(SERIAL_SPEED);
 }
 
 uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
@@ -324,8 +326,8 @@ void CSerialPort::processData()
 
 void CSerialPort::process()
 {
-  while (availableForReadInt(1U)) {
-    uint8_t c = readInt(1U);
+  while (SerialUSB.available() > 0) {
+    uint8_t c = SerialUSB.read();
 
     if (m_ptr == 0U) {
       if (c == MMDVM_FRAME_START) {
@@ -417,7 +419,7 @@ void CSerialPort::writeData(const uint8_t* data, uint16_t length)
   reply[1U] = (count >> 0) & 0xFFU;
   reply[2U] = (count >> 8) & 0xFFU;
 
-  writeInt(1U, reply, count);
+  SerialUSB.write(reply, count);
 }
 
 void CSerialPort::writeDebug(const char* text)
@@ -436,7 +438,7 @@ void CSerialPort::writeDebug(const char* text)
   reply[1U] = (count >> 0) & 0xFFU;
   reply[2U] = (count >> 8) & 0xFFU;
 
-  writeInt(1U, reply, count);
+  SerialUSB.write(reply, count);
 }
 
 void CSerialPort::writeDebug(const char* text, int16_t n1)
@@ -458,7 +460,7 @@ void CSerialPort::writeDebug(const char* text, int16_t n1)
   reply[1U] = (count >> 0) & 0xFFU;
   reply[2U] = (count >> 8) & 0xFFU;
 
-  writeInt(1U, reply, count);
+  SerialUSB.write(reply, count);
 }
 
 void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2)
@@ -483,7 +485,7 @@ void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2)
   reply[1U] = (count >> 0) & 0xFFU;
   reply[2U] = (count >> 8) & 0xFFU;
 
-  writeInt(1U, reply, count);
+  SerialUSB.write(reply, count);
 }
 
 void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3)
@@ -511,7 +513,7 @@ void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n
   reply[1U] = (count >> 0) & 0xFFU;
   reply[2U] = (count >> 8) & 0xFFU;
 
-  writeInt(1U, reply, count);
+  SerialUSB.write(reply, count);
 }
 
 void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3, int16_t n4)
@@ -542,7 +544,7 @@ void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n
   reply[1U] = (count >> 0) & 0xFFU;
   reply[2U] = (count >> 8) & 0xFFU;
 
-  writeInt(1U, reply, count);
+  SerialUSB.write(reply, count);
 }
 
 uint16_t CSerialPort::convert(int16_t num, uint8_t* buffer)

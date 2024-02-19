@@ -45,7 +45,9 @@
 #ifndef PI
 #define PI         3.141592654	/* mathematical constant                */
 #endif
+#ifndef TWO_PI
 #define TWO_PI     6.283185307	/* mathematical constant                */
+#endif
 #define MAX_STR    2048         /* maximum string size                  */
 
 #define FFT_ENC    512			/* size of FFT used for encoder         */

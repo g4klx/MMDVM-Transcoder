@@ -36,16 +36,16 @@
 // #define EXTERNAL_OSC 19200000
 
 // Baud rate for host communication.
-#define SERIAL_SPEED	230400
+#define SERIAL_SPEED	460800
 
 // Select use of debugging messages
 #define	DEBUGGING
 
 // Baud rate for DVSI AMBE3000/3003R chip
-#define DVSI_AMBE3000_SPEED	230400
+#define DVSI_AMBE3000_SPEED	460800
 
 // Baud rate for DVSI AMBE4020 chip
-#define DVSI_AMBE4020_SPEED	230400
+#define DVSI_AMBE4020_SPEED	460800
 
 // Type of DVSI AMBE chip
 // 0=None
@@ -53,10 +53,6 @@
 // 2=AMBE3003R
 // 3=AMBE3000R + AMBE4020
 #define	AMBE_TYPE	1
-
-// For ST Nucleo-64 STM32F446RE board
-// #define STM32F4_NUCLEO_MORPHO_HEADER
-// #define STM32F4_NUCLEO_ARDUINO_HEADER
 
 #endif
 

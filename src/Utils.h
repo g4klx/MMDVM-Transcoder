@@ -19,11 +19,7 @@
 #if !defined(UTILS_H)
 #define  UTILS_H
 
-#if defined(STM32F4XX)
-#include "stm32f4xx.h"
-#elif defined(STM32F7XX)
-#include "stm32f7xx.h"
-#endif
+#include <cstdint>
 
 uint8_t countBits8(uint8_t bits);
 

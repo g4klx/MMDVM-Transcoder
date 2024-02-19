@@ -24,7 +24,7 @@
 #include "Processor.h"
 
 #if !defined(SERIAL_SPEED)
-#define SERIAL_SPEED 230400
+#define SERIAL_SPEED 460800
 #endif
 
 enum OPMODE {

@@ -2,4 +2,6 @@ bin
 obj_f4
 obj_f7
 GitVersion.h
+.pio
+.vscode
 
