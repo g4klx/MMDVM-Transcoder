@@ -45,9 +45,13 @@ imbe_vocoder    imbe;
 CCodec2         codec23200(true);
 CCodec2         codec21600(false);
 
+#if AMBE_TYPE > 0
 CDVSIDriver     dvsi;
 CAMBE3000Driver ambe3000;
+#if AMBE_TYPE == 3
 CAMBE4020Driver ambe4020;
+#endif
+#endif
 
 extern "C" {
   void setup()
@@ -57,10 +61,10 @@ extern "C" {
     #if AMBE_TYPE > 0
       dvsi.startup3000();
       ambe3000.startup();
-    #endif
     #if AMBE_TYPE == 3
       dvsi.startup4020();
       ambe4020.startup();
+    #endif
     #endif
   }
 
@@ -70,9 +74,9 @@ extern "C" {
 
     #if AMBE_TYPE > 0
       ambe3000.process();
-    #endif
     #if AMBE_TYPE == 3
       ambe4020.process();
+    #endif
     #endif
   }
 };

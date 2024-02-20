@@ -18,6 +18,8 @@
 
 #include "AMBE4020Driver.h"
 
+#if AMBE_TYPE == 3
+
 #include "Globals.h"
 #include "Debug.h"
 
@@ -233,3 +235,4 @@ void CAMBE4020Driver::swapBytes(uint8_t* out, const uint8_t* in, uint16_t length
 }
 #endif
 
+#endif

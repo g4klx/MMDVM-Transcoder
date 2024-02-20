@@ -43,6 +43,7 @@
 #include "DStarFEC.h"
 #include "DStarPCM.h"
 #include "PCMDStar.h"
+#include "Config.h"
 #include "Debug.h"
 
 extern CSerialPort     serial;
@@ -71,9 +72,13 @@ extern imbe_vocoder    imbe;
 extern CCodec2         codec23200;
 extern CCodec2         codec21600;
 
+#if AMBE_TYPE > 0
 extern CDVSIDriver     dvsi;
 extern CAMBE3000Driver ambe3000;
+#if AMBE_TYPE == 3
 extern CAMBE4020Driver ambe4020;
+#endif
+#endif
 
 #endif
 

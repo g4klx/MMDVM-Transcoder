@@ -19,10 +19,13 @@
 #ifndef	AMBE4020Driver_H
 #define	AMBE4020Driver_H
 
+#include "Config.h"
+
+#if AMBE_TYPE == 3
+
 #include <cstdint>
 
 #include "AMBE3000Driver.h"
-#include "Config.h"
 
 // Define this on little-endian architectures
 #define	SWAP_BYTES
@@ -53,3 +56,4 @@ class CAMBE4020Driver {
 
 #endif
 
+#endif

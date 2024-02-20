@@ -15,21 +15,19 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#include <Arduino.h>
-
 #include "DVSIDriver.h"
 
-#include "Globals.h"
-#include "Config.h"
+#if AMBE_TYPE > 0
 
-// Reset   AMBE3000	PA8    output
-// Reset   AMBE4020	       output
+#include <Arduino.h>
+
+#include "Globals.h"
 
 #define USART6_TX PG14      // Arduino D1
 #define USART6_RX PG9       // Arduino D0
 
 #define AMBE3000_RESET  PF13    // Arduino D7
-#define AMBE3000_RTS    PA8     // Arduino 
+#define AMBE3000_RTS    PA3     // Arduino A0
 
 const uint8_t DVSI_START_BYTE = 0x61U;
 
@@ -38,10 +36,12 @@ HardwareSerial SerialAMBE(USART6_RX, USART6_TX);
 CDVSIDriver::CDVSIDriver() :
 m_buffer3000(),
 m_len3000(0U),
-m_ptr3000(0U),
-m_buffer4020(),
+m_ptr3000(0U)
+#if AMBE_TYPE == 3
+,m_buffer4020(),
 m_len4020(0U),
 m_ptr4020(0U)
+#endif
 {
 }
 
@@ -53,12 +53,11 @@ void CDVSIDriver::startup3000()
   pinMode(AMBE3000_RTS, INPUT);
 }
 
+#if AMBE_TYPE == 3
 void CDVSIDriver::startup4020()
 {
-  // serial.beginInt(3U, DVSI_AMBE4020_SPEED);
-
-  // Setup AMBE4020 RTS and Reset pins
 }
+#endif
 
 void CDVSIDriver::reset3000()
 {
@@ -69,30 +68,34 @@ void CDVSIDriver::reset3000()
   digitalWrite(AMBE3000_RESET, HIGH);
 }
 
+#if AMBE_TYPE == 3
 void CDVSIDriver::reset4020()
 {
 }
+#endif
 
 bool CDVSIDriver::RTS3000() const
 {
-  // return digitalRead(AMBE3000_RTS) == HIGH;
-  return true;
+  return digitalRead(AMBE3000_RTS) == HIGH;
 }
 
+#if AMBE_TYPE == 3
 bool CDVSIDriver::RTS4020() const
 {
   return false;
 }
+#endif
 
 void CDVSIDriver::write3000(const uint8_t* buffer, uint16_t length)
 {
   SerialAMBE.write(buffer, length);
 }
 
+#if AMBE_TYPE == 3
 void CDVSIDriver::write4020(const uint8_t* buffer, uint16_t length)
 {
-  // serial.writeInt(3U, buffer, length);
 }
+#endif
 
 uint16_t CDVSIDriver::read3000(uint8_t* buffer)
 {
@@ -141,6 +144,7 @@ uint16_t CDVSIDriver::read3000(uint8_t* buffer)
   return 0U;
 }
 
+#if AMBE_TYPE == 3
 uint16_t CDVSIDriver::read4020(uint8_t* buffer)
 {
   while (serial.availableForReadInt(3U)) {
@@ -187,3 +191,6 @@ uint16_t CDVSIDriver::read4020(uint8_t* buffer)
 
   return 0U;
 }
+#endif
+
+#endif
