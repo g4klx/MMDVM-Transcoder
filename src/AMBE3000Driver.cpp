@@ -262,7 +262,7 @@ uint8_t CAMBE3000Driver::write(uint8_t n, const uint8_t* buffer, uint16_t length
 {
   // If the RTS pin is high, then the chip does not expect any more data to be sent through
   if (dvsi.RTS3000()) {
-    DEBUG1("The AMBE3000/3030 chip is not ready to receive any more data");
+    DEBUG1("The AMBE3030/3000 chip is not ready to receive any more data");
     return 0x05U;
   }
 
