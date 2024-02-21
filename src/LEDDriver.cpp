@@ -20,7 +20,7 @@
 
 #if defined(HAS_LEDS)
 
-#include <Arduino.h>
+#include "Globals.h"
 
 #define STAT1_LED PA7
 #define STAT2_LED PA6

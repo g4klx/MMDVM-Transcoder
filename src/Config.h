@@ -57,4 +57,7 @@
 // Are LEDs available for status information?
 #define HAS_LEDS
 
+// Do we have an ST-Link interface for debugging?
+#define HAS_STLINK
+
 #endif

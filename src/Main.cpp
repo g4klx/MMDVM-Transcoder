@@ -57,34 +57,53 @@ CAMBE4020Driver ambe4020;
 CLEDDriver      leds;
 #endif
 
+#if defined(HAS_LEDS)
+unsigned long start = 0UL;
+bool on = true;
+#endif
+
 extern "C" {
   void setup()
   {
     serial.start();
 
-    #if defined(HAS_LEDS)
-      leds.startup();
-    #endif
+#if defined(HAS_LEDS)
+    leds.startup();
+#endif
 
-    #if AMBE_TYPE > 0
-      dvsi.startup3000();
-      ambe3000.startup();
-    #if AMBE_TYPE == 3
-      dvsi.startup4020();
-      ambe4020.startup();
-    #endif
-    #endif
+#if AMBE_TYPE > 0
+    dvsi.startup3000();
+    ambe3000.startup();
+#if AMBE_TYPE == 3
+    dvsi.startup4020();
+    ambe4020.startup();
+#endif
+#endif
+
+#if defined(HAS_LEDS)
+    leds.setLED2(on);
+    start = millis();
+#endif
   }
 
   void loop()
   {
     serial.process();
 
-    #if AMBE_TYPE > 0
-      ambe3000.process();
-    #if AMBE_TYPE == 3
-      ambe4020.process();
-    #endif
-    #endif
+#if AMBE_TYPE > 0
+    ambe3000.process();
+#if AMBE_TYPE == 3
+    ambe4020.process();
+#endif
+#endif
+
+#if defined(HAS_LEDS)
+    unsigned long end = millis();
+    if ((end - start) > 500UL) {
+      on = !on;
+      leds.setLED2(on);
+      start = end;
+    }
+#endif
   }
 };

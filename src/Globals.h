@@ -19,6 +19,8 @@
 #if !defined(GLOBALS_H)
 #define  GLOBALS_H
 
+#include <Arduino.h>
+
 #include "IMBE/imbe_vocoder.h"
 
 #include "Codec2/codec2.h"

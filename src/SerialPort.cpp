@@ -16,14 +16,8 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <Arduino.h>
-
 #include "Config.h"
 #include "Globals.h"
-
-#if defined(MADEBYMAKEFILE)
-#include "GitVersion.h"
-#endif
 
 #include "ModeDefines.h"
 #include "SerialPort.h"
@@ -128,13 +122,16 @@ const uint8_t MMDVM_DATA                = 0x05U;
 
 const uint8_t MMDVM_DEBUG               = 0xFFU;
 
-#if defined(GITVERSION)
-#define concat(a, b) a " GitID #" b ""
-const char HARDWARE[] = concat(VERSION, GITVERSION);
-#else
+// These pins connect to the STLink chip and show up as a VCP to the host over USB working ok
+#define USART3_TX PD8
+#define USART3_RX PD9
+
+#if defined(HAS_STLINK)
+HardwareSerial SerialSTLink(USART3_RX, USART3_TX);
+#endif
+
 #define concat(a, b, c) a " (Build: " b " " c ")"
 const char HARDWARE[] = concat(VERSION, __TIME__, __DATE__);
-#endif
 
 const uint8_t PROTOCOL_VERSION = 1U;
 
@@ -212,6 +209,11 @@ void CSerialPort::getCapabilities()
 void CSerialPort::start()
 {
   SerialUSB.begin(SERIAL_SPEED);
+
+#if defined(HAS_STLINK)
+	// This is the uart that goes through the STLink chip and becomes a VCP 
+	SerialSTLink.begin(460800);
+#endif
 }
 
 uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
@@ -424,6 +426,9 @@ void CSerialPort::writeData(const uint8_t* data, uint16_t length)
 
 void CSerialPort::writeDebug(const char* text)
 {
+#if defined(HAS_STLINK)
+  SerialSTLink.printf("Debug: \"%s\"\r\n", text);
+#else
   uint8_t reply[300U];
 
   reply[0U] = MMDVM_FRAME_START;
@@ -439,10 +444,14 @@ void CSerialPort::writeDebug(const char* text)
   reply[2U] = (count >> 8) & 0xFFU;
 
   SerialUSB.write(reply, count);
+#endif
 }
 
 void CSerialPort::writeDebug(const char* text, int16_t n1)
 {
+#if defined(HAS_STLINK)
+  SerialSTLink.printf("Debug: \"%s\" %u\r\n", text, n1);
+#else
   uint8_t reply[300U];
 
   reply[0U] = MMDVM_FRAME_START;
@@ -461,10 +470,14 @@ void CSerialPort::writeDebug(const char* text, int16_t n1)
   reply[2U] = (count >> 8) & 0xFFU;
 
   SerialUSB.write(reply, count);
+#endif
 }
 
 void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2)
 {
+#if defined(HAS_STLINK)
+  SerialSTLink.printf("Debug: \"%s\" %u %u\r\n", text, n1, n2);
+#else
   uint8_t reply[300U];
 
   reply[0U] = MMDVM_FRAME_START;
@@ -486,10 +499,14 @@ void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2)
   reply[2U] = (count >> 8) & 0xFFU;
 
   SerialUSB.write(reply, count);
+#endif
 }
 
 void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3)
 {
+#if defined(HAS_STLINK)
+  SerialSTLink.printf("Debug: \"%s\" %u %u %u\r\n", text, n1, n2, n3);
+#else
   uint8_t reply[300U];
 
   reply[0U] = MMDVM_FRAME_START;
@@ -514,10 +531,14 @@ void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n
   reply[2U] = (count >> 8) & 0xFFU;
 
   SerialUSB.write(reply, count);
+#endif
 }
 
 void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3, int16_t n4)
 {
+#if defined(HAS_STLINK)
+  SerialSTLink.printf("Debug: \"%s\" %u %u %u %u\r\n", text, n1, n2, n3, n4);
+#else
   uint8_t reply[300U];
 
   reply[0U] = MMDVM_FRAME_START;
@@ -545,6 +566,7 @@ void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n
   reply[2U] = (count >> 8) & 0xFFU;
 
   SerialUSB.write(reply, count);
+#endif
 }
 
 uint16_t CSerialPort::convert(int16_t num, uint8_t* buffer)
@@ -592,3 +614,37 @@ void CSerialPort::reverse(uint8_t* buffer, uint16_t length) const
   }
 }
 
+#if defined(HAS_STLINK)
+void CSerialPort::dump(const char* title, const uint8_t* buffer, uint16_t length) const
+{
+	uint16_t offset = 0U;
+
+  SerialSTLink.println(title);
+
+  while (offset < length) {
+		SerialSTLink.printf("%04X: ", offset);
+
+		for (uint16_t i = 0U; i < 16U; i++) {
+			if ((offset + i) < length)
+				SerialSTLink.printf("%02X ", buffer[offset + i]);
+			else
+				SerialSTLink.print("   ");
+		}
+
+		SerialSTLink.print("  *");
+
+		for (uint16_t i = 0U; i < 16U; i++) {
+			if ((offset + i) < length) {
+				if (isprint(buffer[offset + i]))
+					SerialSTLink.printf("%c", buffer[offset + i]);
+				else
+					SerialSTLink.print(".");
+			}
+		}
+
+		SerialSTLink.println("*");
+
+		offset += 16U;
+	}
+}
+#endif

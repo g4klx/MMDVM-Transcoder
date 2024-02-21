@@ -19,8 +19,6 @@
 
 #if AMBE_TYPE > 0
 
-#include <Arduino.h>
-
 #include "Globals.h"
 
 #define USART6_TX PG14      // Arduino D1

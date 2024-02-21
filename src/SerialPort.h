@@ -49,12 +49,9 @@ public:
   void writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3);
   void writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3, int16_t n4);
 
-  // Hardware versions
-  void    beginInt(uint8_t n, int speed);
-  int     availableForReadInt(uint8_t n);
-  int     availableForWriteInt(uint8_t n);
-  uint8_t readInt(uint8_t n);
-  void    writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool flush = false);
+#if defined(HAS_STLINK)
+  void dump(const char* title, const uint8_t* buffer, uint16_t length) const;
+#endif
 
 private:
   uint8_t  m_buffer[512U];
