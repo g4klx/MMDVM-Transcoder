@@ -19,9 +19,11 @@
 #ifndef	AMBE3000Driver_H
 #define	AMBE3000Driver_H
 
-#include <cstdint>
-
 #include "Config.h"
+
+#if AMBE_TYPE > 0
+
+#include <cstdint>
 
 // Define this on little-endian architectures
 #define	SWAP_BYTES
@@ -66,3 +68,4 @@ class CAMBE3000Driver {
 
 #endif
 
+#endif

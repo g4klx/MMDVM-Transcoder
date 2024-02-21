@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020,2021,2022,2023,2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,10 +16,26 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(VERSION_H)
-#define  VERSION_H
+#ifndef	LEDDriver_H
+#define	LEDDriver_H
 
-#define VERSION "20240221"
+#include "Config.h"
+
+#if defined(HAS_LEDS)
+
+class CLEDDriver {
+  public:
+    CLEDDriver();
+
+    void startup();
+
+    void setLED1(bool on);
+
+    void setLED2(bool on);
+
+  private:
+};
 
 #endif
 
+#endif

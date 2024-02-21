@@ -53,10 +53,18 @@ CAMBE4020Driver ambe4020;
 #endif
 #endif
 
+#if defined(HAS_LEDS)
+CLEDDriver      leds;
+#endif
+
 extern "C" {
   void setup()
   {
     serial.start();
+
+    #if defined(HAS_LEDS)
+      leds.startup();
+    #endif
 
     #if AMBE_TYPE > 0
       dvsi.startup3000();

@@ -18,6 +18,8 @@
 
 #include "AMBE3000Driver.h"
 
+#if AMBE_TYPE > 0
+
 #include "Globals.h"
 #include "Debug.h"
 
@@ -125,6 +127,8 @@ void CAMBE3000Driver::init(uint8_t n, AMBE_MODE mode)
 
   buffer[2U] = uint8_t(length - 4U);
 
+  leds.setLED1(true);
+
   dvsi.write3000(buffer, length);
 
   m_mode = mode;
@@ -136,6 +140,8 @@ void CAMBE3000Driver::process()
   uint16_t length = dvsi.read3000(buffer);
   if (length == 0U)
     return;
+
+  leds.setLED1(false);
 
   uint16_t pos = 0U;
 
@@ -303,6 +309,8 @@ uint8_t CAMBE3000Driver::write(uint8_t n, const uint8_t* buffer, uint16_t length
       out[1U] = (pos - 4U) / 256U;
       out[2U] = (pos - 4U) % 256U;
 
+      leds.setLED1(true);
+
       dvsi.write3000(out, pos);
       break;
 
@@ -342,6 +350,8 @@ uint8_t CAMBE3000Driver::write(uint8_t n, const uint8_t* buffer, uint16_t length
 
       out[1U] = (pos - 4U) / 256U;
       out[2U] = (pos - 4U) % 256U;
+
+      leds.setLED1(true);
 
       dvsi.write3000(out, pos);
       break;
@@ -401,3 +411,4 @@ void CAMBE3000Driver::swapBytes(uint8_t* out, const uint8_t* in, uint16_t length
 }
 #endif
 
+#endif

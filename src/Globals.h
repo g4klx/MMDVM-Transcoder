@@ -39,6 +39,7 @@
 #include "PCMDMRNXDN.h"
 #include "DVSIDriver.h"
 #include "SerialPort.h"
+#include "LEDDriver.h"
 #include "YSFDNFEC.h"
 #include "DStarFEC.h"
 #include "DStarPCM.h"
@@ -78,6 +79,10 @@ extern CAMBE3000Driver ambe3000;
 #if AMBE_TYPE == 3
 extern CAMBE4020Driver ambe4020;
 #endif
+#endif
+
+#if defined(HAS_LEDS)
+extern CLEDDriver      leds;
 #endif
 
 #endif

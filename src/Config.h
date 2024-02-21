@@ -54,5 +54,7 @@
 // 3=AMBE3000R + AMBE4020
 #define	AMBE_TYPE	1
 
-#endif
+// Are LEDs available for status information?
+#define HAS_LEDS
 
+#endif
