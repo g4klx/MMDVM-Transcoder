@@ -4,4 +4,9 @@ obj_f7
 GitVersion.h
 .pio
 .vscode
+x64
+Debug
+Release
+.vs
+*.user
 
