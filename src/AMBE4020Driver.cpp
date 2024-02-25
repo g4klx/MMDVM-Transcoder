@@ -87,9 +87,6 @@ void CAMBE4020Driver::init(AMBE_MODE mode)
       return;
   }
 
-  buffer[length++] = DVSI_PKT_INIT;
-  buffer[length++] = 0x03U;
-
   buffer[2U] = uint8_t(length - 4U);
 
   dvsi.write4020(buffer, length);
@@ -144,11 +141,7 @@ void CAMBE4020Driver::process()
     case DVSI_TYPE_AUDIO:
       pos = 5U;
       length = buffer[pos] * sizeof(uint16_t);
-#if defined(SWAP_BYTES)
       swapBytes(m_buffer, buffer + pos + 1U, length);
-#else
-      ::memcpy(m_buffer, buffer + pos + 1U, length);
-#endif
       m_length = length;
       break;
 
@@ -197,11 +190,7 @@ uint8_t CAMBE4020Driver::write(const uint8_t* buffer, uint16_t length)
       out[pos++] = 0x00U;
       out[pos++] = length / sizeof(int16_t);
 
-#if defined(SWAP_BYTES)
       swapBytes(out + pos, buffer, length);
-#else
-      ::memcpy(out + pos, buffer, length);
-#endif
       pos += length;
 
       out[1U] = (pos - 4U) / 256U;
@@ -225,7 +214,6 @@ bool CAMBE4020Driver::read(uint8_t* buffer)
   return false;
 }
 
-#if defined(SWAP_BYTES)
 void CAMBE4020Driver::swapBytes(uint8_t* out, const uint8_t* in, uint16_t length) const
 {
   for (uint16_t i = 0U; i < length; i += 2U) {
@@ -233,6 +221,5 @@ void CAMBE4020Driver::swapBytes(uint8_t* out, const uint8_t* in, uint16_t length
     out[i + 1U] = in[i + 0U];
   }
 }
-#endif
 
 #endif

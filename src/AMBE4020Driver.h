@@ -27,9 +27,6 @@
 
 #include "AMBE3000Driver.h"
 
-// Define this on little-endian architectures
-#define	SWAP_BYTES
-
 class CAMBE4020Driver {
   public:
     CAMBE4020Driver();
@@ -49,9 +46,7 @@ class CAMBE4020Driver {
     uint16_t   m_length;
     AMBE_MODE  m_mode;
 
-#if defined(SWAP_BYTES)
     void swapBytes(uint8_t* out, const uint8_t* in, uint16_t length) const;
-#endif
 };
 
 #endif

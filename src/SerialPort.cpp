@@ -357,8 +357,10 @@ void CSerialPort::process()
       m_ptr++;
 
       // The full packet has been received, process it
-      if (m_ptr == m_len)
+      if (m_ptr == m_len) {
+        dump("Command", m_buffer, m_len);
         processMessage(m_buffer[3U], m_buffer + 4U, m_len - 4U);
+      }
     }
   }
 
@@ -394,6 +396,7 @@ void CSerialPort::processMessage(uint8_t type, const uint8_t* buffer, uint16_t l
 
     default:
       // Handle this, send a NAK back
+      DEBUG2("Invalid command received", type);
       sendNAK(0x00U);
       break;
   }
