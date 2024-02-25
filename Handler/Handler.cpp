@@ -22,11 +22,64 @@
 
 const uint8_t MARKER = 0xE1U;
 
-const uint8_t  GET_VERSION[]   = { MARKER, 0x04U, 0x00U, 0x00U};
-const uint16_t GET_VERSION_LEN = 4U;
+const uint8_t  GET_VERSION_REQ[]   = { MARKER, 0x04U, 0x00U, 0x00U};
+const uint16_t GET_VERSION_REQ_LEN = 4U;
+const uint8_t  GET_VERSION_REP[]   = { MARKER, 0x2BU, 0x00U, 0x00U, 0x01U, 0x32U, 0x30U, 0x32U, 0x34U };
+const uint16_t GET_VERSION_REP_LEN = 9U;
 
-const uint8_t  GET_CAPABILITIES[]   = { MARKER, 0x04U, 0x00U, 0x01U };
-const uint16_t GET_CAPABILITIES_LEN = 4U;
+const uint8_t  GET_CAPABILITIES_REQ[]   = { MARKER, 0x04U, 0x00U, 0x01U };
+const uint16_t GET_CAPABILITIES_REQ_LEN = 4U;
+const uint8_t  GET_CAPABILITIES_REP[]   = { MARKER, 0x05U, 0x00U, 0x01U, 0x01U };
+const uint16_t GET_CAPABILITIES_REP_LEN = 5U;
+
+// D-Star to PCM Mode Set
+const uint8_t  SET_MODE1_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0xFFU };
+const uint16_t SET_MODE1_REQ_LEN = 6U;
+
+// D-Star to PCM Data
+const uint8_t  MODE1_DATA_REQ[]   = { MARKER, 0x0DU, 0x00U, 0x05U, 0x02U, 0x19U, 0x17U, 0xE4U, 0xB3U, 0xE2U, 0x00U, 0xA2U, 0x20U };
+const uint16_t MODE1_DATA_REQ_LEN = 13U;
+const uint8_t  MODE1_DATA_REP[]   = { MARKER, 0x44U, 0x01U, 0x05U };
+const uint16_t MODE1_DATA_REP_LEN = 4U;
+
+// DMR to PCM Mode Set
+const uint8_t  SET_MODE2_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0xFFU };
+const uint16_t SET_MODE2_REQ_LEN = 6U;
+
+// DMR to PCM Data
+const uint8_t  MODE2_DATA_REQ[]   = { MARKER, 0x0DU, 0x00U, 0x05U, 0xA6U, 0xCBU, 0x80U, 0x27U, 0x20U, 0x4FU, 0x9BU, 0xCBU, 0xF3U };
+const uint16_t MODE2_DATA_REQ_LEN = 13U;
+const uint8_t  MODE2_DATA_REP[]   = { MARKER, 0x44U, 0x01U, 0x05U };
+const uint16_t MODE2_DATA_REP_LEN = 4U;
+
+// DMR to unknown Mode Set
+const uint8_t  SET_MODE3_REQ[] = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x7FU };
+const uint16_t SET_MODE3_REQ_LEN = 6U;
+
+// Invalid command
+const uint8_t  INVALID_REQ[]   = { MARKER, 0x04U, 0x00U, 0xA0U };
+const uint16_t INVALID_REQ_LEN = 4U;
+
+const uint8_t  ACK[]   = { MARKER, 0x04U, 0x00U, 0x03U };
+const uint16_t ACK_LEN = 4U;
+
+const uint8_t  NAK0[]   = { MARKER, 0x05U, 0x00U, 0x04U, 0x00U };
+const uint16_t NAK0_LEN = 5U;
+
+const uint8_t  NAK1[]   = { MARKER, 0x05U, 0x00U, 0x04U, 0x01U };
+const uint16_t NAK1_LEN = 5U;
+
+const uint8_t  NAK2[]   = { MARKER, 0x05U, 0x00U, 0x04U, 0x02U };
+const uint16_t NAK2_LEN = 5U;
+
+const uint8_t  NAK3[]   = { MARKER, 0x05U, 0x00U, 0x04U, 0x03U };
+const uint16_t NAK3_LEN = 5U;
+
+const uint8_t  NAK4[]   = { MARKER, 0x05U, 0x00U, 0x04U, 0x04U };
+const uint16_t NAK4_LEN = 5U;
+
+const uint8_t  NAK5[]   = { MARKER, 0x05U, 0x00U, 0x04U, 0x05U };
+const uint16_t NAK5_LEN = 5U;
 
 int main(int argc, char** argv)
 {
@@ -64,39 +117,76 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Get Version", GET_VERSION, GET_VERSION_LEN);
-    // if (!ret)
-    //    return 1;
+    ret = test("Get Version", GET_VERSION_REQ, GET_VERSION_REQ_LEN, GET_VERSION_REP, GET_VERSION_REP_LEN);
+    if (!ret)
+        return 1;
 
-    ret = test("Get Capabilities", GET_CAPABILITIES, GET_CAPABILITIES_LEN);
-    // if (!ret)
-    //    return 1;
+    ret = test("Get Capabilities", GET_CAPABILITIES_REQ, GET_CAPABILITIES_REQ_LEN, GET_CAPABILITIES_REP, GET_CAPABILITIES_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode D-Star to PCM", SET_MODE1_REQ, SET_MODE1_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode D-Star to PCM", MODE1_DATA_REQ, MODE1_DATA_REQ_LEN, MODE1_DATA_REP, MODE1_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode DMR to PCM", SET_MODE2_REQ, SET_MODE2_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode DMR to PCM", MODE2_DATA_REQ, MODE2_DATA_REQ_LEN, MODE2_DATA_REP, MODE2_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode DMR to unknown", SET_MODE3_REQ, SET_MODE3_REQ_LEN, NAK2, NAK2_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Send invalid command", INVALID_REQ, INVALID_REQ_LEN, NAK0, NAK0_LEN);
+    if (!ret)
+        return 1;
 
     return 0;
 }
 
-bool CHandler::test(const char* title, const uint8_t* data, uint16_t length)
+bool CHandler::test(const char* title, const uint8_t* inData, uint16_t inLen, const uint8_t* outData, uint16_t outLen)
 {
     assert(title != NULL);
-    assert(data != NULL);
-    assert(length > 0U);
+    assert(inData != NULL);
+    assert(inLen > 0U);
 
     ::fprintf(stdout, "%s\n", title);
 
-    dump("Write", data, length);
+    dump("Write", inData, inLen);
 
-    int16_t ret = m_serial.write(data, length);
+    int16_t ret = m_serial.write(inData, inLen);
     if (ret <= 0) {
-        ::fprintf(stderr, "Error writing the data to the transcoder\n");
+        ::fprintf(stderr, "Error writing the data to the transcoder\n\n");
         return false;
     }
 
     uint8_t buffer[400U];
     uint16_t len = read(buffer, 100U);
-    if (len == 0U)
+    if (len == 0U) {
+        printf("\n");
         return false;
+    }
 
     dump("Read", buffer, len);
+
+    if (outData != NULL) {
+        if (::memcmp(buffer, outData, outLen) == 0) {
+            printf("Data matches\n");
+        } else {
+            dump("Expected", outData, outLen);
+            printf("Data does not match\n");
+        }
+    }
+
+    printf("\n");
 
     return true;
 }
@@ -151,7 +241,6 @@ uint16_t CHandler::read(uint8_t* buffer, uint16_t timeout)
     for (;;) {
         uint8_t c = 0U;
         if (m_serial.read(&c, 1U) == 1) {
-            printf("Read: %02X ", c);
             if (ptr == 0U) {
                 if (c == MARKER) {
                     // Handle the frame start correctly
@@ -184,13 +273,11 @@ uint16_t CHandler::read(uint8_t* buffer, uint16_t timeout)
                 }
             }
         } else {
-/*
             unsigned long elapsed = m_stopwatch.elapsed();
             if (elapsed > timeout) {
                 ::fprintf(stderr, "Read has timed out after %u ms\n", timeout);
                 return len;
             }
-*/
         }
     }
 }

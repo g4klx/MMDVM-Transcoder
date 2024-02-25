@@ -29,7 +29,7 @@
 
 class CUARTController {
 public:
-	CUARTController(const std::string& device, unsigned int speed, bool assertRTS = false);
+	CUARTController(const std::string& device, unsigned int speed);
 	~CUARTController();
 
 	bool open();
@@ -47,7 +47,6 @@ public:
 protected:
 	std::string    m_device;
 	unsigned int   m_speed;
-	bool           m_assertRTS;
 #if defined(_WIN32) || defined(_WIN64)
 	HANDLE         m_handle;
 #else

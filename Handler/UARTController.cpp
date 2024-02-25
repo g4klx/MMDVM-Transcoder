@@ -38,10 +38,9 @@
 
 #if defined(_WIN32) || defined(_WIN64)
 
-CUARTController::CUARTController(const std::string& device, unsigned int speed, bool assertRTS) :
+CUARTController::CUARTController(const std::string& device, unsigned int speed) :
 m_device(device),
 m_speed(speed),
-m_assertRTS(assertRTS),
 m_handle(INVALID_HANDLE_VALUE)
 {
 	assert(!device.empty());
@@ -112,15 +111,8 @@ bool CUARTController::open()
 		return false;
 	}
 
-	if (::EscapeCommFunction(m_handle, CLRDTR) == 0) {
+	if (::EscapeCommFunction(m_handle, SETDTR) == 0) {
 		::fprintf(stderr, "Cannot clear DTR for %s, err=%04lx\n", m_device.c_str(), ::GetLastError());
-		::ClearCommError(m_handle, &errCode, NULL);
-		::CloseHandle(m_handle);
-		return false;
-	}
-
-	if (::EscapeCommFunction(m_handle, m_assertRTS ? SETRTS : CLRRTS) == 0) {
-		::fprintf(stderr, "Cannot set/clear RTS for %s, err=%04lx\n", m_device.c_str(), ::GetLastError());
 		::ClearCommError(m_handle, &errCode, NULL);
 		::CloseHandle(m_handle);
 		return false;
@@ -181,8 +173,6 @@ int16_t CUARTController::readNonblock(uint8_t* buffer, uint16_t length)
 		::fprintf(stderr, "Error from ReadFile for %s: %04lx\n", m_device.c_str(), ::GetLastError());
 		return -1;
 	}
-
-	printf("%02X ", buffer[0]);
 
 	return int16_t(bytes);
 }

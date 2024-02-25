@@ -36,7 +36,7 @@ protected:
 	CUARTController m_serial;
 	CStopWatch      m_stopwatch;
 
-	bool     test(const char* title, const uint8_t* data, uint16_t length);
+	bool     test(const char* title, const uint8_t* inData, uint16_t inLen, const uint8_t* outData, uint16_t outLen);
 	void     dump(const char* title, const uint8_t* buffer, uint16_t length) const;
 	uint16_t read(uint8_t* buffer, uint16_t timeout);
 };
