@@ -135,10 +135,13 @@ const char HARDWARE[] = concat(VERSION, __TIME__, __DATE__);
 
 const uint8_t PROTOCOL_VERSION = 1U;
 
+const unsigned long MAX_COMMAND_TIME_MS = 30UL;
+
 CSerialPort::CSerialPort() :
 m_buffer(),
 m_ptr(0U),
 m_len(0U),
+m_start(0UL),
 m_opMode(OPMODE_NONE),
 m_step1(NULL),
 m_step2(NULL),
@@ -241,6 +244,8 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
 
   for (uint8_t i = 0U; i < PROCESSOR_LENGTH; i++) {
     if ((PROCESSOR_TABLE[i].m_input == buffer[0U]) && (PROCESSOR_TABLE[i].m_output == buffer[1U])) {
+      DEBUG3("Valid SET_MODE command", buffer[0U], buffer[1U]);
+
       m_opMode = OPMODE_TRANSCODING;
       m_step1  = PROCESSOR_TABLE[i].m_step1;
       m_step2  = PROCESSOR_TABLE[i].m_step2;
@@ -335,11 +340,12 @@ void CSerialPort::process()
       if (c == MMDVM_FRAME_START) {
         // Handle the frame start correctly
         m_buffer[0U] = c;
-        m_ptr = 1U;
-        m_len = 0U;
+        m_start = millis();
+        m_ptr   = 1U;
+        m_len   = 0U;
       } else {
-        m_ptr = 0U;
-        m_len = 0U;
+        m_ptr   = 0U;
+        m_len   = 0U;
       }
     } else if (m_ptr == 1U) {
       // Handle the frame length
@@ -358,9 +364,26 @@ void CSerialPort::process()
 
       // The full packet has been received, process it
       if (m_ptr == m_len) {
+        m_start = 0UL;
+#if defined(HAS_STLINK)
         dump("Command", m_buffer, m_len);
+#endif
         processMessage(m_buffer[3U], m_buffer + 4U, m_len - 4U);
       }
+    }
+  }
+
+  if (m_start > 0UL) {
+    unsigned long now = millis();
+    if ((now - m_start) >= MAX_COMMAND_TIME_MS) {
+      DEBUG1("Command took too long to be completed");
+#if defined(HAS_STLINK)
+      dump("Command", m_buffer, m_ptr);
+#endif
+      m_ptr   = 0U;
+      m_len   = 0U;
+      m_start = 0UL;
+      sendNAK(0x04U);
     }
   }
 
@@ -427,6 +450,7 @@ void CSerialPort::writeData(const uint8_t* data, uint16_t length)
   SerialUSB.write(reply, count);
 }
 
+#if defined(DEBUGGING)
 void CSerialPort::writeDebug(const char* text)
 {
 #if defined(HAS_STLINK)
@@ -616,6 +640,7 @@ void CSerialPort::reverse(uint8_t* buffer, uint16_t length) const
     start++;
   }
 }
+#endif
 
 #if defined(HAS_STLINK)
 void CSerialPort::dump(const char* title, const uint8_t* buffer, uint16_t length) const

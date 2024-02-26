@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -56,6 +56,10 @@ uint8_t CYSFDNDMRNXDN::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
+#if defined(HAS_STLINK)
+  serial.dump("YSFDN Data", buffer, YSFDN_DATA_LENGTH);
+#endif
+
   uint32_t data = 0U;
   uint32_t datb = 0U;
   uint32_t datc = 0U;
@@ -110,6 +114,10 @@ uint8_t CYSFDNDMRNXDN::input(const uint8_t* buffer, uint16_t length)
     uint8_t cPos = DMR_C_TABLE[i];
     WRITE_BIT1(m_buffer, cPos, datc & MASK);
   }
+
+#if defined(HAS_STLINK)
+  serial.dump("DMR/NXDN Data", m_buffer, DMR_NXDN_DATA_LENGTH);
+#endif
 
   m_inUse = true;
 

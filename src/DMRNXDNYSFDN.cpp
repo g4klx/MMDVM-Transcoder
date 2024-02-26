@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -54,6 +54,10 @@ uint8_t CDMRNXDNYSFDN::input(const uint8_t* buffer, uint16_t length)
     DEBUG2("DMR/NXDN frame length is invalid", length);
     return 0x04U;
   }
+
+#if defined(HAS_STLINK)
+  serial.dump("DMR/NXDN Data", buffer, DMR_NXDN_DATA_LENGTH);
+#endif
 
   uint32_t a = 0U;
   uint32_t MASK = 0x800000U;
@@ -117,6 +121,10 @@ uint8_t CDMRNXDNYSFDN::input(const uint8_t* buffer, uint16_t length)
   }
   
   WRITE_BIT1(m_buffer, 103U, false);
+
+#if defined(HAS_STLINK)
+  serial.dump("YSF DN Data", m_buffer, YSFDN_DATA_LENGTH);
+#endif
 
   m_inUse = true;
 

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2010,2014,2016,2018,2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2010,2014,2016,2018,2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -57,6 +57,10 @@ uint8_t CYSFVWP25FEC::input(const uint8_t* buffer, uint16_t length)
     DEBUG2("YSF VW/P25 frame length is invalid", length);
     return 0x04U;
   }
+
+#if defined(HAS_STLINK)
+  serial.dump("YSF VW/P25 Data In", buffer, YSFVW_P25_DATA_LENGTH);
+#endif
 
   bool temp[144U];
 
@@ -177,6 +181,10 @@ uint8_t CYSFVWP25FEC::input(const uint8_t* buffer, uint16_t length)
     uint8_t n = IMBE_INTERLEAVE[i];
     WRITE_BIT1(m_buffer, n, temp[i]);
   }
+
+#if defined(HAS_STLINK)
+  serial.dump("YSF VW/P25 Data Out", m_buffer, YSFVW_P25_DATA_LENGTH);
+#endif
 
   m_inUse = true;
 

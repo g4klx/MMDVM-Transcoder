@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -57,6 +57,10 @@ uint8_t CPCMYSFVWP25::input(const uint8_t* buffer, uint16_t length)
     DEBUG2("PCM frame length is invalid", length);
     return 0x04U;
   }
+
+#if defined(HAS_STLINK)
+  serial.dump("YSF VW/P25 PCM", buffer, PCM_DATA_LENGTH);
+#endif
 
   int16_t frameInt[8U];
   imbe.imbe_encode(frameInt, (int16_t*)buffer);
@@ -191,6 +195,10 @@ uint8_t CPCMYSFVWP25::input(const uint8_t* buffer, uint16_t length)
     unsigned int n = IMBE_INTERLEAVE[i];
     WRITE_BIT1(m_buffer, n, bTemp[i]);
   }
+
+#if defined(HAS_STLINK)
+  serial.dump("YSF VW/P25 Data", m_buffer, YSFVW_P25_DATA_LENGTH);
+#endif
 
   m_inUse = true;
 

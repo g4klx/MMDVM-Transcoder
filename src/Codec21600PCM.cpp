@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -42,7 +42,15 @@ uint8_t CCodec21600PCM::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
+#if defined(HAS_STLINK)
+  serial.dump("Codec2 1600 Data", buffer, CODEC2_1600_DATA_LENGTH);
+#endif
+
   codec21600.codec2_decode((short*)m_buffer, (unsigned char*)buffer);
+
+#if defined(HAS_STLINK)
+  serial.dump("Codec2 1600 PCM", m_buffer, PCM_DATA_LENGTH);
+#endif
 
   m_inUse = true;
 

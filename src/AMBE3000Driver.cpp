@@ -310,7 +310,7 @@ uint8_t CAMBE3000Driver::write(uint8_t n, const uint8_t* buffer, uint16_t length
       out[2U] = (pos - 4U) % 256U;
 
 #if defined(HAS_STLINK)
-      serial.dump("AMBE3000 TX", out, pos);
+      serial.dump("AMBE3000 Data TX", out, pos);
 #endif
 #if defined(HAS_LEDS)
       leds.setLED1(true);
@@ -352,7 +352,7 @@ uint8_t CAMBE3000Driver::write(uint8_t n, const uint8_t* buffer, uint16_t length
       out[2U] = (pos - 4U) % 256U;
 
 #if defined(HAS_STLINK)
-      serial.dump("AMBE3000 TX", out, pos);
+      serial.dump("AMBE3000 Data TX", out, pos);
 #endif
 #if defined(HAS_LEDS)
       leds.setLED1(true);

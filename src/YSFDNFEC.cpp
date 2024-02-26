@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2010,2014,2016,2018,2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2010,2014,2016,2018,2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -47,6 +47,10 @@ uint8_t CYSFDNFEC::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
+#if defined(HAS_STLINK)
+  serial.dump("YSF DN Data In", buffer, YSFDN_DATA_LENGTH);
+#endif
+
   for (uint8_t i = 0U; i < 81U; i += 3) {
     uint8_t vote = 0U;
     vote += READ_BIT1(buffer, i + 0U) ? 1U : 0U;
@@ -75,6 +79,10 @@ uint8_t CYSFDNFEC::input(const uint8_t* buffer, uint16_t length)
     bool b = READ_BIT1(buffer, i) != 0U;
     WRITE_BIT1(m_buffer, i, b);
   }
+
+#if defined(HAS_STLINK)
+  serial.dump("YSF DN Data Out", m_buffer, YSFDN_DATA_LENGTH);
+#endif
 
   m_inUse = true;
 

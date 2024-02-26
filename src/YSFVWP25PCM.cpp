@@ -56,6 +56,10 @@ uint8_t CYSFVWP25PCM::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
+#if defined(HAS_STLINK)
+  serial.dump("IMBE Data", buffer, YSFVW_P25_DATA_LENGTH);
+#endif
+
   // FIXME TODO This doesn't fix any errors in the IMBE data and it's inefficient
 
   uint8_t data[11U];
@@ -166,6 +170,10 @@ uint8_t CYSFVWP25PCM::input(const uint8_t* buffer, uint16_t length)
     frame[7U] |= READ_BIT1(data, offset) != 0x00U ? mask : 0x0000;
 
   imbe.imbe_decode(frame, (int16_t*)m_buffer);
+
+#if defined(HAS_STLINK)
+  serial.dump("IMBE PCM", m_buffer, PCM_DATA_LENGTH);
+#endif
 
   m_inUse = true;
 

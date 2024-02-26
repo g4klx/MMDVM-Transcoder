@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2010,2014,2016,2018,2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2010,2014,2016,2018,2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -57,6 +57,10 @@ uint8_t CDStarFEC::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
+#if defined(HAS_STLINK)
+  serial.dump("D-Star Data In", buffer, DSTAR_DATA_LENGTH);
+#endif
+
   uint32_t a = 0U;
   uint32_t b = 0U;
   uint32_t c = 0U;
@@ -87,6 +91,10 @@ uint8_t CDStarFEC::input(const uint8_t* buffer, uint16_t length)
 
     MASK >>= 1;
   }
+
+#if defined(HAS_STLINK)
+  serial.dump("D-Star Data Out", m_buffer, DSTAR_DATA_LENGTH);
+#endif
 
   m_inUse = true;
 

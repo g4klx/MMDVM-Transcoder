@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015,2016,2017,2018,2020,2021,2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2015,2016,2017,2018,2020,2021,2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -43,21 +43,24 @@ public:
 
   void writeData(const uint8_t* data, uint16_t length);
 
+#if defined(DEBUGGING)
   void writeDebug(const char* text);
   void writeDebug(const char* text, int16_t n1);
   void writeDebug(const char* text, int16_t n1, int16_t n2);
   void writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3);
   void writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3, int16_t n4);
+#endif
 
 #if defined(HAS_STLINK)
   void dump(const char* title, const uint8_t* buffer, uint16_t length) const;
 #endif
 
 private:
-  uint8_t  m_buffer[512U];
-  uint16_t m_ptr;
-  uint16_t m_len;
-  OPMODE   m_opMode;
+  uint8_t       m_buffer[512U];
+  uint16_t      m_ptr;
+  uint16_t      m_len;
+  unsigned long m_start;
+  OPMODE        m_opMode;
 
   IProcessor* m_step1;
   IProcessor* m_step2;
@@ -72,8 +75,10 @@ private:
   void    processMessage(uint8_t type, const uint8_t* data, uint16_t length);
   void    processData();
 
+#if defined(DEBUGGING)
   uint16_t convert(int16_t num, uint8_t* buffer);
   void     reverse(uint8_t* buffer, uint16_t length) const;
+#endif
 };
 
 #endif

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2010,2014,2016,2018,2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2010,2014,2016,2018,2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -57,6 +57,10 @@ uint8_t CDMRNXDNFEC::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
+#if defined(HAS_STLINK)
+  serial.dump("DMR/NXDN Data In", buffer, DMR_NXDN_DATA_LENGTH);
+#endif
+
   uint32_t a = 0U;
   uint32_t MASK = 0x800000U;
   for (uint8_t i = 0U; i < 24U; i++, MASK >>= 1) {
@@ -104,6 +108,10 @@ uint8_t CDMRNXDNFEC::input(const uint8_t* buffer, uint16_t length)
     uint8_t cPos = DMR_C_TABLE[i];
     WRITE_BIT1(m_buffer, cPos, c & MASK);
   }
+
+#if defined(HAS_STLINK)
+  serial.dump("DMR/NXDN Data Out", m_buffer, DMR_NXDN_DATA_LENGTH);
+#endif
 
   m_inUse = true;
 
