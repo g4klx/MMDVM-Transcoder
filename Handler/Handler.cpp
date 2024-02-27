@@ -53,7 +53,7 @@ const uint16_t GET_CAPABILITIES_REQ_LEN = 4U;
 const uint8_t  GET_CAPABILITIES_REP[]   = { MARKER, 0x05U, 0x00U, 0x01U, 0x01U };
 const uint16_t GET_CAPABILITIES_REP_LEN = 5U;
 
-const uint8_t  PCM_DATA_REQ[] = { 0xE1U, 0x44U, 0x01U, 0x05U, 0x44U, 0xE3U, 0x1EU, 0xE3U, 0x1EU, 0xE5U, 0x97U, 0xF1U, 0x61U, 0x11U,
+const uint8_t  PCM_DATA[] = { 0xE1U, 0x44U, 0x01U, 0x05U, 0x44U, 0xE3U, 0x1EU, 0xE3U, 0x1EU, 0xE5U, 0x97U, 0xF1U, 0x61U, 0x11U,
                                 0xC7U, 0x38U, 0xFAU, 0x58U, 0x31U, 0x5CU, 0xC5U, 0x42U, 0x9AU, 0x18U, 0xCFU, 0xF6U, 0x69U, 0xEAU,
                                 0xC4U, 0xF3U, 0x20U, 0x03U, 0x51U, 0x0AU, 0x50U, 0x02U, 0x9CU, 0xF1U, 0x04U, 0xE2U, 0x96U, 0xDBU,
                                 0xADU, 0xDDU, 0xCEU, 0xE3U, 0xE1U, 0xE8U, 0xB0U, 0xECU, 0xADU, 0xF0U, 0xE5U, 0xF6U, 0xC3U, 0xFDU,
@@ -78,9 +78,31 @@ const uint8_t  PCM_DATA_REQ[] = { 0xE1U, 0x44U, 0x01U, 0x05U, 0x44U, 0xE3U, 0x1E
                                 0x36U, 0x04U, 0xFAU, 0x01U, 0xE4U, 0xFEU, 0xFAU, 0xF9U, 0xDBU, 0xF4U, 0x21U, 0xF0U, 0xC2U, 0xEDU,
                                 0xCAU, 0xECU };
 const uint16_t PCM_DATA_REQ_LEN = 324U;
-
-const uint8_t  PCM_DATA_REP[]   = { MARKER, 0x44U, 0x01U, 0x05U };
 const uint16_t PCM_DATA_REP_LEN = 4U;
+
+const uint8_t  DSTAR_DATA[] = { MARKER, 0x0DU, 0x00U, 0x05U, 0x02U, 0x19U, 0x17U, 0xE4U, 0xB3U, 0xE2U, 0x00U, 0xA2U, 0x20U };
+const uint16_t DSTAR_DATA_REQ_LEN = 13U;
+const uint16_t DSTAR_DATA_REP_LEN = 4U;
+
+const uint8_t  DMRNXDN_DATA[] = { MARKER, 0x0DU, 0x00U, 0x05U, 0xA6U, 0xCBU, 0x80U, 0x27U, 0x20U, 0x4FU, 0x9BU, 0xCBU, 0xF3U };
+const uint16_t DMRNXDN_DATA_REQ_LEN = 13U;
+const uint16_t DMRNXDN_DATA_REP_LEN = 4U;
+
+const uint8_t  YSFDN_DATA[] = { MARKER, 0x11U, 0x00U, 0x05U, 0xE0U, 0x01U, 0xC0U, 0xFFU, 0xFFU, 0xC0U, 0x00U, 0x70U, 0x3FU, 0xFCU, 0x40U, 0x62U, 0x8AU };
+const uint16_t YSFDN_DATA_REQ_LEN = 17U;
+const uint16_t YSFDN_DATA_REP_LEN = 4U;
+
+const uint8_t  YSFVWP25_DATA[] = { MARKER, 0x14U, 0x00U, 0x05U, 0x03U, 0xEDU, 0x05U, 0xF5U, 0x04U, 0x38U, 0x0CU, 0x4BU, 0x07U, 0x80U, 0x01U, 0x94U, 0x05U, 0xB6U, 0x00U, 0x5BU };
+const uint16_t YSFVWP25_DATA_REQ_LEN = 20U;
+const uint16_t YSFVWP25_DATA_REP_LEN = 4U;
+
+const uint8_t  CODEC23200_DATA[] = { MARKER, 0x0CU, 0x00U, 0x05U, 0xD9U, 0x49U, 0xA5U, 0x59U, 0x08U, 0x7DU, 0x4EU, 0x99U };
+const uint16_t CODEC23200_DATA_REQ_LEN = 12U;
+const uint16_t CODEC23200_DATA_REP_LEN = 4U;
+
+const uint8_t  CODEC21600_DATA[] = { MARKER, 0x08U, 0x00U, 0x05U, 0x59U, 0xC3U, 0x65U, 0x26U };
+const uint16_t CODEC21600_DATA_REQ_LEN = 8U;
+const uint16_t CODEC21600_DATA_REP_LEN = 4U;
 
 /* D-Star */
 
@@ -88,17 +110,21 @@ const uint16_t PCM_DATA_REP_LEN = 4U;
 const uint8_t  SET_MODE1A_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0xFFU };
 const uint16_t SET_MODE1A_REQ_LEN = 6U;
 
-// D-Star to PCM Data
-const uint8_t  MODE1A_DATA_REQ[]   = { MARKER, 0x0DU, 0x00U, 0x05U, 0x02U, 0x19U, 0x17U, 0xE4U, 0xB3U, 0xE2U, 0x00U, 0xA2U, 0x20U };
-const uint16_t MODE1A_DATA_REQ_LEN = 13U;
-
-// PCM to D-Star Mode Set
-const uint8_t  SET_MODE1B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x01U };
+// D-Star to D-Star Mode Set
+const uint8_t  SET_MODE1B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x01U };
 const uint16_t SET_MODE1B_REQ_LEN = 6U;
 
-// PCM to D-Star Data
-const uint8_t  MODE1B_DATA_REP[]   = { MARKER, 0x0DU, 0x00U, 0x05U };
-const uint16_t MODE1B_DATA_REP_LEN = 4U;
+// D-Star to YSF VW/P25 Mode Set
+const uint8_t  SET_MODE1C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x04U };
+const uint16_t SET_MODE1C_REQ_LEN = 6U;
+
+// D-Star to Codec2 3200 Mode Set
+const uint8_t  SET_MODE1D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x05U };
+const uint16_t SET_MODE1D_REQ_LEN = 6U;
+
+// D-Star to Codec2 1600 Mode Set
+const uint8_t  SET_MODE1E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x06U };
+const uint16_t SET_MODE1E_REQ_LEN = 6U;
 
 /* DMR/NXDN */
 
@@ -106,17 +132,25 @@ const uint16_t MODE1B_DATA_REP_LEN = 4U;
 const uint8_t  SET_MODE2A_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0xFFU };
 const uint16_t SET_MODE2A_REQ_LEN = 6U;
 
-// DMR/NXDN to PCM Data
-const uint8_t  MODE2A_DATA_REQ[]   = { MARKER, 0x0DU, 0x00U, 0x05U, 0xA6U, 0xCBU, 0x80U, 0x27U, 0x20U, 0x4FU, 0x9BU, 0xCBU, 0xF3U };
-const uint16_t MODE2A_DATA_REQ_LEN = 13U;
-
-// PCM to DMR/NXDN Mode Set
-const uint8_t  SET_MODE2B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x02U };
+// DMR/NXDN to DMR/NXDN Mode Set
+const uint8_t  SET_MODE2B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x02U };
 const uint16_t SET_MODE2B_REQ_LEN = 6U;
 
-// PCM to DMR/NXDN Data
-const uint8_t  MODE2B_DATA_REP[]   = { MARKER, 0x0DU, 0x00U, 0x05U };
-const uint16_t MODE2B_DATA_REP_LEN = 4U;
+// DMR/NXDN to YSF DN Mode Set
+const uint8_t  SET_MODE2C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x03U };
+const uint16_t SET_MODE2C_REQ_LEN = 6U;
+
+// DMR/NXDN to YSF VW/P25 Mode Set
+const uint8_t  SET_MODE2D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x04U };
+const uint16_t SET_MODE2D_REQ_LEN = 6U;
+
+// DMR/NXDN to Codec2 3200 Mode Set
+const uint8_t  SET_MODE2E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x05U };
+const uint16_t SET_MODE2E_REQ_LEN = 6U;
+
+// DMR/NXDN to Codec2 1600 Mode Set
+const uint8_t  SET_MODE2F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x06U };
+const uint16_t SET_MODE2F_REQ_LEN = 6U;
 
 /* YSF DN */
 
@@ -124,17 +158,25 @@ const uint16_t MODE2B_DATA_REP_LEN = 4U;
 const uint8_t  SET_MODE3A_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0xFFU };
 const uint16_t SET_MODE3A_REQ_LEN = 6U;
 
-// YSF DN to PCM Data
-const uint8_t  MODE3A_DATA_REQ[]   = { MARKER, 0x11U, 0x00U, 0x05U, 0xE0U, 0x01U, 0xC0U, 0xFFU, 0xFFU, 0xC0U, 0x00U, 0x70U, 0x3FU, 0xFCU, 0x40U, 0x62U, 0x8AU };
-const uint16_t MODE3A_DATA_REQ_LEN = 17U;
-
-// PCM to YSF DN Mode Set
-const uint8_t  SET_MODE3B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x03U };
+// YSF DN to YSF DN Mode Set
+const uint8_t  SET_MODE3B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x03U };
 const uint16_t SET_MODE3B_REQ_LEN = 6U;
 
-// PCM to YSF DN Data
-const uint8_t  MODE3B_DATA_REP[]   = { MARKER, 0x11U, 0x00U, 0x05U };
-const uint16_t MODE3B_DATA_REP_LEN = 4U;
+// YSF DN to DMR/NXDN Mode Set
+const uint8_t  SET_MODE3C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x02U };
+const uint16_t SET_MODE3C_REQ_LEN = 6U;
+
+// YSF DN to YSF VW/P25 Mode Set
+const uint8_t  SET_MODE3D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x04U };
+const uint16_t SET_MODE3D_REQ_LEN = 6U;
+
+// YSF DN to Codec2 3200 Mode Set
+const uint8_t  SET_MODE3E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x05U };
+const uint16_t SET_MODE3E_REQ_LEN = 6U;
+
+// YSF DN to Codec2 1600 Mode Set
+const uint8_t  SET_MODE3F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x06U };
+const uint16_t SET_MODE3F_REQ_LEN = 6U;
 
 /* YSF VW/P25 */
 
@@ -142,17 +184,29 @@ const uint16_t MODE3B_DATA_REP_LEN = 4U;
 const uint8_t  SET_MODE4A_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0xFFU };
 const uint16_t SET_MODE4A_REQ_LEN = 6U;
 
-// YSF VW/P25 to PCM Data
-const uint8_t  MODE4A_DATA_REQ[]   = { MARKER, 0x14U, 0x00U, 0x05U, 0x03U, 0xEDU, 0x05U, 0xF5U, 0x04U, 0x38U, 0x0CU, 0x4BU, 0x07U, 0x80U, 0x01U, 0x94U, 0x05U, 0xB6U, 0x00U, 0x5BU };
-const uint16_t MODE4A_DATA_REQ_LEN = 20U;       // ??? XXX 
-
-// PCM to YSF VW/P25 Mode Set
-const uint8_t  SET_MODE4B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x04U };
+// YSF VW/P25 to YSF/VW P25 Mode Set
+const uint8_t  SET_MODE4B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x04U };
 const uint16_t SET_MODE4B_REQ_LEN = 6U;
 
-// PCM to YSF VW/P25 Data
-const uint8_t  MODE4B_DATA_REP[]   = { MARKER, 0x16U, 0x00U, 0x05U };       // ??? XXX 
-const uint16_t MODE4B_DATA_REP_LEN = 4U;
+// YSF VW/P25 to D-Star Mode Set
+const uint8_t  SET_MODE4C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x01U };
+const uint16_t SET_MODE4C_REQ_LEN = 6U;
+
+// YSF VW/P25 to DMR/NXDN Mode Set
+const uint8_t  SET_MODE4D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x02U };
+const uint16_t SET_MODE4D_REQ_LEN = 6U;
+
+// YSF VW/P25 to YSF DN Mode Set
+const uint8_t  SET_MODE4E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x03U };
+const uint16_t SET_MODE4E_REQ_LEN = 6U;
+
+// YSF VW/P25 to Codec2 3200 Mode Set
+const uint8_t  SET_MODE4F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x05U };
+const uint16_t SET_MODE4F_REQ_LEN = 6U;
+
+// YSF VW/P25 to Codec2 1600 Mode Set
+const uint8_t  SET_MODE4G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x06U };
+const uint16_t SET_MODE4G_REQ_LEN = 6U;
 
 /* Codec2 3200 */
 
@@ -160,17 +214,29 @@ const uint16_t MODE4B_DATA_REP_LEN = 4U;
 const uint8_t  SET_MODE5A_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0xFFU };
 const uint16_t SET_MODE5A_REQ_LEN = 6U;
 
-// Codec2 3200 to PCM Data
-const uint8_t  MODE5A_DATA_REQ[]   = { MARKER, 0x0CU, 0x00U, 0x05U, 0xD9U, 0x49U, 0xA5U, 0x59U, 0x08U, 0x7DU, 0x4EU, 0x99U };
-const uint16_t MODE5A_DATA_REQ_LEN = 12U;
-
-// PCM to Codec2 3200 Mode Set
-const uint8_t  SET_MODE5B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x05U };
+// Codec2 3200 to Codec2 3200 Mode Set
+const uint8_t  SET_MODE5B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x05U };
 const uint16_t SET_MODE5B_REQ_LEN = 6U;
 
-// PCM to Codec2 3200  Data
-const uint8_t  MODE5B_DATA_REP[]   = { MARKER, 0x0CU, 0x00U, 0x05U };
-const uint16_t MODE5B_DATA_REP_LEN = 4U;
+// Codec2 3200 to D-Star Mode Set
+const uint8_t  SET_MODE5C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x01U };
+const uint16_t SET_MODE5C_REQ_LEN = 6U;
+
+// Codec2 3200 to DMR/NXDN Mode Set
+const uint8_t  SET_MODE5D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x02U };
+const uint16_t SET_MODE5D_REQ_LEN = 6U;
+
+// Codec2 3200 to YSF DN Mode Set
+const uint8_t  SET_MODE5E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x03U };
+const uint16_t SET_MODE5E_REQ_LEN = 6U;
+
+// Codec2 3200 to YSF VW/P25 Mode Set
+const uint8_t  SET_MODE5F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x04U };
+const uint16_t SET_MODE5F_REQ_LEN = 6U;
+
+// Codec2 3200 to Codec2 1600 Mode Set
+const uint8_t  SET_MODE5G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x06U };
+const uint16_t SET_MODE5G_REQ_LEN = 6U;
 
 /* Codec2 1600 */
 
@@ -178,17 +244,79 @@ const uint16_t MODE5B_DATA_REP_LEN = 4U;
 const uint8_t  SET_MODE6A_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0xFFU };
 const uint16_t SET_MODE6A_REQ_LEN = 6U;
 
-// Codec2 1600 to PCM Data
-const uint8_t  MODE6A_DATA_REQ[]   = { MARKER, 0x08U, 0x00U, 0x05U, 0x59U, 0xC3U, 0x65U, 0x26U };
-const uint16_t MODE6A_DATA_REQ_LEN = 8U;
-
-// PCM to Codec2 1600 Mode Set
-const uint8_t  SET_MODE6B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x06U };
+// Codec2 1600 to Codec2 1600 Mode Set
+const uint8_t  SET_MODE6B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x06U };
 const uint16_t SET_MODE6B_REQ_LEN = 6U;
 
-// PCM to Codec2 1600  Data
-const uint8_t  MODE6B_DATA_REP[]   = { MARKER, 0x08U, 0x00U, 0x05U };
-const uint16_t MODE6B_DATA_REP_LEN = 4U;
+// Codec2 1600 to D-Star Mode Set
+const uint8_t  SET_MODE6C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x01U };
+const uint16_t SET_MODE6C_REQ_LEN = 6U;
+
+// Codec2 1600 to DMR/NXDN Mode Set
+const uint8_t  SET_MODE6D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x02U };
+const uint16_t SET_MODE6D_REQ_LEN = 6U;
+
+// Codec2 1600 to YSF DN Mode Set
+const uint8_t  SET_MODE6E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x03U };
+const uint16_t SET_MODE6E_REQ_LEN = 6U;
+
+// Codec2 1600 to YSF VW/P25 Mode Set
+const uint8_t  SET_MODE6F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x04U };
+const uint16_t SET_MODE6F_REQ_LEN = 6U;
+
+// Codec2 1600 to Codec2 3200 Mode Set
+const uint8_t  SET_MODE6G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x05U };
+const uint16_t SET_MODE6G_REQ_LEN = 6U;
+
+/* PCM */
+
+// PCM to D-Star Mode Set
+const uint8_t  SET_MODE9A_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x01U };
+const uint16_t SET_MODE9A_REQ_LEN = 6U;
+
+// PCM to DMR/NXDN Mode Set
+const uint8_t  SET_MODE9B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x02U };
+const uint16_t SET_MODE9B_REQ_LEN = 6U;
+
+// PCM to YSF DN Mode Set
+const uint8_t  SET_MODE9C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x03U };
+const uint16_t SET_MODE9C_REQ_LEN = 6U;
+
+// PCM to YSF VW/P25 Mode Set
+const uint8_t  SET_MODE9D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x04U };
+const uint16_t SET_MODE9D_REQ_LEN = 6U;
+
+// PCM to Codec2 3200 Mode Set
+const uint8_t  SET_MODE9E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x05U };
+const uint16_t SET_MODE9E_REQ_LEN = 6U;
+
+// PCM to Codec2 1600 Mode Set
+const uint8_t  SET_MODE9F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x06U };
+const uint16_t SET_MODE9F_REQ_LEN = 6U;
+
+// PCM to PCM Mode Set
+const uint8_t  SET_MODE9G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0xFFU };
+const uint16_t SET_MODE9G_REQ_LEN = 6U;
+
+/* Passthrough */
+
+// Passthrough Mode Set
+const uint8_t  SET_MODEPA_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x00U, 0x00U };
+const uint16_t SET_MODEPA_REQ_LEN = 6U;
+
+/* Get the AMBE3000 Product Id */
+const uint8_t  MODEPB_DATA_REQ[]   = { MARKER, 0x08U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x30U };
+const uint16_t MODEPB_DATA_REQ_LEN = 9U;
+
+const uint8_t  MODEPB_DATA_REP[]   = { MARKER, 0x08U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x30U };
+const uint16_t MODEPB_DATA_REP_LEN = 9U;
+
+/* Get the AMBE3000 Version */
+const uint8_t  MODEPC_DATA_REQ[]   = { MARKER, 0x08U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x31U };
+const uint16_t MODEPC_DATA_REQ_LEN = 9U;
+
+const uint8_t  MODEPC_DATA_REP[]   = { MARKER, 0x08U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x30U };
+const uint16_t MODEPC_DATA_REP_LEN = 9U;
 
 /* Error Cases */
 
@@ -241,6 +369,8 @@ int CHandler::run()
     if (!ret)
         return 1;
 
+    printf("\nBasic Functionality\n");
+
     ret = test("Get Version", GET_VERSION_REQ, GET_VERSION_REQ_LEN, GET_VERSION_REP, GET_VERSION_REP_LEN);
     if (!ret)
         return 1;
@@ -249,115 +379,397 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    /* D-Star */
+    printf("\nD-Star\n");
 
     ret = test("Set Mode D-Star to PCM", SET_MODE1A_REQ, SET_MODE1A_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
-    ret = test("Transcode D-Star to PCM", MODE1A_DATA_REQ, MODE1A_DATA_REQ_LEN, PCM_DATA_REP, PCM_DATA_REP_LEN);
+    ret = test("Transcode D-Star to PCM", DSTAR_DATA, DSTAR_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
     if (!ret)
         return 1;
 
-    ret = test("Set Mode PCM to D-Star", SET_MODE1B_REQ, SET_MODE1B_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode D-Star to D-Star", SET_MODE1B_REQ, SET_MODE1B_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
-    ret = test("Transcode PCM to D-Star", PCM_DATA_REQ, PCM_DATA_REQ_LEN, MODE1B_DATA_REP, MODE1B_DATA_REP_LEN);
+    ret = test("Transcode D-Star to D-Star", DSTAR_DATA, DSTAR_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REQ_LEN);
     if (!ret)
         return 1;
 
-    /* DMR/NXDN */
-
-    ret = test("Set Mode DMR to PCM", SET_MODE2A_REQ, SET_MODE2A_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode D-Star to YSF VW/P25", SET_MODE1C_REQ, SET_MODE1C_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
-    ret = test("Transcode DMR to PCM", MODE2A_DATA_REQ, MODE2A_DATA_REQ_LEN, PCM_DATA_REP, PCM_DATA_REP_LEN);
+    ret = test("Transcode D-Star to YSF VW/P25", DSTAR_DATA, DSTAR_DATA_REQ_LEN, YSFVWP25_DATA, YSFVWP25_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+/*
+    ret = test("Set Mode D-Star to Codec2 3200", SET_MODE1D_REQ, SET_MODE1D_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
-    ret = test("Set Mode PCM to DMR/NXDN", SET_MODE2B_REQ, SET_MODE2B_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Transcode D-Star to Codec2 3200", DSTAR_DATA, DSTAR_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
     if (!ret)
         return 1;
 
-    ret = test("Transcode PCM to DMR/NXDN", PCM_DATA_REQ, PCM_DATA_REQ_LEN, MODE2B_DATA_REP, MODE2B_DATA_REP_LEN);
+    ret = test("Set Mode D-Star to Codec2 1600", SET_MODE1E_REQ, SET_MODE1E_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
-    /* YSF DN */
+    ret = test("Transcode D-Star to Codec2 1600", DSTAR_DATA, DSTAR_DATA_REQ_LEN, CODEC21600_DATA, CODEC21600_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+*/
+    printf("\nDMR/NXDN\n");
+
+    ret = test("Set Mode DMR/NXDN to PCM", SET_MODE2A_REQ, SET_MODE2A_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode DMR/NXDN to PCM", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode DMR/NXDN to DMR/NXDN", SET_MODE2B_REQ, SET_MODE2B_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode DMR/NXDN to DMR/NXDN", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode DMR/NXDN to YSF DN", SET_MODE2C_REQ, SET_MODE2C_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode DMR/NXDN to YSF DN", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode DMR/NXDN to YSF VW/P25", SET_MODE2D_REQ, SET_MODE2D_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode DMR/NXDN to YSF VW/P25", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, YSFVWP25_DATA, YSFVWP25_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+/*
+    ret = test("Set Mode DMR/NXDN to Codec2 3200", SET_MODE2E_REQ, SET_MODE2E_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode DMR/NXDN to Codec2 3200", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode DMR/NXDN to Codec2 1600", SET_MODE2F_REQ, SET_MODE2F_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode DMR/NXDN to Codec2 1600", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, CODEC21600_DATA, CODEC21600_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+*/
+    printf("\nYSF DN\n");
 
     ret = test("Set Mode YSF DN to PCM", SET_MODE3A_REQ, SET_MODE3A_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
-    // ret = test("Transcode YSF DN to PCM", MODE3A_DATA_REQ, MODE3A_DATA_REQ_LEN, PCM_DATA_REP, PCM_DATA_REP_LEN);
-    // if (!ret)
-    //    return 1;
-
-    ret = test("Set Mode PCM to YSF DN", SET_MODE3B_REQ, SET_MODE3B_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Transcode YSF DN to PCM", YSFDN_DATA, YSFDN_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
     if (!ret)
         return 1;
 
-    ret = test("Transcode PCM to YSF DN", PCM_DATA_REQ, PCM_DATA_REQ_LEN, MODE3B_DATA_REP, MODE3B_DATA_REP_LEN);
+    ret = test("Set Mode YSF DN to YSF DN", SET_MODE3B_REQ, SET_MODE3B_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
-    /* YSF VW/P25 */
+    ret = test("Transcode YSF DN to YSF DN", YSFDN_DATA, YSFDN_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode YSF DN to DMR/NXDN", SET_MODE3C_REQ, SET_MODE3C_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode YSF DN to DMR/NXDN", YSFDN_DATA, YSFDN_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode YSF DN to YSF VW/P25", SET_MODE3D_REQ, SET_MODE3D_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode YSF DN to YSF VW/P25", YSFDN_DATA, YSFDN_DATA_REQ_LEN, YSFVWP25_DATA, YSFVWP25_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+/*
+    ret = test("Set Mode YSF DN to Codec2 3200", SET_MODE3E_REQ, SET_MODE3E_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode YSF DN to Codec2 3200", YSFDN_DATA, YSFDN_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode YSF DN to Codec2 1600", SET_MODE3F_REQ, SET_MODE3F_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode YSF DN to Codec2 1600", YSFDN_DATA, YSFDN_DATA_REQ_LEN, CODEC21600_DATA, CODEC21600_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+*/
+    printf("\nYSF VW/P25\n");
 
     ret = test("Set Mode YSF VW/P25 to PCM", SET_MODE4A_REQ, SET_MODE4A_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
-    // ret = test("Transcode YSF VW/P25 to PCM", MODE4A_DATA_REQ, MODE4A_DATA_REQ_LEN, PCM_DATA_REP, PCM_DATA_REP_LEN);
-    // if (!ret)
-    //    return 1;
-
-    ret = test("Set Mode PCM to YSF VW/P25", SET_MODE4B_REQ, SET_MODE4B_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Transcode YSF VW/P25 to PCM", YSFVWP25_DATA, YSFVWP25_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
     if (!ret)
         return 1;
 
-    ret = test("Transcode PCM to YSF VW/P25", PCM_DATA_REQ, PCM_DATA_REQ_LEN, MODE4B_DATA_REP, MODE4B_DATA_REP_LEN);
+    ret = test("Set Mode YSF VW/P25 to YSF VW/P25", SET_MODE4B_REQ, SET_MODE4B_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
-    /* Codec2 3200 */
+    ret = test("Transcode YSF VW/P25 to YSF VW/P25", YSFVWP25_DATA, YSFVWP25_DATA_REQ_LEN, YSFVWP25_DATA, YSFVWP25_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode YSF VW/P25 to D-Star", SET_MODE4C_REQ, SET_MODE4C_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode YSF VW/P25 to D-Star", YSFVWP25_DATA, YSFVWP25_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode YSF VW/P25 to DMR/NXDN", SET_MODE4D_REQ, SET_MODE4D_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode YSF VW/P25 to DMR/NXDN", YSFVWP25_DATA, YSFVWP25_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode YSF VW/P25 to YSF DN", SET_MODE4E_REQ, SET_MODE4E_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode YSF VW/P25 to YSF DN", YSFVWP25_DATA, YSFVWP25_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+/*
+    ret = test("Set Mode YSF VW/P25 to Codec2 3200", SET_MODE4F_REQ, SET_MODE4F_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode YSF VW/P25 to Codec2 3200", YSFVWP25_DATA, YSFVWP25_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode YSF VW/P25 to Codec2 1600", SET_MODE4G_REQ, SET_MODE4G_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode YSF VW/P25 to Codec2 1600", YSFVWP25_DATA, YSFVWP25_DATA_REQ_LEN, CODEC21600_DATA, CODEC21600_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+*/
+/*
+    printf("\nCodec2 3200\n");
 
     ret = test("Set Mode Codec2 3200 to PCM", SET_MODE5A_REQ, SET_MODE5A_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
-    ret = test("Transcode Codec2 3200 to PCM", MODE5A_DATA_REQ, MODE5A_DATA_REQ_LEN, PCM_DATA_REP, PCM_DATA_REP_LEN);
+    ret = test("Transcode Codec2 3200 to PCM", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
     if (!ret)
         return 1;
 
-    ret = test("Set Mode PCM to Codec2 3200", SET_MODE5B_REQ, SET_MODE5B_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode Codec2 3200 to Codec2 3200", SET_MODE5B_REQ, SET_MODE5B_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
-    ret = test("Transcode PCM to Codec2 3200", PCM_DATA_REQ, PCM_DATA_REQ_LEN, MODE5B_DATA_REP, MODE5B_DATA_REP_LEN);
+    ret = test("Transcode Codec2 3200 to Codec2 3200", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REQ_LEN);
     if (!ret)
         return 1;
 
-    /* Codec2 1600 */
+    ret = test("Set Mode Codec2 3200 to D-Star", SET_MODE5C_REQ, SET_MODE5C_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode Codec2 3200 to D-Star", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode Codec2 3200 to DMR/NXDN", SET_MODE5D_REQ, SET_MODE5D_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode Codec2 3200 to DMR/NXDN", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode Codec2 3200 to YSF DN", SET_MODE5E_REQ, SET_MODE5E_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode Codec2 3200 to YSF DN", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode Codec2 3200 to YSF VW/P25", SET_MODE5F_REQ, SET_MODE5F_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode Codec2 3200 to YSF CW/P25", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, YSFVWP25_DATA, YSFVWP25_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode Codec2 3200 to Codec2 1600", SET_MODE5G_REQ, SET_MODE5G_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode Codec2 3200 to Codec2 1600", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, CODEC21600_DATA, CODEC21600_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+*/
+/*
+    printf("\nCodec2 1600\n");
 
     ret = test("Set Mode Codec2 1600 to PCM", SET_MODE6A_REQ, SET_MODE6A_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
-    ret = test("Transcode Codec2 1600 to PCM", MODE6A_DATA_REQ, MODE6A_DATA_REQ_LEN, PCM_DATA_REP, PCM_DATA_REP_LEN);
+    ret = test("Transcode Codec2 1600 to PCM", CODEC21600_DATA, CODEC21600_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
     if (!ret)
         return 1;
 
-    ret = test("Set Mode PCM to Codec2 1600", SET_MODE6B_REQ, SET_MODE6B_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode Codec2 1600 to Codec2 1600", SET_MODE6B_REQ, SET_MODE6B_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
-    ret = test("Transcode PCM to Codec2 1600", PCM_DATA_REQ, PCM_DATA_REQ_LEN, MODE6B_DATA_REP, MODE6B_DATA_REP_LEN);
+    ret = test("Transcode Codec2 1600 to Codec2 1600", CODEC21600_DATA, CODEC21600_DATA_REQ_LEN, CODEC21600_DATA, CODEC21600_DATA_REQ_LEN);
     if (!ret)
         return 1;
 
-    /* Error Cases */
+    ret = test("Set Mode Codec2 1600 to D-Star", SET_MODE6C_REQ, SET_MODE6C_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode Codec2 1600 to D-Star", CODEC21600_DATA, CODEC21600_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode Codec2 1600 to DMR/NXDN", SET_MODE6D_REQ, SET_MODE6D_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode Codec2 1600 to DMR/NXDN", CODEC21600_DATA, CODEC21600_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode Codec2 1600 to YSF DN", SET_MODE6E_REQ, SET_MODE6E_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode Codec2 1600 to YSF DN", CODEC21600_DATA, CODEC21600_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode Codec2 1600 to YSF VW/P25", SET_MODE6F_REQ, SET_MODE6F_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode Codec2 1600 to YSF CW/P25", CODEC21600_DATA, CODEC21600_DATA_REQ_LEN, YSFVWP25_DATA, YSFVWP25_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode Codec2 1600 to Codec2 3200", SET_MODE6G_REQ, SET_MODE6G_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode Codec2 1600 to Codec2 3200", CODEC21600_DATA, CODEC21600_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+*/
+    printf("\nPCM\n");
+
+    ret = test("Set Mode PCM to D-Star", SET_MODE9A_REQ, SET_MODE9A_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode PCM to D-Star", PCM_DATA, PCM_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode PCM to DMR/NXDN", SET_MODE9B_REQ, SET_MODE9B_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode PCM to DMR/NXDN", PCM_DATA, PCM_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode PCM to YSF DN", SET_MODE9C_REQ, SET_MODE9C_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode PCM to YSF DN", PCM_DATA, PCM_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode PCM to YSF VW/P25", SET_MODE9D_REQ, SET_MODE9D_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode PCM to YSF VW/P25", PCM_DATA, PCM_DATA_REQ_LEN, YSFVWP25_DATA, YSFVWP25_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+/*
+    ret = test("Set Mode PCM to Codec2 3200", SET_MODE9E_REQ, SET_MODE9E_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode PCM to Codec2 3200", PCM_DATA, PCM_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode PCM to Codec2 1600", SET_MODE9F_REQ, SET_MODE9F_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode PCM to Codec2 1600", PCM_DATA, PCM_DATA_REQ_LEN, CODEC21600_DATA, CODEC21600_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+*/
+    ret = test("Set Mode PCM to PCM", SET_MODE9G_REQ, SET_MODE9G_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode PCM to PCM", PCM_DATA, PCM_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REQ_LEN);
+    if (!ret)
+        return 1;
+
+    printf("\nPassthrough\n");
+
+    ret = test("Set Passthrough Mode", SET_MODEPA_REQ, SET_MODEPA_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Get AMBE3000 Product Id", MODEPB_DATA_REQ, MODEPB_DATA_REQ_LEN, MODEPB_DATA_REP, MODEPB_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Get AMBE3000 Version", MODEPC_DATA_REQ, MODEPC_DATA_REQ_LEN, MODEPC_DATA_REP, MODEPC_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    printf("\nError Cases\n");
 
     ret = test("Set Mode DMR to unknown", SET_MODEN_REQ, SET_MODEN_REQ_LEN, NAK2, NAK2_LEN);
     if (!ret)
@@ -382,7 +794,7 @@ bool CHandler::test(const char* title, const uint8_t* inData, uint16_t inLen, co
 
     CStopWatch stopwatch;
 
-    ::fprintf(stdout, "%s\n", title);
+    ::fprintf(stdout, "%s", title);
 
     // dump("Write", inData, inLen);
 
@@ -407,15 +819,14 @@ bool CHandler::test(const char* title, const uint8_t* inData, uint16_t inLen, co
 
     if (outData != NULL) {
         if (::memcmp(buffer, outData, outLen) == 0) {
-            printf("Data matches in %ums\n", elapsed);
+            printf(", OK (%u ms)\n", elapsed);
         } else {
+            printf(", Failed (%u ms)\n", elapsed);
             dump("Expected", outData, outLen);
             dump("Read", buffer, outLen);
-            printf("Data does not match in %ums\n", elapsed);
+            printf("\n");
         }
     }
-
-    printf("\n");
 
     return true;
 }
