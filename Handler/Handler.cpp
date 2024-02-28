@@ -305,17 +305,17 @@ const uint8_t  SET_MODEPA_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x00U, 0x00U 
 const uint16_t SET_MODEPA_REQ_LEN = 6U;
 
 /* Get the AMBE3000 Product Id */
-const uint8_t  MODEPB_DATA_REQ[]   = { MARKER, 0x08U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x30U };
+const uint8_t  MODEPB_DATA_REQ[]   = { MARKER, 0x09U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x30U };
 const uint16_t MODEPB_DATA_REQ_LEN = 9U;
 
 const uint8_t  MODEPB_DATA_REP[]   = { MARKER, 0x09U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x30U };
 const uint16_t MODEPB_DATA_REP_LEN = 9U;
 
 /* Get the AMBE3000 Version */
-const uint8_t  MODEPC_DATA_REQ[]   = { MARKER, 0x08U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x31U };
+const uint8_t  MODEPC_DATA_REQ[]   = { MARKER, 0x09U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x31U };
 const uint16_t MODEPC_DATA_REQ_LEN = 9U;
 
-const uint8_t  MODEPC_DATA_REP[]   = { MARKER, 0x08U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x31U };
+const uint8_t  MODEPC_DATA_REP[]   = { MARKER, 0x39U, 0x00U, 0x05U, 0x61U, 0x00U, 0x31U, 0x00U, 0x31U };
 const uint16_t MODEPC_DATA_REP_LEN = 9U;
 
 /* Error Cases */
@@ -763,7 +763,7 @@ int CHandler::run()
     ret = test("Set Passthrough Mode", SET_MODEPA_REQ, SET_MODEPA_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
-/*
+
     ret = test("Get AMBE3000 Product Id", MODEPB_DATA_REQ, MODEPB_DATA_REQ_LEN, MODEPB_DATA_REP, MODEPB_DATA_REP_LEN);
     if (!ret)
         return 1;
@@ -771,7 +771,7 @@ int CHandler::run()
     ret = test("Get AMBE3000 Version", MODEPC_DATA_REQ, MODEPC_DATA_REQ_LEN, MODEPC_DATA_REP, MODEPC_DATA_REP_LEN);
     if (!ret)
         return 1;
-*/
+
     printf("\nError Cases\n");
 
     ret = test("Set Mode DMR to unknown", SET_MODEN_REQ, SET_MODEN_REQ_LEN, NAK2, NAK2_LEN);
@@ -817,9 +817,9 @@ bool CHandler::test(const char* title, const uint8_t* inData, uint16_t inLen, co
     uint8_t buffer[400U];
     uint16_t len = read(buffer, 200U);
     if (len == 0U) {
-        printf("\n");
+        printf(", Timeout (200 me)\n");
         m_failed++;
-        return false;
+        return true;
     }
 
     unsigned int elapsed = stopwatch.elapsed();
