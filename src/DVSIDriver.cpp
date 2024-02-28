@@ -45,7 +45,7 @@ m_ptr4020(0U)
 
 void CDVSIDriver::startup3000()
 {
-  SerialAMBE.begin(DVSI_AMBE3000_SPEED);
+  SerialAMBE.begin(DVSI_SPEED);
 
   pinMode(AMBE3000_RESET, OUTPUT);
   pinMode(AMBE3000_RTS, INPUT);
@@ -59,11 +59,23 @@ void CDVSIDriver::startup4020()
 
 void CDVSIDriver::reset3000()
 {
+  DEBUG1("Resetting the AMBE3000");
+
   digitalWrite(AMBE3000_RESET, LOW);
 
-  delay(100);
+  delay(100U);
 
   digitalWrite(AMBE3000_RESET, HIGH);
+
+  delay(10U);
+
+  uint8_t buffer[100U];
+  uint16_t len = read3000(buffer);
+#if defined(HAS_STLINK)
+  if (len > 0U)
+    serial.dump("AMBE3000 Rubbish", buffer, len);
+#endif
+
 }
 
 #if AMBE_TYPE == 3
@@ -72,9 +84,9 @@ void CDVSIDriver::reset4020()
 }
 #endif
 
-bool CDVSIDriver::RTS3000() const
+bool CDVSIDriver::ready3000() const
 {
-  return digitalRead(AMBE3000_RTS) == HIGH;
+  return digitalRead(AMBE3000_RTS) == LOW;
 }
 
 #if AMBE_TYPE == 3
@@ -97,7 +109,7 @@ void CDVSIDriver::write4020(const uint8_t* buffer, uint16_t length)
 
 uint16_t CDVSIDriver::read3000(uint8_t* buffer)
 {
-  while (SerialAMBE.available()) {
+  while (SerialAMBE.available() > 0) {
     uint8_t c = SerialAMBE.read();
 
     if (m_ptr3000 == 0U) {

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ class CDStarFEC : public IProcessor {
     uint8_t m_buffer[DSTAR_DATA_LENGTH];
     bool    m_inUse;
 
-    bool regenerateDStar(uint32_t& a, uint32_t& b) const;
+    void regenerateDStar(uint32_t& a, uint32_t& b) const;
 };
 
 #endif

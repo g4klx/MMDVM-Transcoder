@@ -244,8 +244,6 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
 
   for (uint8_t i = 0U; i < PROCESSOR_LENGTH; i++) {
     if ((PROCESSOR_TABLE[i].m_input == buffer[0U]) && (PROCESSOR_TABLE[i].m_output == buffer[1U])) {
-      DEBUG3("Valid SET_MODE command", buffer[0U], buffer[1U]);
-
       m_opMode = OPMODE_TRANSCODING;
       m_step1  = PROCESSOR_TABLE[i].m_step1;
       m_step2  = PROCESSOR_TABLE[i].m_step2;
@@ -276,10 +274,13 @@ uint8_t CSerialPort::sendData(const uint8_t* buffer, uint16_t length)
 
     case OPMODE_PASSTHROUGH:
       // If the RTS pin is high, then the chip does not expect any more data to be sent through
-      if (dvsi.RTS3000()) {
-        DEBUG1("The AMBE3000 chip is not ready to receive any more data");
-        return 0x05U;
-      }
+      // if (!dvsi.ready3000()) {
+      //   DEBUG1("The AMBE3003/3000 chip is not ready to receive any more data");
+      //   return 0x05U;
+      // }
+#if defined(HAS_STLINK)
+      dump("Passthrough TX", buffer, length);
+#endif
       dvsi.write3000(buffer, length);
       return 0x00U;
 
@@ -326,8 +327,12 @@ void CSerialPort::processData()
   } else if (m_opMode == OPMODE_PASSTHROUGH) {
     length = dvsi.read3000(buffer);
 
-    if (length > 0U)
+    if (length > 0U) {
+#if defined(HAS_STLINK)
+      dump("Passthrough RX", buffer, length);
+#endif
       writeData(buffer, length);
+    }
   }
 }
 

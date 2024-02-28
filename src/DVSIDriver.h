@@ -33,7 +33,7 @@ class CDVSIDriver {
 
     void     reset3000();
 
-    bool     RTS3000() const;
+    bool     ready3000() const;
 
     void     write3000(const uint8_t* buffer, uint16_t length);
     uint16_t read3000(uint8_t* buffer);

@@ -122,7 +122,7 @@ void CAMBE3000Driver::init(uint8_t n, AMBE_MODE mode)
       length += DVSI_PKT_DMR_NXDN_FEC_LEN;
       break;
     default:
-      DEBUG2("Unknown AMBE3030/3000 mode received ", mode);
+      DEBUG2("Unknown AMBE3003/3000 mode received ", mode);
       return;
   }
 
@@ -134,7 +134,7 @@ void CAMBE3000Driver::init(uint8_t n, AMBE_MODE mode)
   dvsi.write3000(buffer, length);
 
 #if defined(HAS_STLINK)
-  serial.dump("AMBE3000 Set Mode TX", buffer, length);
+  serial.dump("AMBE3003/3000 Set Mode TX", buffer, length);
 #endif
 
   m_mode = mode;
@@ -165,25 +165,25 @@ void CAMBE3000Driver::process()
           case DVSI_PKT_CHANNEL0:
           case DVSI_PKT_CHANNEL1:
           case DVSI_PKT_CHANNEL2:
-            DEBUG2("Response AMBE3030/3000 to PKT_CHANNELn ", buffer[pos] - 0x40U);
+            DEBUG2("Response AMBE3003/3000 to PKT_CHANNELn ", buffer[pos] - 0x40U);
             pos += 2U;
             break;
 
           case DVSI_PKT_INIT:
             if (buffer[pos + 1U] != 0x00U)
-              DEBUG2("Response AMBE3030/3000 to PKT_INIT is ", buffer[pos + 1U]);
+              DEBUG2("Response AMBE3003/3000 to PKT_INIT is ", buffer[pos + 1U]);
             pos += 2U;
             break;
 
           case DVSI_PKT_RATET:
             if (buffer[pos + 1U] != 0x00U)
-              DEBUG2("Response AMBE3030/3000 to PKT_RATET is ", buffer[pos + 1U]);
+              DEBUG2("Response AMBE3003/3000 to PKT_RATET is ", buffer[pos + 1U]);
             pos += 2U;
             break;
 
           case DVSI_PKT_RATEP:
             if (buffer[pos + 1U] != 0x00U)
-              DEBUG2("Response AMBE3030/3000 to PKT_RATEP is ", buffer[pos + 1U]);
+              DEBUG2("Response AMBE3003/3000 to PKT_RATEP is ", buffer[pos + 1U]);
             pos += 2U;
             break;
 
@@ -192,7 +192,7 @@ void CAMBE3000Driver::process()
             break;
 
           default:
-            DEBUG2("Unknown AMBE3030/3000 control type response of ", buffer[pos]);
+            DEBUG2("Unknown AMBE3003/3000 control type response of ", buffer[pos]);
             return;
         }
       }
@@ -259,7 +259,7 @@ void CAMBE3000Driver::process()
       break;
 
     default:
-      DEBUG2("Unknown AMBE3030/3000 type from the AMBE chip ", buffer[3U]);
+      DEBUG2("Unknown AMBE3003/3000 type from the AMBE chip ", buffer[3U]);
       break;
   }
 }
@@ -267,8 +267,8 @@ void CAMBE3000Driver::process()
 uint8_t CAMBE3000Driver::write(uint8_t n, const uint8_t* buffer, uint16_t length)
 {
   // If the RTS pin is high, then the chip does not expect any more data to be sent through
-  if (dvsi.RTS3000()) {
-    DEBUG1("The AMBE3030/3000 chip is not ready to receive any more data");
+  if (!dvsi.ready3000()) {
+    DEBUG1("The AMBE3003/3000 chip is not ready to receive any more data");
     return 0x05U;
   }
 

@@ -77,11 +77,7 @@ uint8_t CDStarFEC::input(const uint8_t* buffer, uint16_t length)
     MASK >>= 1;
   }
 
-  bool ret = regenerateDStar(a, b);
-  if (!ret) {
-    DEBUG1("D-Star frame has uncorrectable errors");
-    return 0x04U;
-  }
+  regenerateDStar(a, b);
 
   MASK = 0x800000U;
   for (uint8_t i = 0U; i < 24U; i++) {
@@ -112,12 +108,10 @@ uint16_t CDStarFEC::output(uint8_t* buffer)
   return DSTAR_DATA_LENGTH;
 }
 
-bool CDStarFEC::regenerateDStar(uint32_t& a, uint32_t& b) const
+void CDStarFEC::regenerateDStar(uint32_t& a, uint32_t& b) const
 {
   uint32_t data;
-  bool valid1 = CGolay::decode24128(a, data);
-  if (!valid1)
-    return false;
+  CGolay::decode24128(a, data);
 
   // The PRNG
   uint32_t p = CAMBEPRNGTable::TABLE[data];
@@ -125,15 +119,11 @@ bool CDStarFEC::regenerateDStar(uint32_t& a, uint32_t& b) const
   b ^= p;
 
   uint32_t datb;
-  bool valid2 = CGolay::decode24128(b, datb);
-  if (!valid2)
-    return false;
+  CGolay::decode24128(b, datb);
 
   a = CGolay::encode24128(data);
   b = CGolay::encode24128(datb);
 
   b ^= p;
-
-  return true;
 }
 
