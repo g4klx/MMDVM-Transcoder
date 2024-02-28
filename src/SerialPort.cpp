@@ -292,9 +292,6 @@ uint8_t CSerialPort::sendData(const uint8_t* buffer, uint16_t length)
       //   DEBUG1("The AMBE3003/3000 chip is not ready to receive any more data");
       //   return 0x05U;
       // }
-#if defined(HAS_STLINK)
-      dump("Passthrough TX", buffer, length);
-#endif
       dvsi.write3000(buffer, length);
       return 0x00U;
 
@@ -341,12 +338,8 @@ void CSerialPort::processData()
   } else if (m_opMode == OPMODE_PASSTHROUGH) {
     length = dvsi.read3000(buffer);
 
-    if (length > 0U) {
-#if defined(HAS_STLINK)
-      dump("Passthrough RX", buffer, length);
-#endif
+    if (length > 0U)
       writeData(buffer, length);
-    }
   }
 }
 

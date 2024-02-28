@@ -29,6 +29,9 @@
 
 const uint8_t DVSI_START_BYTE = 0x61U;
 
+const uint8_t  GET_VERSION_ID[]   = { DVSI_START_BYTE, 0x00U, 0x01U, 0x00U, 0x30U };
+const uint16_t GET_VERSION_ID_LEN = 5U;
+
 HardwareSerial SerialAMBE(USART6_RX, USART6_TX);
 
 CDVSIDriver::CDVSIDriver() :
@@ -69,12 +72,12 @@ void CDVSIDriver::reset3000()
 
   delay(10U);
 
-  uint8_t buffer[100U];
-  uint16_t len = read3000(buffer);
-#if defined(HAS_STLINK)
-  if (len > 0U)
-    serial.dump("AMBE3000 Rubbish", buffer, len);
-#endif
+  write3000(GET_VERSION_ID, GET_VERSION_ID_LEN);
+
+  delay(10U);
+
+  while (SerialAMBE.available() > 0)
+    SerialAMBE.read();
 }
 
 #if AMBE_TYPE == 3
