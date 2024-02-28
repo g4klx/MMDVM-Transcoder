@@ -75,7 +75,6 @@ void CDVSIDriver::reset3000()
   if (len > 0U)
     serial.dump("AMBE3000 Rubbish", buffer, len);
 #endif
-
 }
 
 #if AMBE_TYPE == 3

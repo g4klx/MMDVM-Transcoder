@@ -55,10 +55,6 @@ uint8_t CDMRNXDNYSFDN::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-#if defined(HAS_STLINK)
-  serial.dump("DMR/NXDN Data", buffer, DMR_NXDN_DATA_LENGTH);
-#endif
-
   uint32_t a = 0U;
   uint32_t MASK = 0x800000U;
   for (uint8_t i = 0U; i < 24U; i++, MASK >>= 1) {
@@ -121,10 +117,6 @@ uint8_t CDMRNXDNYSFDN::input(const uint8_t* buffer, uint16_t length)
   }
   
   WRITE_BIT1(m_buffer, 103U, false);
-
-#if defined(HAS_STLINK)
-  serial.dump("YSF DN Data", m_buffer, YSFDN_DATA_LENGTH);
-#endif
 
   m_inUse = true;
 

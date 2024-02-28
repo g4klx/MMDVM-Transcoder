@@ -42,15 +42,7 @@ uint8_t CPCMCodec21600::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-#if defined(HAS_STLINK)
-  serial.dump("Codec2 1600 PCM", buffer, PCM_DATA_LENGTH);
-#endif
-
   codec21600.codec2_encode((unsigned char*)m_buffer, (short*)buffer);
-
-#if defined(HAS_STLINK)
-  serial.dump("Codec2 1600 Data", m_buffer, CODEC2_1600_DATA_LENGTH);
-#endif
 
   m_inUse = true;
 

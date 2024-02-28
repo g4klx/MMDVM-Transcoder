@@ -23,10 +23,6 @@
 #include "Globals.h"
 #include "Debug.h"
 
-#if defined(HAS_STLINK)
-extern HardwareSerial SerialSTLink;
-#endif
-
 const uint8_t DVSI_START_BYTE = 0x61U;
 
 const uint8_t DVSI_TYPE_CONTROL = 0x00U;
@@ -133,10 +129,6 @@ void CAMBE3000Driver::init(uint8_t n, AMBE_MODE mode)
 #endif
   dvsi.write3000(buffer, length);
 
-#if defined(HAS_STLINK)
-  serial.dump("AMBE3003/3000 Set Mode TX", buffer, length);
-#endif
-
   m_mode = mode;
 }
 
@@ -146,10 +138,6 @@ void CAMBE3000Driver::process()
   uint16_t length = dvsi.read3000(buffer);
   if (length == 0U)
     return;
-
-#if defined(HAS_STLINK)
-  serial.dump("AMBE3000 RX", buffer, length);
-#endif
 
 #if defined(HAS_LEDS)
   leds.setLED1(false);
@@ -309,9 +297,6 @@ uint8_t CAMBE3000Driver::write(uint8_t n, const uint8_t* buffer, uint16_t length
       out[1U] = (pos - 4U) / 256U;
       out[2U] = (pos - 4U) % 256U;
 
-#if defined(HAS_STLINK)
-      serial.dump("AMBE3000 Data TX", out, pos);
-#endif
 #if defined(HAS_LEDS)
       leds.setLED1(true);
 #endif
@@ -351,9 +336,6 @@ uint8_t CAMBE3000Driver::write(uint8_t n, const uint8_t* buffer, uint16_t length
       out[1U] = (pos - 4U) / 256U;
       out[2U] = (pos - 4U) % 256U;
 
-#if defined(HAS_STLINK)
-      serial.dump("AMBE3000 Data TX", out, pos);
-#endif
 #if defined(HAS_LEDS)
       leds.setLED1(true);
 #endif

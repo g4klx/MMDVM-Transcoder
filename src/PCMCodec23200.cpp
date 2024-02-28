@@ -42,15 +42,7 @@ uint8_t CPCMCodec23200::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-#if defined(HAS_STLINK)
-  serial.dump("Codec2 3200 PCM", buffer, PCM_DATA_LENGTH);
-#endif
-
   codec23200.codec2_encode((unsigned char*)m_buffer, (short*)buffer);
-
-#if defined(HAS_STLINK)
-  serial.dump("Codec2 3200 Data", m_buffer, CODEC2_3200_DATA_LENGTH);
-#endif
 
   m_inUse = true;
 

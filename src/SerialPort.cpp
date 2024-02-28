@@ -38,7 +38,9 @@ const struct {
 #if AMBE_TYPE > 0
   {MODE_DSTAR,       MODE_YSFVW_P25,   &dstarpcm,      &pcmysfvwp25,   NULL},
   {MODE_DSTAR,       MODE_CODEC2_3200, &dstarpcm,      &pcmcodec23200, NULL},
+#if defined(BROKEN_CODEC2_1600)
   {MODE_DSTAR,       MODE_CODEC2_1600, &dstarpcm,      &pcmcodec21600, NULL},
+#endif
   {MODE_DSTAR,       MODE_PCM,         &dstarpcm,      NULL,           NULL},
 #endif
 
@@ -50,7 +52,9 @@ const struct {
 #if AMBE_TYPE > 0
   {MODE_DMR_NXDN,    MODE_YSFVW_P25,   &dmrnxdnpcm,    &pcmysfvwp25,   NULL},
   {MODE_DMR_NXDN,    MODE_CODEC2_3200, &dmrnxdnpcm,    &pcmcodec23200, NULL},
+#if defined(BROKEN_CODEC2_1600)
   {MODE_DMR_NXDN,    MODE_CODEC2_1600, &dmrnxdnpcm,    &pcmcodec21600, NULL},
+#endif
   {MODE_DMR_NXDN,    MODE_PCM,         &dmrnxdnpcm,    NULL,           NULL},
 #endif
 
@@ -62,7 +66,9 @@ const struct {
 #if AMBE_TYPE > 0
   {MODE_YSFDN,       MODE_YSFVW_P25,   &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmysfvwp25},
   {MODE_YSFDN,       MODE_CODEC2_3200, &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmcodec23200},
+#if defined(BROKEN_CODEC2_1600)
   {MODE_YSFDN,       MODE_CODEC2_1600, &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmcodec21600},
+#endif
   {MODE_YSFDN,       MODE_PCM,         &ysfdndmrnxdn,  &dmrnxdnpcm,    NULL},
 #endif
 
@@ -73,7 +79,9 @@ const struct {
 #endif
   {MODE_YSFVW_P25,   MODE_YSFVW_P25,   &ysfvwp25fec,   NULL,           NULL},
   {MODE_YSFVW_P25,   MODE_CODEC2_3200, &ysfvwp25pcm,   &pcmcodec23200, NULL},
+#if defined(BROKEN_CODEC2_1600)
   {MODE_YSFVW_P25,   MODE_CODEC2_1600, &ysfvwp25pcm,   &pcmcodec21600, NULL},
+#endif
   {MODE_YSFVW_P25,   MODE_PCM,         &ysfvwp25pcm,   NULL,           NULL},
 
 #if AMBE_TYPE > 0
@@ -83,9 +91,12 @@ const struct {
 #endif
   {MODE_CODEC2_3200, MODE_YSFVW_P25,   &codec23200pcm, &pcmysfvwp25,   NULL},
   {MODE_CODEC2_3200, MODE_CODEC2_3200, NULL,           NULL,           NULL},
+#if defined(BROKEN_CODEC2_1600)
   {MODE_CODEC2_3200, MODE_CODEC2_1600, &codec23200pcm, &pcmcodec21600, NULL},
+#endif
   {MODE_CODEC2_3200, MODE_PCM,         &codec23200pcm, NULL,           NULL},
 
+#if defined(BROKEN_CODEC2_1600)
 #if AMBE_TYPE > 0
   {MODE_CODEC2_1600, MODE_DSTAR,       &codec21600pcm, &pcmdstar,      NULL},
   {MODE_CODEC2_1600, MODE_DMR_NXDN,    &codec21600pcm, &pcmdmrnxdn,    NULL},
@@ -95,6 +106,7 @@ const struct {
   {MODE_CODEC2_1600, MODE_CODEC2_3200, &codec21600pcm, &pcmcodec23200, NULL},
   {MODE_CODEC2_1600, MODE_CODEC2_1600, NULL,           NULL,           NULL},
   {MODE_CODEC2_1600, MODE_PCM,         &codec21600pcm, NULL,           NULL},
+#endif
 
 #if AMBE_TYPE > 0
   {MODE_PCM,         MODE_DSTAR,       &pcmdstar,      NULL,           NULL},
@@ -103,7 +115,9 @@ const struct {
 #endif
   {MODE_PCM,         MODE_YSFVW_P25,   &pcmysfvwp25,   NULL,           NULL},
   {MODE_PCM,         MODE_CODEC2_3200, &pcmcodec23200, NULL,           NULL},
+#if defined(BROKEN_CODEC2_1600)
   {MODE_PCM,         MODE_CODEC2_1600, &pcmcodec21600, NULL,           NULL},
+#endif
   {MODE_PCM,         MODE_PCM,         NULL,           NULL,           NULL}
 };
 
@@ -370,9 +384,6 @@ void CSerialPort::process()
       // The full packet has been received, process it
       if (m_ptr == m_len) {
         m_start = 0UL;
-#if defined(HAS_STLINK)
-        dump("Command", m_buffer, m_len);
-#endif
         processMessage(m_buffer[3U], m_buffer + 4U, m_len - 4U);
       }
     }
@@ -382,9 +393,6 @@ void CSerialPort::process()
     unsigned long now = millis();
     if ((now - m_start) >= MAX_COMMAND_TIME_MS) {
       DEBUG1("Command took too long to be completed");
-#if defined(HAS_STLINK)
-      dump("Command", m_buffer, m_ptr);
-#endif
       m_ptr   = 0U;
       m_len   = 0U;
       m_start = 0UL;
