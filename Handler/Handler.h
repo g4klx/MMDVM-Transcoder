@@ -35,6 +35,9 @@ public:
 protected:
 	CUARTController m_serial;
 	CStopWatch      m_stopwatch;
+	unsigned int    m_count;
+	unsigned int    m_ok;
+	unsigned int    m_failed;
 
 	bool     test(const char* title, const uint8_t* inData, uint16_t inLen, const uint8_t* outData, uint16_t outLen);
 	void     dump(const char* title, const uint8_t* buffer, uint16_t length) const;

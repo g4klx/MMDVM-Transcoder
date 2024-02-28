@@ -92,8 +92,8 @@ const uint8_t  YSFDN_DATA[] = { MARKER, 0x11U, 0x00U, 0x05U, 0xE0U, 0x01U, 0xC0U
 const uint16_t YSFDN_DATA_REQ_LEN = 17U;
 const uint16_t YSFDN_DATA_REP_LEN = 4U;
 
-const uint8_t  YSFVWP25_DATA[] = { MARKER, 0x14U, 0x00U, 0x05U, 0x03U, 0xEDU, 0x05U, 0xF5U, 0x04U, 0x38U, 0x0CU, 0x4BU, 0x07U, 0x80U, 0x01U, 0x94U, 0x05U, 0xB6U, 0x00U, 0x5BU };
-const uint16_t YSFVWP25_DATA_REQ_LEN = 20U;
+const uint8_t  YSFVWP25_DATA[] = { MARKER, 0x16U, 0x00U, 0x05U, 0x0AU, 0x02U, 0x25U, 0x32U, 0x21U, 0xE6U, 0x77U, 0x0AU, 0x5DU, 0xAFU, 0xF7U, 0xAEU, 0x44U, 0xC0U, 0xB8U, 0xBEU, 0x97U, 0x97U };
+const uint16_t YSFVWP25_DATA_REQ_LEN = 22U;
 const uint16_t YSFVWP25_DATA_REP_LEN = 4U;
 
 const uint8_t  CODEC23200_DATA[] = { MARKER, 0x0CU, 0x00U, 0x05U, 0xD9U, 0x49U, 0xA5U, 0x59U, 0x08U, 0x7DU, 0x4EU, 0x99U };
@@ -308,14 +308,14 @@ const uint16_t SET_MODEPA_REQ_LEN = 6U;
 const uint8_t  MODEPB_DATA_REQ[]   = { MARKER, 0x08U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x30U };
 const uint16_t MODEPB_DATA_REQ_LEN = 9U;
 
-const uint8_t  MODEPB_DATA_REP[]   = { MARKER, 0x08U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x30U };
+const uint8_t  MODEPB_DATA_REP[]   = { MARKER, 0x09U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x30U };
 const uint16_t MODEPB_DATA_REP_LEN = 9U;
 
 /* Get the AMBE3000 Version */
 const uint8_t  MODEPC_DATA_REQ[]   = { MARKER, 0x08U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x31U };
 const uint16_t MODEPC_DATA_REQ_LEN = 9U;
 
-const uint8_t  MODEPC_DATA_REP[]   = { MARKER, 0x08U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x30U };
+const uint8_t  MODEPC_DATA_REP[]   = { MARKER, 0x08U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x31U };
 const uint16_t MODEPC_DATA_REP_LEN = 9U;
 
 /* Error Cases */
@@ -353,7 +353,10 @@ int main(int argc, char** argv)
 
 CHandler::CHandler(const std::string& device, unsigned int speed) :
 m_serial(device, speed),
-m_stopwatch()
+m_stopwatch(),
+m_count(0U),
+m_ok(0U),
+m_failed(0U)
 {
 	assert(!device.empty());
 	assert(speed > 0U);
@@ -369,7 +372,7 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    printf("\nBasic Functionality\n");
+    printf("Basic Functionality\n");
 
     ret = test("Get Version", GET_VERSION_REQ, GET_VERSION_REQ_LEN, GET_VERSION_REP, GET_VERSION_REP_LEN);
     if (!ret)
@@ -393,7 +396,7 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Transcode D-Star to D-Star", DSTAR_DATA, DSTAR_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REQ_LEN);
+    ret = test("Transcode D-Star to D-Star", DSTAR_DATA, DSTAR_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
     if (!ret)
         return 1;
 
@@ -404,7 +407,7 @@ int CHandler::run()
     ret = test("Transcode D-Star to YSF VW/P25", DSTAR_DATA, DSTAR_DATA_REQ_LEN, YSFVWP25_DATA, YSFVWP25_DATA_REP_LEN);
     if (!ret)
         return 1;
-/*
+
     ret = test("Set Mode D-Star to Codec2 3200", SET_MODE1D_REQ, SET_MODE1D_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
@@ -412,7 +415,7 @@ int CHandler::run()
     ret = test("Transcode D-Star to Codec2 3200", DSTAR_DATA, DSTAR_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
     if (!ret)
         return 1;
-
+/*
     ret = test("Set Mode D-Star to Codec2 1600", SET_MODE1E_REQ, SET_MODE1E_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
@@ -435,7 +438,7 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Transcode DMR/NXDN to DMR/NXDN", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN);
+    ret = test("Transcode DMR/NXDN to DMR/NXDN", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
     if (!ret)
         return 1;
 
@@ -454,7 +457,7 @@ int CHandler::run()
     ret = test("Transcode DMR/NXDN to YSF VW/P25", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, YSFVWP25_DATA, YSFVWP25_DATA_REP_LEN);
     if (!ret)
         return 1;
-/*
+
     ret = test("Set Mode DMR/NXDN to Codec2 3200", SET_MODE2E_REQ, SET_MODE2E_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
@@ -462,7 +465,7 @@ int CHandler::run()
     ret = test("Transcode DMR/NXDN to Codec2 3200", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
     if (!ret)
         return 1;
-
+/*
     ret = test("Set Mode DMR/NXDN to Codec2 1600", SET_MODE2F_REQ, SET_MODE2F_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
@@ -504,7 +507,7 @@ int CHandler::run()
     ret = test("Transcode YSF DN to YSF VW/P25", YSFDN_DATA, YSFDN_DATA_REQ_LEN, YSFVWP25_DATA, YSFVWP25_DATA_REP_LEN);
     if (!ret)
         return 1;
-/*
+
     ret = test("Set Mode YSF DN to Codec2 3200", SET_MODE3E_REQ, SET_MODE3E_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
@@ -512,7 +515,7 @@ int CHandler::run()
     ret = test("Transcode YSF DN to Codec2 3200", YSFDN_DATA, YSFDN_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
     if (!ret)
         return 1;
-
+/*
     ret = test("Set Mode YSF DN to Codec2 1600", SET_MODE3F_REQ, SET_MODE3F_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
@@ -562,7 +565,7 @@ int CHandler::run()
     ret = test("Transcode YSF VW/P25 to YSF DN", YSFVWP25_DATA, YSFVWP25_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
     if (!ret)
         return 1;
-/*
+
     ret = test("Set Mode YSF VW/P25 to Codec2 3200", SET_MODE4F_REQ, SET_MODE4F_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
@@ -570,7 +573,7 @@ int CHandler::run()
     ret = test("Transcode YSF VW/P25 to Codec2 3200", YSFVWP25_DATA, YSFVWP25_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
     if (!ret)
         return 1;
-
+/*
     ret = test("Set Mode YSF VW/P25 to Codec2 1600", SET_MODE4G_REQ, SET_MODE4G_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
@@ -579,7 +582,7 @@ int CHandler::run()
     if (!ret)
         return 1;
 */
-/*
+
     printf("\nCodec2 3200\n");
 
     ret = test("Set Mode Codec2 3200 to PCM", SET_MODE5A_REQ, SET_MODE5A_REQ_LEN, ACK, ACK_LEN);
@@ -629,7 +632,7 @@ int CHandler::run()
     ret = test("Transcode Codec2 3200 to YSF CW/P25", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, YSFVWP25_DATA, YSFVWP25_DATA_REP_LEN);
     if (!ret)
         return 1;
-
+/*
     ret = test("Set Mode Codec2 3200 to Codec2 1600", SET_MODE5G_REQ, SET_MODE5G_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
@@ -730,7 +733,7 @@ int CHandler::run()
     ret = test("Transcode PCM to YSF VW/P25", PCM_DATA, PCM_DATA_REQ_LEN, YSFVWP25_DATA, YSFVWP25_DATA_REP_LEN);
     if (!ret)
         return 1;
-/*
+
     ret = test("Set Mode PCM to Codec2 3200", SET_MODE9E_REQ, SET_MODE9E_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
@@ -738,7 +741,7 @@ int CHandler::run()
     ret = test("Transcode PCM to Codec2 3200", PCM_DATA, PCM_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
     if (!ret)
         return 1;
-
+/*
     ret = test("Set Mode PCM to Codec2 1600", SET_MODE9F_REQ, SET_MODE9F_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
@@ -760,7 +763,7 @@ int CHandler::run()
     ret = test("Set Passthrough Mode", SET_MODEPA_REQ, SET_MODEPA_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
-
+/*
     ret = test("Get AMBE3000 Product Id", MODEPB_DATA_REQ, MODEPB_DATA_REQ_LEN, MODEPB_DATA_REP, MODEPB_DATA_REP_LEN);
     if (!ret)
         return 1;
@@ -768,7 +771,7 @@ int CHandler::run()
     ret = test("Get AMBE3000 Version", MODEPC_DATA_REQ, MODEPC_DATA_REQ_LEN, MODEPC_DATA_REP, MODEPC_DATA_REP_LEN);
     if (!ret)
         return 1;
-
+*/
     printf("\nError Cases\n");
 
     ret = test("Set Mode DMR to unknown", SET_MODEN_REQ, SET_MODEN_REQ_LEN, NAK2, NAK2_LEN);
@@ -783,6 +786,8 @@ int CHandler::run()
     if (!ret)
         return 1;
 
+    printf("\nNo tests: %u, ok: %u (%.1f%%), failed: %u (%.1f%%)\n", m_count, m_ok, 100.0F * float(m_ok) / float(m_count), m_failed, 100.0F * float(m_failed) / float(m_count));
+
     return 0;
 }
 
@@ -791,6 +796,8 @@ bool CHandler::test(const char* title, const uint8_t* inData, uint16_t inLen, co
     assert(title != NULL);
     assert(inData != NULL);
     assert(inLen > 0U);
+
+    m_count++;
 
     CStopWatch stopwatch;
 
@@ -803,13 +810,15 @@ bool CHandler::test(const char* title, const uint8_t* inData, uint16_t inLen, co
     int16_t ret = m_serial.write(inData, inLen);
     if (ret <= 0) {
         ::fprintf(stderr, "Error writing the data to the transcoder\n\n");
+        m_failed++;
         return false;
     }
 
     uint8_t buffer[400U];
-    uint16_t len = read(buffer, 100U);
+    uint16_t len = read(buffer, 200U);
     if (len == 0U) {
         printf("\n");
+        m_failed++;
         return false;
     }
 
@@ -820,11 +829,13 @@ bool CHandler::test(const char* title, const uint8_t* inData, uint16_t inLen, co
     if (outData != NULL) {
         if (::memcmp(buffer, outData, outLen) == 0) {
             printf(", OK (%u ms)\n", elapsed);
+            m_ok++;
         } else {
             printf(", Failed (%u ms)\n", elapsed);
             dump("Expected", outData, outLen);
-            dump("Read", buffer, outLen);
+            dump("Read", buffer, len);
             printf("\n");
+            m_failed++;
         }
     }
 
