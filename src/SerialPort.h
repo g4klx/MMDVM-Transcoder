@@ -27,12 +27,6 @@
 #define SERIAL_SPEED 460800
 #endif
 
-enum OPMODE {
-  OPMODE_NONE,
-  OPMODE_TRANSCODING,
-  OPMODE_PASSTHROUGH
-};
-
 class CSerialPort {
 public:
   CSerialPort();
@@ -60,7 +54,6 @@ private:
   uint16_t      m_ptr;
   uint16_t      m_len;
   unsigned long m_start;
-  OPMODE        m_opMode;
 
   IProcessor* m_step1;
   IProcessor* m_step2;

@@ -59,6 +59,8 @@ unsigned long start = 0UL;
 bool on = true;
 #endif
 
+OPMODE opmode = OPMODE_NONE;
+
 extern "C" {
   void setup()
   {
@@ -84,7 +86,8 @@ extern "C" {
     serial.process();
 
 #if AMBE_TYPE > 0
-    ambe3000.process();
+    if (opmode == OPMODE_TRANSCODING)
+      ambe3000.process();
 #endif
 
 #if defined(HAS_LEDS)

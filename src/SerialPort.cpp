@@ -156,7 +156,6 @@ m_buffer(),
 m_ptr(0U),
 m_len(0U),
 m_start(0UL),
-m_opMode(OPMODE_NONE),
 m_step1(NULL),
 m_step2(NULL),
 m_step3(NULL)
@@ -240,14 +239,14 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
     return 0x02U;
   }
 
-  m_opMode = OPMODE_NONE;
-  m_step1  = NULL;
-  m_step2  = NULL;
-  m_step3  = NULL;
+  opmode  = OPMODE_NONE;
+  m_step1 = NULL;
+  m_step2 = NULL;
+  m_step3 = NULL;
 
 #if AMBE_TYPE > 0
   if ((buffer[0U] == MODE_PASS_THROUGH) && (buffer[1U] == MODE_PASS_THROUGH)) {
-    m_opMode = OPMODE_PASSTHROUGH;
+    opmode = OPMODE_PASSTHROUGH;
     dvsi.reset();
     return 0x00U;
   }
@@ -255,10 +254,10 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
 
   for (uint8_t i = 0U; i < PROCESSOR_LENGTH; i++) {
     if ((PROCESSOR_TABLE[i].m_input == buffer[0U]) && (PROCESSOR_TABLE[i].m_output == buffer[1U])) {
-      m_opMode = OPMODE_TRANSCODING;
-      m_step1  = PROCESSOR_TABLE[i].m_step1;
-      m_step2  = PROCESSOR_TABLE[i].m_step2;
-      m_step3  = PROCESSOR_TABLE[i].m_step3;
+      opmode  = OPMODE_TRANSCODING;
+      m_step1 = PROCESSOR_TABLE[i].m_step1;
+      m_step2 = PROCESSOR_TABLE[i].m_step2;
+      m_step3 = PROCESSOR_TABLE[i].m_step3;
 
       if (m_step1 != NULL)
         m_step1->init(0U);
@@ -278,7 +277,7 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
 
 uint8_t CSerialPort::sendData(const uint8_t* buffer, uint16_t length)
 {
-  switch (m_opMode) {
+  switch (opmode) {
     case OPMODE_NONE:
       DEBUG1("Received data in None mode");
       return 0x03U;
@@ -310,7 +309,7 @@ void CSerialPort::processData()
   uint8_t  buffer[500U];
   uint16_t length = 0U;
 
-  if (m_opMode == OPMODE_TRANSCODING) {
+  if (opmode == OPMODE_TRANSCODING) {
     if (m_step1 != NULL)
       length = m_step1->output(buffer);
 
@@ -332,7 +331,7 @@ void CSerialPort::processData()
 
     if (length > 0U)
       writeData(buffer, length);
-  } else if (m_opMode == OPMODE_PASSTHROUGH) {
+  } else if (opmode == OPMODE_PASSTHROUGH) {
     length = dvsi.read(buffer);
 
     if (length > 0U)
@@ -433,7 +432,7 @@ void CSerialPort::processMessage(uint8_t type, const uint8_t* buffer, uint16_t l
 
 void CSerialPort::writeData(const uint8_t* data, uint16_t length)
 {
-  if (m_opMode == OPMODE_NONE)
+  if (opmode == OPMODE_NONE)
     return;
 
   uint8_t reply[500U];

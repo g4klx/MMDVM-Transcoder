@@ -83,5 +83,12 @@ extern CAMBE3000Driver ambe3000;
 extern CLEDDriver      leds;
 #endif
 
-#endif
+enum OPMODE {
+  OPMODE_NONE,
+  OPMODE_TRANSCODING,
+  OPMODE_PASSTHROUGH
+};
 
+extern OPMODE opmode;
+
+#endif
