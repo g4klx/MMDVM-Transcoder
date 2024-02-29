@@ -23,9 +23,9 @@
 #define SERIAL_SPEED	460800
 
 // Select use of debugging messages
-#define	DEBUGGING
+// #define	DEBUGGING
 
-// Baud rate for DVSI AMBE3000/3003/4020 chip(s)
+// Baud rate for DVSI AMBE3000/3003 chip(s)
 #define DVSI_SPEED  460800
 
 // Type of DVSI AMBE chip(s)
@@ -38,6 +38,6 @@
 #define HAS_LEDS
 
 // Do we have an ST-Link interface for debugging?
-#define HAS_STLINK
+// #define HAS_STLINK
 
 #endif
