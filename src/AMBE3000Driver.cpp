@@ -31,23 +31,9 @@ const uint8_t DVSI_TYPE_AUDIO   = 0x02U;
 
 const uint8_t DVSI_PKT_RATET        = 0x09U;
 const uint8_t DVSI_PKT_RATEP        = 0x0AU;
-const uint8_t DVSI_PKT_INIT         = 0x0BU;
-const uint8_t DVSI_PKT_PRODID       = 0x30U;
-const uint8_t DVSI_PKT_VERSTRING    = 0x31U;
-const uint8_t DVSI_PKT_RESETSOFTCFG = 0x34U;
-const uint8_t DVSI_PKT_READY        = 0x39U;
 const uint8_t DVSI_PKT_CHANNEL0     = 0x40U;
 const uint8_t DVSI_PKT_CHANNEL1     = 0x41U;
 const uint8_t DVSI_PKT_CHANNEL2     = 0x42U;
-
-const uint8_t DVSI_REQ_PRODID[]    = {DVSI_START_BYTE, 0x00U, 0x01U, DVSI_TYPE_CONTROL, DVSI_PKT_PRODID};
-const uint16_t DVSI_REQ_PRODID_LEN = 5U;
-
-const uint8_t DVSI_REQ_VERSTRING[]    = {DVSI_START_BYTE, 0x00U, 0x01U, DVSI_TYPE_CONTROL, DVSI_PKT_VERSTRING};
-const uint16_t DVSI_REQ_VERSTRING_LEN = 5U;
-
-const uint8_t DVSI_REQ_RESET[]    = {DVSI_START_BYTE, 0x00U, 0x07U, DVSI_TYPE_CONTROL, DVSI_PKT_RESETSOFTCFG, 0x05U, 0x00U, 0x00U, 0x0FU, 0x00U, 0x00U};
-const uint16_t DVSI_REQ_RESET_LEN = 11U;
 
 const uint8_t DVSI_PKT_DSTAR_FEC[]    = {DVSI_PKT_RATEP, 0x01U, 0x30U, 0x07U, 0x63U, 0x40U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x48U};
 const uint16_t DVSI_PKT_DSTAR_FEC_LEN = 13U;
@@ -76,7 +62,7 @@ m_mode(MODE_NONE)
 
 void CAMBE3000Driver::startup()
 {
-  dvsi.reset3000();
+  dvsi.reset();
 }
 
 void CAMBE3000Driver::init(uint8_t n, AMBE_MODE mode)
@@ -127,7 +113,8 @@ void CAMBE3000Driver::init(uint8_t n, AMBE_MODE mode)
 #if defined(HAS_LEDS)
   leds.setLED1(true);
 #endif
-  dvsi.write3000(buffer, length);
+
+  dvsi.write(buffer, length);
 
   m_mode = mode;
 }
@@ -135,7 +122,7 @@ void CAMBE3000Driver::init(uint8_t n, AMBE_MODE mode)
 void CAMBE3000Driver::process()
 {
   uint8_t buffer[500U];
-  uint16_t length = dvsi.read3000(buffer);
+  uint16_t length = dvsi.read(buffer);
   if (length == 0U)
     return;
 
@@ -157,12 +144,6 @@ void CAMBE3000Driver::process()
             pos += 2U;
             break;
 
-          case DVSI_PKT_INIT:
-            if (buffer[pos + 1U] != 0x00U)
-              DEBUG2("Response AMBE3003/3000 to PKT_INIT is ", buffer[pos + 1U]);
-            pos += 2U;
-            break;
-
           case DVSI_PKT_RATET:
             if (buffer[pos + 1U] != 0x00U)
               DEBUG2("Response AMBE3003/3000 to PKT_RATET is ", buffer[pos + 1U]);
@@ -173,10 +154,6 @@ void CAMBE3000Driver::process()
             if (buffer[pos + 1U] != 0x00U)
               DEBUG2("Response AMBE3003/3000 to PKT_RATEP is ", buffer[pos + 1U]);
             pos += 2U;
-            break;
-
-          case DVSI_PKT_READY:
-            pos += 1U;
             break;
 
           default:
@@ -255,7 +232,7 @@ void CAMBE3000Driver::process()
 uint8_t CAMBE3000Driver::write(uint8_t n, const uint8_t* buffer, uint16_t length)
 {
   // If the RTS pin is high, then the chip does not expect any more data to be sent through
-  if (!dvsi.ready3000()) {
+  if (!dvsi.ready()) {
     DEBUG1("The AMBE3003/3000 chip is not ready to receive any more data");
     return 0x05U;
   }
@@ -300,7 +277,8 @@ uint8_t CAMBE3000Driver::write(uint8_t n, const uint8_t* buffer, uint16_t length
 #if defined(HAS_LEDS)
       leds.setLED1(true);
 #endif
-      dvsi.write3000(out, pos);
+
+      dvsi.write(out, pos);
       break;
 
     case PCM_TO_DSTAR:
@@ -339,7 +317,8 @@ uint8_t CAMBE3000Driver::write(uint8_t n, const uint8_t* buffer, uint16_t length
 #if defined(HAS_LEDS)
       leds.setLED1(true);
 #endif
-      dvsi.write3000(out, pos);
+
+      dvsi.write(out, pos);
       break;
   }
 

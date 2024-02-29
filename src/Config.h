@@ -32,7 +32,6 @@
 // 0=None
 // 1=AMBE3000
 // 2=AMBE3003
-// 3=AMBE3000 + AMBE4020
 #define	AMBE_TYPE	1
 
 // Are LEDs available for status information?

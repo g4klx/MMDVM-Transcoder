@@ -35,11 +35,7 @@ void CDStarPCM::init(uint8_t n)
 {
   m_n = n;
 
-#if AMBE_TYPE == 3
-  ambe4020.init(DSTAR_TO_PCM);
-#else
   ambe3000.init(n, DSTAR_TO_PCM);
-#endif
 }
 
 uint8_t CDStarPCM::input(const uint8_t* buffer, uint16_t length)
@@ -49,23 +45,14 @@ uint8_t CDStarPCM::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-#if AMBE_TYPE == 3
-  return ambe4020.write(buffer, length);
-#else
   return ambe3000.write(m_n, buffer, length);
-#endif
 }
 
 uint16_t CDStarPCM::output(uint8_t* buffer)
 {
-#if AMBE_TYPE == 3
-  bool ret = ambe4020.read(buffer);
-#else
   bool ret = ambe3000.read(m_n, buffer);
-#endif
   if (!ret)
     return 0U;
 
   return PCM_DATA_LENGTH;
 }
-

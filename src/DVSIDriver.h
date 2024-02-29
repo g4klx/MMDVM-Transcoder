@@ -29,35 +29,19 @@ class CDVSIDriver {
   public:
     CDVSIDriver();
 
-    void     startup3000();
+    void     startup();
 
-    void     reset3000();
+    void     reset();
 
-    bool     ready3000() const;
+    bool     ready() const;
 
-    void     write3000(const uint8_t* buffer, uint16_t length);
-    uint16_t read3000(uint8_t* buffer);
-
-#if AMBE_TYPE == 3
-    void     startup4020();
-
-    void     reset4020();
-
-    bool     RTS4020() const;
-
-    void     write4020(const uint8_t* buffer, uint16_t length);
-    uint16_t read4020(uint8_t* buffer);
-#endif
+    void     write(const uint8_t* buffer, uint16_t length);
+    uint16_t read(uint8_t* buffer);
 
   private:
-    uint8_t  m_buffer3000[512U];
-    uint16_t m_len3000;
-    uint16_t m_ptr3000;
-#if AMBE_TYPE == 3
-    uint8_t  m_buffer4020[512U];
-    uint16_t m_len4020;
-    uint16_t m_ptr4020;
-#endif
+    uint8_t  m_buffer[512U];
+    uint16_t m_len;
+    uint16_t m_ptr;
 };
 
 #endif

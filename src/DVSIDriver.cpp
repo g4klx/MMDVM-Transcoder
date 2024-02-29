@@ -35,18 +35,13 @@ const uint16_t GET_VERSION_ID_LEN = 5U;
 HardwareSerial SerialAMBE(USART6_RX, USART6_TX);
 
 CDVSIDriver::CDVSIDriver() :
-m_buffer3000(),
-m_len3000(0U),
-m_ptr3000(0U)
-#if AMBE_TYPE == 3
-,m_buffer4020(),
-m_len4020(0U),
-m_ptr4020(0U)
-#endif
+m_buffer(),
+m_len(0U),
+m_ptr(0U)
 {
 }
 
-void CDVSIDriver::startup3000()
+void CDVSIDriver::startup()
 {
   SerialAMBE.begin(DVSI_SPEED);
 
@@ -54,13 +49,7 @@ void CDVSIDriver::startup3000()
   pinMode(AMBE3000_RTS, INPUT);
 }
 
-#if AMBE_TYPE == 3
-void CDVSIDriver::startup4020()
-{
-}
-#endif
-
-void CDVSIDriver::reset3000()
+void CDVSIDriver::reset()
 {
   DEBUG1("Resetting the AMBE3000");
 
@@ -72,7 +61,7 @@ void CDVSIDriver::reset3000()
 
   delay(10U);
 
-  write3000(GET_VERSION_ID, GET_VERSION_ID_LEN);
+  write(GET_VERSION_ID, GET_VERSION_ID_LEN);
 
   delay(10U);
 
@@ -80,73 +69,54 @@ void CDVSIDriver::reset3000()
     SerialAMBE.read();
 }
 
-#if AMBE_TYPE == 3
-void CDVSIDriver::reset4020()
-{
-}
-#endif
-
-bool CDVSIDriver::ready3000() const
+bool CDVSIDriver::ready() const
 {
   return digitalRead(AMBE3000_RTS) == LOW;
 }
 
-#if AMBE_TYPE == 3
-bool CDVSIDriver::RTS4020() const
-{
-  return false;
-}
-#endif
-
-void CDVSIDriver::write3000(const uint8_t* buffer, uint16_t length)
+void CDVSIDriver::write(const uint8_t* buffer, uint16_t length)
 {
   SerialAMBE.write(buffer, length);
 }
 
-#if AMBE_TYPE == 3
-void CDVSIDriver::write4020(const uint8_t* buffer, uint16_t length)
-{
-}
-#endif
-
-uint16_t CDVSIDriver::read3000(uint8_t* buffer)
+uint16_t CDVSIDriver::read(uint8_t* buffer)
 {
   while (SerialAMBE.available() > 0) {
     uint8_t c = SerialAMBE.read();
 
-    if (m_ptr3000 == 0U) {
+    if (m_ptr == 0U) {
       if (c == DVSI_START_BYTE) {
         // Handle the frame start correctly
-        m_buffer3000[0U] = c;
-        m_ptr3000 = 1U;
-        m_len3000 = 0U;
+        m_buffer[0U] = c;
+        m_ptr = 1U;
+        m_len = 0U;
       } else {
-        m_ptr3000 = 0U;
-        m_len3000 = 0U;
+        m_ptr = 0U;
+        m_len = 0U;
       }
-    } else if (m_ptr3000 == 1U) {
+    } else if (m_ptr == 1U) {
       // Handle the frame length MSB
-      uint8_t val = m_buffer3000[m_ptr3000] = c;
-      m_len3000 = (val << 8) & 0xFF00U;
-      m_ptr3000 = 2U;
-    } else if (m_ptr3000 == 2U) {
+      uint8_t val = m_buffer[m_ptr] = c;
+      m_len = (val << 8) & 0xFF00U;
+      m_ptr = 2U;
+    } else if (m_ptr == 2U) {
       // Handle the frame length LSB
-      uint8_t val = m_buffer3000[m_ptr3000] = c;
-      m_len3000 |= (val << 0) & 0x00FFU;
-      m_len3000 += 4U;	// The length in the DVSI message doesn't include the first four bytes
-      m_ptr3000  = 3U;
+      uint8_t val = m_buffer[m_ptr] = c;
+      m_len |= (val << 0) & 0x00FFU;
+      m_len += 4U;	// The length in the DVSI message doesn't include the first four bytes
+      m_ptr  = 3U;
     } else {
       // Any other bytes are added to the buffer
-      m_buffer3000[m_ptr3000] = c;
-      m_ptr3000++;
+      m_buffer[m_ptr] = c;
+      m_ptr++;
 
       // The full packet has been received, process it
-      if (m_ptr3000 == m_len3000) {
-        ::memcpy(buffer, m_buffer3000, m_len3000);
-        uint16_t length = m_len3000;
+      if (m_ptr == m_len) {
+        ::memcpy(buffer, m_buffer, m_len);
+        uint16_t length = m_len;
 
-        m_ptr3000 = 0U;
-        m_len3000 = 0U;
+        m_ptr = 0U;
+        m_len = 0U;
 
         return length;
       }
@@ -155,54 +125,5 @@ uint16_t CDVSIDriver::read3000(uint8_t* buffer)
 
   return 0U;
 }
-
-#if AMBE_TYPE == 3
-uint16_t CDVSIDriver::read4020(uint8_t* buffer)
-{
-  while (serial.availableForReadInt(3U)) {
-    uint8_t c = serial.readInt(3U);
-
-    if (m_ptr4020 == 0U) {
-      if (c == DVSI_START_BYTE) {
-        // Handle the frame start correctly
-        m_buffer4020[0U] = c;
-        m_ptr4020 = 1U;
-        m_len4020 = 0U;
-      } else {
-        m_ptr4020 = 0U;
-        m_len4020 = 0U;
-      }
-    } else if (m_ptr4020 == 1U) {
-      // Handle the frame length MSB
-      uint8_t val = m_buffer4020[m_ptr4020] = c;
-      m_len4020 = (val << 8) & 0xFF00U;
-      m_ptr4020 = 2U;
-    } else if (m_ptr4020 == 2U) {
-      // Handle the frame length LSB
-      uint8_t val = m_buffer4020[m_ptr4020] = c;
-      m_len4020 |= (val << 0) & 0x00FFU;
-      m_len4020 += 4U;	// The length in the DVSI message doesn't include the first four bytes
-      m_ptr4020  = 3U;
-    } else {
-      // Any other bytes are added to the buffer
-      m_buffer4020[m_ptr4020] = c;
-      m_ptr4020++;
-
-      // The full packet has been received, process it
-      if (m_ptr4020 == m_len4020) {
-        ::memcpy(buffer, m_buffer4020, m_len4020);
-        uint16_t length = m_len4020;
-
-        m_ptr4020 = 0U;
-        m_len4020 = 0U;
-
-        return length;
-      }
-    }
-  }
-
-  return 0U;
-}
-#endif
 
 #endif

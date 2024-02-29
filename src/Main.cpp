@@ -48,9 +48,6 @@ CCodec2         codec21600(false);
 #if AMBE_TYPE > 0
 CDVSIDriver     dvsi;
 CAMBE3000Driver ambe3000;
-#if AMBE_TYPE == 3
-CAMBE4020Driver ambe4020;
-#endif
 #endif
 
 #if defined(HAS_LEDS)
@@ -72,12 +69,8 @@ extern "C" {
 #endif
 
 #if AMBE_TYPE > 0
-    dvsi.startup3000();
+    dvsi.startup();
     ambe3000.startup();
-#if AMBE_TYPE == 3
-    dvsi.startup4020();
-    ambe4020.startup();
-#endif
 #endif
 
 #if defined(HAS_LEDS)
@@ -92,9 +85,6 @@ extern "C" {
 
 #if AMBE_TYPE > 0
     ambe3000.process();
-#if AMBE_TYPE == 3
-    ambe4020.process();
-#endif
 #endif
 
 #if defined(HAS_LEDS)

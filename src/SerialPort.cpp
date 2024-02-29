@@ -248,10 +248,7 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
 #if AMBE_TYPE > 0
   if ((buffer[0U] == MODE_PASS_THROUGH) && (buffer[1U] == MODE_PASS_THROUGH)) {
     m_opMode = OPMODE_PASSTHROUGH;
-    dvsi.reset3000();
-#if AMBE_TYPE == 3
-    dvsi.reset4020();
-#endif
+    dvsi.reset();
     return 0x00U;
   }
 #endif
@@ -292,7 +289,7 @@ uint8_t CSerialPort::sendData(const uint8_t* buffer, uint16_t length)
       //   DEBUG1("The AMBE3003/3000 chip is not ready to receive any more data");
       //   return 0x05U;
       // }
-      dvsi.write3000(buffer, length);
+      dvsi.write(buffer, length);
       return 0x00U;
 
     case OPMODE_TRANSCODING:
@@ -336,7 +333,7 @@ void CSerialPort::processData()
     if (length > 0U)
       writeData(buffer, length);
   } else if (m_opMode == OPMODE_PASSTHROUGH) {
-    length = dvsi.read3000(buffer);
+    length = dvsi.read(buffer);
 
     if (length > 0U)
       writeData(buffer, length);

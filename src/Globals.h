@@ -26,7 +26,6 @@
 #include "Codec2/codec2.h"
 
 #include "AMBE3000Driver.h"
-#include "AMBE4020Driver.h"
 #include "Codec21600PCM.h"
 #include "Codec23200PCM.h"
 #include "PCMCodec21600.h"
@@ -78,9 +77,6 @@ extern CCodec2         codec21600;
 #if AMBE_TYPE > 0
 extern CDVSIDriver     dvsi;
 extern CAMBE3000Driver ambe3000;
-#if AMBE_TYPE == 3
-extern CAMBE4020Driver ambe4020;
-#endif
 #endif
 
 #if defined(HAS_LEDS)
