@@ -38,9 +38,12 @@
 #include "DMRNXDNFEC.h"
 #include "DMRNXDNPCM.h"
 #include "PCMDMRNXDN.h"
+#include "YSFDNPCM.h"
 #include "DVSIDriver.h"
 #include "SerialPort.h"
 #include "LEDDriver.h"
+#include "PCMYSFDN.h"
+#include "YSFDNPCM.h"
 #include "YSFDNFEC.h"
 #include "DStarFEC.h"
 #include "DStarPCM.h"
@@ -55,12 +58,14 @@ extern CDMRNXDNFEC     dmrnxdnfec;
 extern CYSFDNFEC       ysfdnfec;
 extern CYSFVWP25FEC    ysfvwp25fec;
 
+extern CYSFDNPCM       ysfdnpcm;
 extern CDStarPCM       dstarpcm;
 extern CDMRNXDNPCM     dmrnxdnpcm;
 extern CYSFVWP25PCM    ysfvwp25pcm;
 extern CCodec23200PCM  codec23200pcm;
 extern CCodec21600PCM  codec21600pcm;
 
+extern CPCMYSFDN       pcmysfdn;
 extern CPCMDStar       pcmdstar;
 extern CPCMDMRNXDN     pcmdmrnxdn;
 extern CPCMYSFVWP25    pcmysfvwp25;

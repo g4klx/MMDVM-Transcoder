@@ -41,6 +41,9 @@ const uint16_t DVSI_PKT_DSTAR_FEC_LEN = 13U;
 const uint8_t DVSI_PKT_DMR_NXDN_FEC[]    = {DVSI_PKT_RATET, 33U};
 const uint16_t DVSI_PKT_DMR_NXDN_FEC_LEN = 2U;
 
+const uint8_t DVSI_PKT_YSFDN[]    = {DVSI_PKT_RATET, 34U};
+const uint16_t DVSI_PKT_YSFDN_LEN = 2U;
+
 const uint8_t DVSI_AUDIO_HEADER[]    = {DVSI_START_BYTE, 0x01U, 0x42U, DVSI_TYPE_AUDIO, 0x00U, 0xA0U};
 const uint16_t DVSI_AUDIO_HEADER_LEN = 6U;
 
@@ -102,6 +105,11 @@ void CAMBE3000Driver::init(uint8_t n, AMBE_MODE mode)
     case PCM_TO_DMR_NXDN:
       ::memcpy(buffer + length, DVSI_PKT_DMR_NXDN_FEC, DVSI_PKT_DMR_NXDN_FEC_LEN);
       length += DVSI_PKT_DMR_NXDN_FEC_LEN;
+      break;
+    case YSFDN_TO_PCM:
+    case PCM_TO_YSFDN:
+      ::memcpy(buffer + length, DVSI_PKT_YSFDN, DVSI_PKT_YSFDN_LEN);
+      length += DVSI_PKT_YSFDN_LEN;
       break;
     default:
       DEBUG2("Unknown AMBE3003/3000 mode received ", mode);

@@ -28,97 +28,96 @@ const struct {
   uint16_t    m_output;
   IProcessor* m_step1;
   IProcessor* m_step2;
-  IProcessor* m_step3;
 } PROCESSOR_TABLE[] = {
-  {MODE_DSTAR,       MODE_DSTAR,       &dstarfec,      NULL,           NULL},
+  {MODE_DSTAR,       MODE_DSTAR,       &dstarfec,      NULL},
 #if AMBE_TYPE > 1
-  {MODE_DSTAR,       MODE_DMR_NXDN,    &dstarpcm,      &pcmdmrnxdn,    NULL},
-  {MODE_DSTAR,       MODE_YSFDN,       &dstarpcm,      &pcmdmrnxdn,    &dmrnxdnysfdn},
+  {MODE_DSTAR,       MODE_DMR_NXDN,    &dstarpcm,      &pcmdmrnxdn},
+  {MODE_DSTAR,       MODE_YSFDN,       &dstarpcm,      &pcmysfdn},
 #endif
 #if AMBE_TYPE > 0
-  {MODE_DSTAR,       MODE_YSFVW_P25,   &dstarpcm,      &pcmysfvwp25,   NULL},
-  {MODE_DSTAR,       MODE_CODEC2_3200, &dstarpcm,      &pcmcodec23200, NULL},
+  {MODE_DSTAR,       MODE_YSFVW_P25,   &dstarpcm,      &pcmysfvwp25},
+  {MODE_DSTAR,       MODE_CODEC2_3200, &dstarpcm,      &pcmcodec23200},
 #if defined(BROKEN_CODEC2_1600)
-  {MODE_DSTAR,       MODE_CODEC2_1600, &dstarpcm,      &pcmcodec21600, NULL},
+  {MODE_DSTAR,       MODE_CODEC2_1600, &dstarpcm,      &pcmcodec21600},
 #endif
-  {MODE_DSTAR,       MODE_PCM,         &dstarpcm,      NULL,           NULL},
-#endif
-
-#if AMBE_TYPE > 1
-  {MODE_DMR_NXDN,    MODE_DSTAR,       &dmrnxdnpcm,    &pcmdstar,      NULL},
-#endif
-  {MODE_DMR_NXDN,    MODE_DMR_NXDN,    &dmrnxdnfec,    NULL,           NULL},
-  {MODE_DMR_NXDN,    MODE_YSFDN,       &dmrnxdnfec,    &dmrnxdnysfdn,  NULL},
-#if AMBE_TYPE > 0
-  {MODE_DMR_NXDN,    MODE_YSFVW_P25,   &dmrnxdnpcm,    &pcmysfvwp25,   NULL},
-  {MODE_DMR_NXDN,    MODE_CODEC2_3200, &dmrnxdnpcm,    &pcmcodec23200, NULL},
-#if defined(BROKEN_CODEC2_1600)
-  {MODE_DMR_NXDN,    MODE_CODEC2_1600, &dmrnxdnpcm,    &pcmcodec21600, NULL},
-#endif
-  {MODE_DMR_NXDN,    MODE_PCM,         &dmrnxdnpcm,    NULL,           NULL},
+  {MODE_DSTAR,       MODE_PCM,         &dstarpcm,      NULL},
 #endif
 
 #if AMBE_TYPE > 1
-  {MODE_YSFDN,       MODE_DSTAR,       &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmdstar},
+  {MODE_DMR_NXDN,    MODE_DSTAR,       &dmrnxdnpcm,    &pcmdstar},
 #endif
-  {MODE_YSFDN,       MODE_DMR_NXDN,    &ysfdnfec,      &ysfdndmrnxdn,  NULL},
-  {MODE_YSFDN,       MODE_YSFDN,       &ysfdnfec,      NULL,           NULL},
+  {MODE_DMR_NXDN,    MODE_DMR_NXDN,    &dmrnxdnfec,    NULL},
+  {MODE_DMR_NXDN,    MODE_YSFDN,       &dmrnxdnfec,    &dmrnxdnysfdn},
 #if AMBE_TYPE > 0
-  {MODE_YSFDN,       MODE_YSFVW_P25,   &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmysfvwp25},
-  {MODE_YSFDN,       MODE_CODEC2_3200, &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmcodec23200},
+  {MODE_DMR_NXDN,    MODE_YSFVW_P25,   &dmrnxdnpcm,    &pcmysfvwp25},
+  {MODE_DMR_NXDN,    MODE_CODEC2_3200, &dmrnxdnpcm,    &pcmcodec23200},
 #if defined(BROKEN_CODEC2_1600)
-  {MODE_YSFDN,       MODE_CODEC2_1600, &ysfdndmrnxdn,  &dmrnxdnpcm,    &pcmcodec21600},
+  {MODE_DMR_NXDN,    MODE_CODEC2_1600, &dmrnxdnpcm,    &pcmcodec21600},
 #endif
-  {MODE_YSFDN,       MODE_PCM,         &ysfdndmrnxdn,  &dmrnxdnpcm,    NULL},
+  {MODE_DMR_NXDN,    MODE_PCM,         &dmrnxdnpcm,    NULL},
+#endif
+
+#if AMBE_TYPE > 1
+  {MODE_YSFDN,       MODE_DSTAR,       &ysfdnpcm,      &pcmdstar},
+#endif
+  {MODE_YSFDN,       MODE_DMR_NXDN,    &ysfdnfec,      &ysfdndmrnxdn},
+  {MODE_YSFDN,       MODE_YSFDN,       &ysfdnfec,      NULL},
+#if AMBE_TYPE > 0
+  {MODE_YSFDN,       MODE_YSFVW_P25,   &ysfdnpcm,      &pcmysfvwp25},
+  {MODE_YSFDN,       MODE_CODEC2_3200, &ysfdnpcm,      &pcmcodec23200},
+#if defined(BROKEN_CODEC2_1600)
+  {MODE_YSFDN,       MODE_CODEC2_1600, &ysfdnpcm,      &pcmcodec21600},
+#endif
+  {MODE_YSFDN,       MODE_PCM,         &ysfdnpcm,      NULL},
 #endif
 
 #if AMBE_TYPE > 0
-  {MODE_YSFVW_P25,   MODE_DSTAR,       &ysfvwp25pcm,   &pcmdstar,      NULL},
-  {MODE_YSFVW_P25,   MODE_DMR_NXDN,    &ysfvwp25pcm,   &pcmdmrnxdn,    NULL},
-  {MODE_YSFVW_P25,   MODE_YSFDN,       &ysfvwp25pcm,   &pcmdmrnxdn,    &dmrnxdnysfdn},
+  {MODE_YSFVW_P25,   MODE_DSTAR,       &ysfvwp25pcm,   &pcmdstar},
+  {MODE_YSFVW_P25,   MODE_DMR_NXDN,    &ysfvwp25pcm,   &pcmdmrnxdn},
+  {MODE_YSFVW_P25,   MODE_YSFDN,       &ysfvwp25pcm,   &pcmysfdn},
 #endif
-  {MODE_YSFVW_P25,   MODE_YSFVW_P25,   &ysfvwp25fec,   NULL,           NULL},
-  {MODE_YSFVW_P25,   MODE_CODEC2_3200, &ysfvwp25pcm,   &pcmcodec23200, NULL},
+  {MODE_YSFVW_P25,   MODE_YSFVW_P25,   &ysfvwp25fec,   NULL},
+  {MODE_YSFVW_P25,   MODE_CODEC2_3200, &ysfvwp25pcm,   &pcmcodec23200},
 #if defined(BROKEN_CODEC2_1600)
-  {MODE_YSFVW_P25,   MODE_CODEC2_1600, &ysfvwp25pcm,   &pcmcodec21600, NULL},
+  {MODE_YSFVW_P25,   MODE_CODEC2_1600, &ysfvwp25pcm,   &pcmcodec21600},
 #endif
-  {MODE_YSFVW_P25,   MODE_PCM,         &ysfvwp25pcm,   NULL,           NULL},
+  {MODE_YSFVW_P25,   MODE_PCM,         &ysfvwp25pcm,   NULL},
 
 #if AMBE_TYPE > 0
-  {MODE_CODEC2_3200, MODE_DSTAR,       &codec23200pcm, &pcmdstar,      NULL},
-  {MODE_CODEC2_3200, MODE_DMR_NXDN,    &codec23200pcm, &pcmdmrnxdn,    NULL},
-  {MODE_CODEC2_3200, MODE_YSFDN,       &codec23200pcm, &pcmdmrnxdn,    &dmrnxdnysfdn},
+  {MODE_CODEC2_3200, MODE_DSTAR,       &codec23200pcm, &pcmdstar},
+  {MODE_CODEC2_3200, MODE_DMR_NXDN,    &codec23200pcm, &pcmdmrnxdn},
+  {MODE_CODEC2_3200, MODE_YSFDN,       &codec23200pcm, &pcmysfdn},
 #endif
-  {MODE_CODEC2_3200, MODE_YSFVW_P25,   &codec23200pcm, &pcmysfvwp25,   NULL},
-  {MODE_CODEC2_3200, MODE_CODEC2_3200, NULL,           NULL,           NULL},
+  {MODE_CODEC2_3200, MODE_YSFVW_P25,   &codec23200pcm, &pcmysfvwp25},
+  {MODE_CODEC2_3200, MODE_CODEC2_3200, NULL,           NULL},
 #if defined(BROKEN_CODEC2_1600)
-  {MODE_CODEC2_3200, MODE_CODEC2_1600, &codec23200pcm, &pcmcodec21600, NULL},
+  {MODE_CODEC2_3200, MODE_CODEC2_1600, &codec23200pcm, &pcmcodec21600},
 #endif
-  {MODE_CODEC2_3200, MODE_PCM,         &codec23200pcm, NULL,           NULL},
+  {MODE_CODEC2_3200, MODE_PCM,         &codec23200pcm, NULL},
 
 #if defined(BROKEN_CODEC2_1600)
 #if AMBE_TYPE > 0
-  {MODE_CODEC2_1600, MODE_DSTAR,       &codec21600pcm, &pcmdstar,      NULL},
-  {MODE_CODEC2_1600, MODE_DMR_NXDN,    &codec21600pcm, &pcmdmrnxdn,    NULL},
-  {MODE_CODEC2_1600, MODE_YSFDN,       &codec21600pcm, &pcmdmrnxdn,    &dmrnxdnysfdn},
+  {MODE_CODEC2_1600, MODE_DSTAR,       &codec21600pcm, &pcmdstar},
+  {MODE_CODEC2_1600, MODE_DMR_NXDN,    &codec21600pcm, &pcmdmrnxdn},
+  {MODE_CODEC2_1600, MODE_YSFDN,       &codec21600pcm, &pcmysfdn},
 #endif
-  {MODE_CODEC2_1600, MODE_YSFVW_P25,   &codec21600pcm, &pcmysfvwp25,   NULL},
-  {MODE_CODEC2_1600, MODE_CODEC2_3200, &codec21600pcm, &pcmcodec23200, NULL},
-  {MODE_CODEC2_1600, MODE_CODEC2_1600, NULL,           NULL,           NULL},
-  {MODE_CODEC2_1600, MODE_PCM,         &codec21600pcm, NULL,           NULL},
+  {MODE_CODEC2_1600, MODE_YSFVW_P25,   &codec21600pcm, &pcmysfvwp25},
+  {MODE_CODEC2_1600, MODE_CODEC2_3200, &codec21600pcm, &pcmcodec23200},
+  {MODE_CODEC2_1600, MODE_CODEC2_1600, NULL,           NULL},
+  {MODE_CODEC2_1600, MODE_PCM,         &codec21600pcm, NULL},
 #endif
 
 #if AMBE_TYPE > 0
-  {MODE_PCM,         MODE_DSTAR,       &pcmdstar,      NULL,           NULL},
-  {MODE_PCM,         MODE_DMR_NXDN,    &pcmdmrnxdn,    NULL,           NULL},
-  {MODE_PCM,         MODE_YSFDN,       &pcmdmrnxdn,    &dmrnxdnysfdn,  NULL},
+  {MODE_PCM,         MODE_DSTAR,       &pcmdstar,      NULL},
+  {MODE_PCM,         MODE_DMR_NXDN,    &pcmdmrnxdn,    NULL},
+  {MODE_PCM,         MODE_YSFDN,       &pcmysfdn,      NULL},
 #endif
-  {MODE_PCM,         MODE_YSFVW_P25,   &pcmysfvwp25,   NULL,           NULL},
-  {MODE_PCM,         MODE_CODEC2_3200, &pcmcodec23200, NULL,           NULL},
+  {MODE_PCM,         MODE_YSFVW_P25,   &pcmysfvwp25,   NULL},
+  {MODE_PCM,         MODE_CODEC2_3200, &pcmcodec23200, NULL},
 #if defined(BROKEN_CODEC2_1600)
-  {MODE_PCM,         MODE_CODEC2_1600, &pcmcodec21600, NULL,           NULL},
+  {MODE_PCM,         MODE_CODEC2_1600, &pcmcodec21600, NULL},
 #endif
-  {MODE_PCM,         MODE_PCM,         NULL,           NULL,           NULL}
+  {MODE_PCM,         MODE_PCM,         NULL,           NULL}
 };
 
 const uint8_t PROCESSOR_LENGTH = sizeof(PROCESSOR_TABLE) / sizeof(PROCESSOR_TABLE[0U]);
@@ -157,8 +156,7 @@ m_ptr(0U),
 m_len(0U),
 m_start(0UL),
 m_step1(NULL),
-m_step2(NULL),
-m_step3(NULL)
+m_step2(NULL)
 {
 }
 
@@ -242,7 +240,6 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
   opmode  = OPMODE_NONE;
   m_step1 = NULL;
   m_step2 = NULL;
-  m_step3 = NULL;
 
 #if AMBE_TYPE > 0
   if ((buffer[0U] == MODE_PASS_THROUGH) && (buffer[1U] == MODE_PASS_THROUGH)) {
@@ -257,14 +254,11 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
       opmode  = OPMODE_TRANSCODING;
       m_step1 = PROCESSOR_TABLE[i].m_step1;
       m_step2 = PROCESSOR_TABLE[i].m_step2;
-      m_step3 = PROCESSOR_TABLE[i].m_step3;
 
       if (m_step1 != NULL)
         m_step1->init(0U);
       if (m_step2 != NULL)
         m_step2->init(1U);
-      if (m_step3 != NULL)
-        m_step3->init(2U);
 
       return 0x00U;
     }
@@ -320,14 +314,6 @@ void CSerialPort::processData()
 
     if (m_step2 != NULL)
       length = m_step2->output(buffer);
-
-    if ((m_step3 != NULL) && (length > 0U)) {
-      m_step3->input(buffer, length);
-      length = 0U;
-    }
-
-    if (m_step3 != NULL)
-      length = m_step3->output(buffer);
 
     if (length > 0U)
       writeData(buffer, length);

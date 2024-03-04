@@ -26,12 +26,14 @@ CDMRNXDNFEC     dmrnxdnfec;
 CYSFDNFEC       ysfdnfec;
 CYSFVWP25FEC    ysfvwp25fec;
 
+CYSFDNPCM       ysfdnpcm;
 CDStarPCM       dstarpcm;
 CDMRNXDNPCM     dmrnxdnpcm;
 CYSFVWP25PCM    ysfvwp25pcm;
 CCodec23200PCM  codec23200pcm;
 CCodec21600PCM  codec21600pcm;
 
+CPCMYSFDN       pcmysfdn;
 CPCMDStar       pcmdstar;
 CPCMDMRNXDN     pcmdmrnxdn;
 CPCMYSFVWP25    pcmysfvwp25;

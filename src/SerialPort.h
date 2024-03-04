@@ -57,7 +57,6 @@ private:
 
   IProcessor* m_step1;
   IProcessor* m_step2;
-  IProcessor* m_step3;
 
   void    sendACK();
   void    sendNAK(uint8_t err);
