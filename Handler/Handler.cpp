@@ -629,7 +629,7 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Transcode Codec2 3200 to YSF CW/P25", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, YSFVWP25_DATA, YSFVWP25_DATA_REP_LEN);
+    ret = test("Transcode Codec2 3200 to YSF VW/P25", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, YSFVWP25_DATA, YSFVWP25_DATA_REP_LEN);
     if (!ret)
         return 1;
 /*
@@ -688,7 +688,7 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Transcode Codec2 1600 to YSF CW/P25", CODEC21600_DATA, CODEC21600_DATA_REQ_LEN, YSFVWP25_DATA, YSFVWP25_DATA_REP_LEN);
+    ret = test("Transcode Codec2 1600 to YSF VW/P25", CODEC21600_DATA, CODEC21600_DATA_REQ_LEN, YSFVWP25_DATA, YSFVWP25_DATA_REP_LEN);
     if (!ret)
         return 1;
 
