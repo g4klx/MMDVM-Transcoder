@@ -66,8 +66,6 @@ uint8_t CYSFDNFEC::input(const uint8_t* buffer, uint16_t length)
         WRITE_BIT1(m_buffer, i + 1U, true);
         WRITE_BIT1(m_buffer, i + 2U, true);
         break;
-      default:
-        break;
     }
   }
 

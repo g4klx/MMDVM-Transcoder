@@ -35,14 +35,20 @@ const uint8_t DVSI_PKT_CHANNEL0     = 0x40U;
 const uint8_t DVSI_PKT_CHANNEL1     = 0x41U;
 const uint8_t DVSI_PKT_CHANNEL2     = 0x42U;
 
-const uint8_t DVSI_PKT_DSTAR_FEC[]    = {DVSI_PKT_RATEP, 0x01U, 0x30U, 0x07U, 0x63U, 0x40U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x48U};
-const uint16_t DVSI_PKT_DSTAR_FEC_LEN = 13U;
+const uint8_t DVSI_PKT_DSTAR_FEC[]         = {DVSI_PKT_RATEP, 0x01U, 0x30U, 0x07U, 0x63U, 0x40U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x48U};
+const uint16_t DVSI_PKT_DSTAR_FEC_LEN      = 13U;
+const uint8_t DVSI_PKT_DSTAR_FEC_BYTES_LEN = 9U;
+const uint8_t DVSI_PKT_DSTAR_FEC_BITS_LEN  = 72U;
 
-const uint8_t DVSI_PKT_DMR_NXDN_FEC[]    = {DVSI_PKT_RATET, 33U};
-const uint16_t DVSI_PKT_DMR_NXDN_FEC_LEN = 2U;
+const uint8_t DVSI_PKT_MODE33[]         = {DVSI_PKT_RATET, 33U};
+const uint16_t DVSI_PKT_MODE33_LEN      = 2U;
+const uint8_t DVSI_PKT_MODE33_BYTES_LEN = 9U;
+const uint8_t DVSI_PKT_MODE33_BITS_LEN  = 72U;
 
-const uint8_t DVSI_PKT_YSFDN[]    = {DVSI_PKT_RATET, 34U};
-const uint16_t DVSI_PKT_YSFDN_LEN = 2U;
+const uint8_t DVSI_PKT_MODE34[]         = {DVSI_PKT_RATET, 34U};
+const uint16_t DVSI_PKT_MODE34_LEN      = 2U;
+const uint8_t DVSI_PKT_MODE34_BYTES_LEN = 7U;
+const uint8_t DVSI_PKT_MODE34_BITS_LEN  = 49U;
 
 const uint8_t DVSI_AUDIO_HEADER[]    = {DVSI_START_BYTE, 0x01U, 0x42U, DVSI_TYPE_AUDIO, 0x00U, 0xA0U};
 const uint16_t DVSI_AUDIO_HEADER_LEN = 6U;
@@ -51,16 +57,36 @@ const uint8_t DVSI_AMBE_HEADER[]     = {DVSI_START_BYTE, 0x00U, 0x00U, DVSI_TYPE
 const uint16_t DVSI_AMBE_HEADER_LEN  = 6U;
 
 CAMBE3000Driver::CAMBE3000Driver() :
-m_buffer0(),
-m_length0(0U),
-#if AMBE_TYPE == 2
-m_buffer1(),
-m_length1(0U),
-m_buffer2(),
-m_length2(0U),
-#endif
-m_mode(MODE_NONE)
+m_buffer(),
+m_length(),
+m_mode(),
+m_bytesLen(),
+m_bitsLen()
 {
+  m_buffer[0U] = new uint8_t[512U];
+#if AMBE_TYPE == 2
+  m_buffer[1U] = new uint8_t[512U];
+  m_buffer[2U] = new uint8_t[512U];
+#else
+  m_buffer[1U] = NULL;
+  m_buffer[2U] = NULL;
+#endif
+
+  m_length[0U] = 0U;
+  m_length[1U] = 0U;
+  m_length[2U] = 0U;
+
+  m_mode[0U] = MODE_NONE;
+  m_mode[1U] = MODE_NONE;
+  m_mode[2U] = MODE_NONE;
+
+  m_bytesLen[0U] = 0U;
+  m_bytesLen[1U] = 0U;
+  m_bytesLen[2U] = 0U;
+
+  m_bitsLen[0U] = 0U;
+  m_bitsLen[1U] = 0U;
+  m_bitsLen[2U] = 0U;
 }
 
 void CAMBE3000Driver::startup()
@@ -70,6 +96,10 @@ void CAMBE3000Driver::startup()
 
 void CAMBE3000Driver::init(uint8_t n, AMBE_MODE mode)
 {
+#if AMBE_TYPE == 1
+  n = 0U;
+#endif
+
   uint8_t  buffer[100U];
   uint16_t length = 0U;
 
@@ -100,19 +130,25 @@ void CAMBE3000Driver::init(uint8_t n, AMBE_MODE mode)
     case PCM_TO_DSTAR:
       ::memcpy(buffer + length, DVSI_PKT_DSTAR_FEC, DVSI_PKT_DSTAR_FEC_LEN);
       length += DVSI_PKT_DSTAR_FEC_LEN;
+      m_bytesLen[n] = DVSI_PKT_DSTAR_FEC_BYTES_LEN;
+      m_bitsLen[n]  = DVSI_PKT_DSTAR_FEC_BITS_LEN;
       break;
     case DMR_NXDN_TO_PCM:
     case PCM_TO_DMR_NXDN:
-      ::memcpy(buffer + length, DVSI_PKT_DMR_NXDN_FEC, DVSI_PKT_DMR_NXDN_FEC_LEN);
-      length += DVSI_PKT_DMR_NXDN_FEC_LEN;
+      ::memcpy(buffer + length, DVSI_PKT_MODE33, DVSI_PKT_MODE33_LEN);
+      length += DVSI_PKT_MODE33_LEN;
+      m_bytesLen[n] = DVSI_PKT_MODE33_BYTES_LEN;
+      m_bitsLen[n]  = DVSI_PKT_MODE33_BITS_LEN;
       break;
     case YSFDN_TO_PCM:
     case PCM_TO_YSFDN:
-      ::memcpy(buffer + length, DVSI_PKT_YSFDN, DVSI_PKT_YSFDN_LEN);
-      length += DVSI_PKT_YSFDN_LEN;
+      ::memcpy(buffer + length, DVSI_PKT_MODE34, DVSI_PKT_MODE34_LEN);
+      length += DVSI_PKT_MODE34_LEN;
+      m_bytesLen[n] = DVSI_PKT_MODE34_BYTES_LEN;
+      m_bitsLen[n]  = DVSI_PKT_MODE34_BITS_LEN;
       break;
     default:
-      DEBUG2("Unknown AMBE3003/3000 mode received ", mode);
+      DEBUG2("Unknown AMBE300/3003 mode received ", mode);
       return;
   }
 
@@ -124,7 +160,7 @@ void CAMBE3000Driver::init(uint8_t n, AMBE_MODE mode)
 
   dvsi.write(buffer, length);
 
-  m_mode = mode;
+  m_mode[n] = mode;
 }
 
 void CAMBE3000Driver::process()
@@ -139,6 +175,7 @@ void CAMBE3000Driver::process()
 #endif
 
   uint16_t pos = 0U;
+  uint8_t n = 0U;
 
   switch (buffer[3U]) {
     case DVSI_TYPE_CONTROL:
@@ -146,26 +183,35 @@ void CAMBE3000Driver::process()
       while (pos < length) {
         switch (buffer[pos]) {
           case DVSI_PKT_CHANNEL0:
-          case DVSI_PKT_CHANNEL1:
-          case DVSI_PKT_CHANNEL2:
-            DEBUG2("Response AMBE3003/3000 to PKT_CHANNELn ", buffer[pos] - 0x40U);
+            DEBUG1("Response AMBE3000/3003 to PKT_CHANNEL0");
             pos += 2U;
+            n    = 0U;
+            break;
+
+          case DVSI_PKT_CHANNEL1:
+            DEBUG1("Response AMBE3000/3003 to PKT_CHANNEL1");
+            pos += 2U;
+            n    = 1U;
+            break;
+
+          case DVSI_PKT_CHANNEL2:
+            DEBUG1("Response AMBE3000/3003 to PKT_CHANNEL2");
+            pos += 2U;
+            n    = 2U;
             break;
 
           case DVSI_PKT_RATET:
-            if (buffer[pos + 1U] != 0x00U)
-              DEBUG2("Response AMBE3003/3000 to PKT_RATET is ", buffer[pos + 1U]);
+            DEBUG2("Response AMBE3000/3003 to PKT_RATET is ", buffer[pos + 1U]);
             pos += 2U;
             break;
 
           case DVSI_PKT_RATEP:
-            if (buffer[pos + 1U] != 0x00U)
-              DEBUG2("Response AMBE3003/3000 to PKT_RATEP is ", buffer[pos + 1U]);
+            DEBUG2("Response AMBE3000/3003 to PKT_RATEP is ", buffer[pos + 1U]);
             pos += 2U;
             break;
 
           default:
-            DEBUG2("Unknown AMBE3003/3000 control type response of ", buffer[pos]);
+            DEBUG2("Unknown AMBE3000/3003 control type response of ", buffer[pos]);
             return;
         }
       }
@@ -177,28 +223,8 @@ void CAMBE3000Driver::process()
 #else
       pos = 5U;
 #endif
-      length = buffer[pos] / 8U;
-#if AMBE_TYPE == 2
-      switch (buffer[4U]) {
-        case DVSI_PKT_CHANNEL0:
-#endif
-          ::memcpy(m_buffer0, buffer + pos + 1U, length);
-          m_length0 = length;
-#if AMBE_TYPE == 2
-          break;
-        case DVSI_PKT_CHANNEL1:
-          ::memcpy(m_buffer1, buffer + pos + 1U, length);
-          m_length1 = length;
-          break;
-        case DVSI_PKT_CHANNEL2:
-          ::memcpy(m_buffer2, buffer + pos + 1U, length);
-          m_length2 = length;
-          break;
-        default:
-          DEBUG2("Unknown channel id of ", buffer[4U]);
-          break;
-      }
-#endif
+      ::memcpy(m_buffer[n], buffer + pos + 1U, m_bytesLen[n]);
+      m_length[n] = m_bytesLen[n];
       break;
 
     case DVSI_TYPE_AUDIO:
@@ -208,48 +234,34 @@ void CAMBE3000Driver::process()
       pos = 5U;
 #endif
       length = buffer[pos] * sizeof(uint16_t);
-#if AMBE_TYPE == 2
-      switch (buffer[4U]) {
-        case DVSI_PKT_CHANNEL0:
-#endif
-          swapBytes(m_buffer0, buffer + pos + 1U, length);
-          m_length0 = length;
-#if AMBE_TYPE == 2
-          break;
-        case DVSI_PKT_CHANNEL1:
-          swapBytes(m_buffer1, buffer + pos + 1U, length);
-          m_length1 = length;
-          break;
-        case DVSI_PKT_CHANNEL2:
-          swapBytes(m_buffer2, buffer + pos + 1U, length);
-          m_length2 = length;
-          break;
-        default:
-          DEBUG2("Unknown channel id of ", buffer[4U]);
-          break;
-      }
-#endif
+      swapBytes(m_buffer[n], buffer + pos + 1U, length);
+      m_length[n] = length;
       break;
 
     default:
-      DEBUG2("Unknown AMBE3003/3000 type from the AMBE chip ", buffer[3U]);
+      DEBUG2("Unknown AMBE3000/3003 type from the AMBE chip ", buffer[3U]);
       break;
   }
 }
 
 uint8_t CAMBE3000Driver::write(uint8_t n, const uint8_t* buffer, uint16_t length)
 {
+#if AMBE_TYPE == 1
+  n = 0U;
+#endif
+
   // If the RTS pin is high, then the chip does not expect any more data to be sent through
   if (!dvsi.ready()) {
-    DEBUG1("The AMBE3003/3000 chip is not ready to receive any more data");
+    DEBUG1("The AMBE3000/3003 chip is not ready to receive any more data");
     return 0x05U;
   }
 
   uint8_t out[500U];
   uint16_t pos = 0U;
 
-  switch (m_mode) {
+  switch (m_mode[n]) {
     case DSTAR_TO_PCM:
+    case YSFDN_TO_PCM:
     case DMR_NXDN_TO_PCM:
       out[pos++] = DVSI_START_BYTE;
       out[pos++] = 0x00U;
@@ -274,10 +286,10 @@ uint8_t CAMBE3000Driver::write(uint8_t n, const uint8_t* buffer, uint16_t length
 #endif
 
       out[pos++] = 0x01U;
-      out[pos++] = length * 8U;
+      out[pos++] = m_bitsLen[n];
 
-      ::memcpy(out + pos, buffer, length);
-      pos += length;
+      ::memcpy(out + pos, buffer, m_bytesLen[n]);
+      pos += m_bytesLen[n];
 
       out[1U] = (pos - 4U) / 256U;
       out[2U] = (pos - 4U) % 256U;
@@ -285,11 +297,11 @@ uint8_t CAMBE3000Driver::write(uint8_t n, const uint8_t* buffer, uint16_t length
 #if defined(HAS_LEDS)
       leds.setLED1(true);
 #endif
-
       dvsi.write(out, pos);
       break;
 
     case PCM_TO_DSTAR:
+    case PCM_TO_YSFDN:
     case PCM_TO_DMR_NXDN:
       out[pos++] = DVSI_START_BYTE;
       out[pos++] = 0x00U;
@@ -325,7 +337,6 @@ uint8_t CAMBE3000Driver::write(uint8_t n, const uint8_t* buffer, uint16_t length
 #if defined(HAS_LEDS)
       leds.setLED1(true);
 #endif
-
       dvsi.write(out, pos);
       break;
   }
@@ -335,40 +346,14 @@ uint8_t CAMBE3000Driver::write(uint8_t n, const uint8_t* buffer, uint16_t length
 
 bool CAMBE3000Driver::read(uint8_t n, uint8_t* buffer)
 {
-  switch (n) {
-    case 0U:
 #if AMBE_TYPE == 1
-    case 1U:
-    case 2U:
-#endif
-      if (m_length0 > 0U) {
-        ::memcpy(buffer, m_buffer0, m_length0);
-        m_length0 = 0U;
-        return true;
-      }
-      break;
-
-#if AMBE_TYPE == 2
-    case 1U:
-      if (m_length1 > 0U) {
-        ::memcpy(buffer, m_buffer1, m_length1);
-        m_length1 = 0U;
-        return true;
-      }
-      break;
-
-    case 2U:
-      if (m_length2 > 0U) {
-        ::memcpy(buffer, m_buffer2, m_length2);
-        m_length2 = 0U;
-        return true;
-      }
-      break;
+  n = 0U;
 #endif
 
-    default:
-      DEBUG2("Unknown value of n received ", n);
-      break;
+  if (m_length[n] > 0U) {
+    ::memcpy(buffer, m_buffer[n], m_length[n]);
+    m_length[n] = 0U;
+    return true;
   }
 
   return false;

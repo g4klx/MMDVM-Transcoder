@@ -50,15 +50,11 @@ class CAMBE3000Driver {
     bool read(uint8_t n, uint8_t* buffer);
 
   private:
-    uint8_t    m_buffer0[500U];
-    uint16_t   m_length0;
-#if AMBE_TYPE == 2
-    uint8_t    m_buffer1[500U];
-    uint16_t   m_length1;
-    uint8_t    m_buffer2[500U];
-    uint16_t   m_length2;
-#endif
-    AMBE_MODE  m_mode;
+    uint8_t*  m_buffer[3U];
+    uint16_t  m_length[3U];
+    AMBE_MODE m_mode[3U];
+    uint8_t   m_bytesLen[3U];
+    uint8_t   m_bitsLen[3U];
 
     void swapBytes(uint8_t* out, const uint8_t* in, uint16_t length) const;
 };
