@@ -126,6 +126,14 @@ const uint16_t SET_MODE1D_REQ_LEN = 6U;
 const uint8_t  SET_MODE1E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x06U };
 const uint16_t SET_MODE1E_REQ_LEN = 6U;
 
+// D-Star to DMR/NXDN Mode Set
+const uint8_t  SET_MODE1F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x02U };
+const uint16_t SET_MODE1F_REQ_LEN = 6U;
+
+// D-Star to YSF DN Mode Set
+const uint8_t  SET_MODE1G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x03U };
+const uint16_t SET_MODE1G_REQ_LEN = 6U;
+
 /* DMR/NXDN */
 
 // DMR/NXDN to PCM Mode Set
@@ -152,6 +160,10 @@ const uint16_t SET_MODE2E_REQ_LEN = 6U;
 const uint8_t  SET_MODE2F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x06U };
 const uint16_t SET_MODE2F_REQ_LEN = 6U;
 
+// DMR/NXDN to D-Star Mode Set
+const uint8_t  SET_MODE2G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x01U };
+const uint16_t SET_MODE2G_REQ_LEN = 6U;
+
 /* YSF DN */
 
 // YSF DN to PCM Mode Set
@@ -177,6 +189,10 @@ const uint16_t SET_MODE3E_REQ_LEN = 6U;
 // YSF DN to Codec2 1600 Mode Set
 const uint8_t  SET_MODE3F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x06U };
 const uint16_t SET_MODE3F_REQ_LEN = 6U;
+
+// YSF DN to D-Star Mode Set
+const uint8_t  SET_MODE3G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x01U };
+const uint16_t SET_MODE3G_REQ_LEN = 6U;
 
 /* YSF VW/P25 */
 
@@ -400,6 +416,22 @@ int CHandler::run()
     if (!ret)
         return 1;
 
+    ret = test("Set Mode D-Star to DMR/NXDN", SET_MODE1F_REQ, SET_MODE1F_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode D-Star to DMR/NXDN", DSTAR_DATA, DSTAR_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode D-Star to YSF DN", SET_MODE1G_REQ, SET_MODE1G_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode D-Star to YSF DN", DSTAR_DATA, DSTAR_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
     ret = test("Set Mode D-Star to YSF VW/P25", SET_MODE1C_REQ, SET_MODE1C_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
@@ -439,6 +471,14 @@ int CHandler::run()
         return 1;
 
     ret = test("Transcode DMR/NXDN to DMR/NXDN", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode DMR/NXDN to D-Star", SET_MODE2G_REQ, SET_MODE2G_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode DMR/NXDN to D-Star", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
     if (!ret)
         return 1;
 
@@ -489,6 +529,14 @@ int CHandler::run()
         return 1;
 
     ret = test("Transcode YSF DN to YSF DN", YSFDN_DATA, YSFDN_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode YSF DN to D-Star", SET_MODE3G_REQ, SET_MODE3G_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode YSF DN to D-Star", YSFDN_DATA, YSFDN_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
     if (!ret)
         return 1;
 
