@@ -30,11 +30,14 @@ const struct {
   IProcessor* m_step2;
 } PROCESSOR_TABLE[] = {
   {MODE_DSTAR,       MODE_DSTAR,       &dstarfec,      NULL},
-#if AMBE_TYPE > 1
+#if AMBE_TYPE > 0
+#if AMBE_TYPE == 2
   {MODE_DSTAR,       MODE_DMR_NXDN,    &dstarpcm,      &pcmdmrnxdn},
   {MODE_DSTAR,       MODE_YSFDN,       &dstarpcm,      &pcmysfdn},
+#else
+  {MODE_DSTAR,       MODE_DMR_NXDN,    &dstardmrnxdn,  NULL},
+  {MODE_DSTAR,       MODE_YSFDN,       &dstarysfdn,    NULL},
 #endif
-#if AMBE_TYPE > 0
   {MODE_DSTAR,       MODE_YSFVW_P25,   &dstarpcm,      &pcmysfvwp25},
   {MODE_DSTAR,       MODE_CODEC2_3200, &dstarpcm,      &pcmcodec23200},
 #if defined(BROKEN_CODEC2_1600)
@@ -43,12 +46,14 @@ const struct {
   {MODE_DSTAR,       MODE_PCM,         &dstarpcm,      NULL},
 #endif
 
-#if AMBE_TYPE > 1
+#if AMBE_TYPE > 0
+#if AMBE_TYPE == 2
   {MODE_DMR_NXDN,    MODE_DSTAR,       &dmrnxdnpcm,    &pcmdstar},
+#else
+  {MODE_DMR_NXDN,    MODE_DSTAR,       &dmrnxdndstar,  NULL},
 #endif
   {MODE_DMR_NXDN,    MODE_DMR_NXDN,    &dmrnxdnfec,    NULL},
   {MODE_DMR_NXDN,    MODE_YSFDN,       &dmrnxdnfec,    &dmrnxdnysfdn},
-#if AMBE_TYPE > 0
   {MODE_DMR_NXDN,    MODE_YSFVW_P25,   &dmrnxdnpcm,    &pcmysfvwp25},
   {MODE_DMR_NXDN,    MODE_CODEC2_3200, &dmrnxdnpcm,    &pcmcodec23200},
 #if defined(BROKEN_CODEC2_1600)
@@ -57,12 +62,14 @@ const struct {
   {MODE_DMR_NXDN,    MODE_PCM,         &dmrnxdnpcm,    NULL},
 #endif
 
-#if AMBE_TYPE > 1
+#if AMBE_TYPE > 0
+#if AMBE_TYPE == 2
   {MODE_YSFDN,       MODE_DSTAR,       &ysfdnpcm,      &pcmdstar},
+#else
+  {MODE_YSFDN,       MODE_DSTAR,       &ysfdndstar,    NULL},
 #endif
   {MODE_YSFDN,       MODE_DMR_NXDN,    &ysfdnfec,      &ysfdndmrnxdn},
   {MODE_YSFDN,       MODE_YSFDN,       &ysfdnfec,      NULL},
-#if AMBE_TYPE > 0
   {MODE_YSFDN,       MODE_YSFVW_P25,   &ysfdnpcm,      &pcmysfvwp25},
   {MODE_YSFDN,       MODE_CODEC2_3200, &ysfdnpcm,      &pcmcodec23200},
 #if defined(BROKEN_CODEC2_1600)

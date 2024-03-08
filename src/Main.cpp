@@ -26,6 +26,11 @@ CDMRNXDNFEC     dmrnxdnfec;
 CYSFDNFEC       ysfdnfec;
 CYSFVWP25FEC    ysfvwp25fec;
 
+CDStarDMRNXDN   dstardmrnxdn;
+CDMRNXDNDStar   dmrnxdndstar;
+CDStarYSFDN     dstarysfdn;
+CYSFDNDStar     ysfdndstar;
+
 CYSFDNPCM       ysfdnpcm;
 CDStarPCM       dstarpcm;
 CDMRNXDNPCM     dmrnxdnpcm;

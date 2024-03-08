@@ -30,11 +30,15 @@
 #include "Codec23200PCM.h"
 #include "PCMCodec21600.h"
 #include "PCMCodec23200.h"
+#include "DStarDMRNXDN.h"
+#include "DMRNXDNDStar.h"
 #include "YSFDNDMRNXDN.h"
 #include "DMRNXDNYSFDN.h"
 #include "YSFVWP25FEC.h"
 #include "YSFVWP25PCM.h"
 #include "PCMYSFVWP25.h"
+#include "DStarYSFDN.h"
+#include "YSFDNDStar.h"
 #include "DMRNXDNFEC.h"
 #include "DMRNXDNPCM.h"
 #include "PCMDMRNXDN.h"
@@ -57,6 +61,11 @@ extern CDStarFEC       dstarfec;
 extern CDMRNXDNFEC     dmrnxdnfec;
 extern CYSFDNFEC       ysfdnfec;
 extern CYSFVWP25FEC    ysfvwp25fec;
+
+extern CDStarDMRNXDN   dstardmrnxdn;
+extern CDMRNXDNDStar   dmrnxdndstar;
+extern CDStarYSFDN     dstarysfdn;
+extern CYSFDNDStar     ysfdndstar;
 
 extern CYSFDNPCM       ysfdnpcm;
 extern CDStarPCM       dstarpcm;
