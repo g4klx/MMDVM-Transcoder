@@ -26,3 +26,10 @@ void IProcessor::init(uint8_t n)
 {
 }
 
+void IProcessor::process()
+{
+}
+
+void IProcessor::finish()
+{
+}

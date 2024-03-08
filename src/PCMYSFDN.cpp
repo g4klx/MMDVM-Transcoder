@@ -54,7 +54,7 @@ uint8_t CPCMYSFDN::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-  return ambe3000.write(m_n, buffer, length);
+  return ambe3000.writePCM(m_n, buffer, length);
 }
 
 uint16_t CPCMYSFDN::output(uint8_t* buffer)

@@ -89,7 +89,7 @@ uint8_t CYSFDNDStar::input(const uint8_t* buffer, uint16_t length)
     WRITE_BIT1(ambe, pos, b);
   }
 
-  return ambe3000.write(m_n, ambe, length);
+  return ambe3000.writeAMBE(m_n, ambe, length);
 }
 
 uint16_t CYSFDNDStar::output(uint8_t* buffer)

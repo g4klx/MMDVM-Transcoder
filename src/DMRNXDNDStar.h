@@ -21,6 +21,14 @@
 
 #include "Processor.h"
 
+#include "AMBE3000Utils.h"
+
+enum DND_STATE {
+  DNDS_NONE,
+  DNDS_STATE1,
+  DNDS_STATE2
+};
+
 class CDMRNXDNDStar : public IProcessor {
   public:
     CDMRNXDNDStar();
@@ -30,10 +38,18 @@ class CDMRNXDNDStar : public IProcessor {
 
     virtual uint8_t  input(const uint8_t* buffer, uint16_t length);
 
+    virtual void     process();
+
     virtual uint16_t output(uint8_t* buffer);
 
   private:
-    uint8_t m_n;
+    uint8_t        m_n;
+    DND_STATE      m_state;
+    CAMBE3000Utils m_utils;
+    uint8_t        m_buffer1[50U];
+    uint8_t        m_buffer2[50U];
+    uint16_t       m_len1;
+    uint16_t       m_len2;
 };
 
 #endif

@@ -244,9 +244,17 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
     return 0x02U;
   }
 
-  opmode  = OPMODE_NONE;
-  m_step1 = NULL;
-  m_step2 = NULL;
+  if (m_step1 != NULL) {
+    m_step1->finish();
+    m_step1 = NULL;
+  }
+
+  if (m_step2 != NULL) {
+    m_step2->finish();
+    m_step2 = NULL;
+  }
+
+  opmode = OPMODE_NONE;
 
 #if AMBE_TYPE > 0
   if ((buffer[0U] == MODE_PASS_THROUGH) && (buffer[1U] == MODE_PASS_THROUGH)) {
@@ -311,16 +319,20 @@ void CSerialPort::processData()
   uint16_t length = 0U;
 
   if (opmode == OPMODE_TRANSCODING) {
-    if (m_step1 != NULL)
+    if (m_step1 != NULL) {
+      m_step1->process();
       length = m_step1->output(buffer);
+    }
 
     if ((m_step2 != NULL) && (length > 0U)) {
       m_step2->input(buffer, length);
       length = 0U;
     }
 
-    if (m_step2 != NULL)
+    if (m_step2 != NULL) {
+      m_step2->process();
       length = m_step2->output(buffer);
+    }
 
     if (length > 0U)
       writeData(buffer, length);

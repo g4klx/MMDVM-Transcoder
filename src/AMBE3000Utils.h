@@ -16,45 +16,42 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	AMBE3000Driver_H
-#define	AMBE3000Driver_H
+#ifndef	AMBE3000Utils_H
+#define	AMBE3000Utils_H
 
 #include "Config.h"
 
 #if AMBE_TYPE > 0
 
-#include "AMBE3000Utils.h"
-
 #include <cstdint>
 
-class CAMBE3000Driver {
+enum AMBE_MODE {
+  MODE_NONE,
+  DSTAR_TO_PCM,
+  YSFDN_TO_PCM,
+  DMR_NXDN_TO_PCM,
+  PCM_TO_DSTAR,
+  PCM_TO_YSFDN,
+  PCM_TO_DMR_NXDN
+};
+
+class CAMBE3000Utils {
   public:
-    CAMBE3000Driver();
+    CAMBE3000Utils();
 
-    void startup();
+    uint16_t createModeChange(uint8_t n, AMBE_MODE mode, uint8_t* buffer);
+    uint16_t createAMBEFrame(uint8_t n, const uint8_t* buffer, uint8_t* out) const;
+    uint16_t createPCMFrame(uint8_t n, const uint8_t* buffer, uint8_t* out) const;
 
-    void init(uint8_t n, AMBE_MODE mode);
-
-    void process();
-
-    uint8_t write(const uint8_t* buffer, uint16_t length, const uint8_t* frame, uint16_t len);
-
-    uint8_t writeAMBE(uint8_t n, const uint8_t* buffer, uint16_t length);
-
-    uint8_t writePCM(uint8_t n, const uint8_t* buffer, uint16_t length);
-
-    bool read(uint8_t n, uint8_t* buffer);
+    uint16_t extractAMBEFrame(const uint8_t* buffer, uint8_t* data) const;
+    uint16_t extractPCMFrame(const uint8_t* buffer, uint8_t* data) const;
 
   private:
-#if AMBE_TYPE == 2
-    uint8_t*       m_buffer[3U];
-    uint16_t       m_length[3U];
-    CAMBE3000Utils m_utils[3U];
-#else
-    uint8_t*       m_buffer[1U];
-    uint16_t       m_length[1U];
-    CAMBE3000Utils m_utils[1U];
-#endif
+    AMBE_MODE m_mode;
+    uint8_t   m_bytesLen;
+    uint8_t   m_bitsLen;
+
+    void swapBytes(uint8_t* out, const uint8_t* in, uint16_t length) const;
 };
 
 #endif

@@ -45,7 +45,7 @@ uint8_t CDStarPCM::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-  return ambe3000.write(m_n, buffer, length);
+  return ambe3000.writeAMBE(m_n, buffer, length);
 }
 
 uint16_t CDStarPCM::output(uint8_t* buffer)

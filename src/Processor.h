@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -29,7 +29,11 @@ class IProcessor {
 
     virtual uint8_t  input(const uint8_t* buffer, uint16_t length) = 0;
 
+    virtual void     process();
+
     virtual uint16_t output(uint8_t* buffer) = 0;
+
+    virtual void     finish();
 
   private:
 };
