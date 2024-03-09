@@ -21,6 +21,14 @@
 
 #include "Processor.h"
 
+#include "AMBE3000Utils.h"
+
+enum YDND_STATE {
+  YDNDS_NONE,
+  YDNDS_STATE1,
+  YDNDS_STATE2
+};
+
 class CYSFDNDStar : public IProcessor {
   public:
     CYSFDNDStar();
@@ -30,11 +38,20 @@ class CYSFDNDStar : public IProcessor {
 
     virtual uint8_t  input(const uint8_t* buffer, uint16_t length) override;
 
+    virtual void     process() override;
+
     virtual uint16_t output(uint8_t* buffer) override;
 
+    virtual void     finish() override;
+
   private:
-    uint8_t m_n;
+    uint8_t        m_n;
+    YDND_STATE     m_state;
+    CAMBE3000Utils m_utils;
+    uint8_t        m_buffer1[50U];
+    uint8_t        m_buffer2[50U];
+    uint16_t       m_len1;
+    uint16_t       m_len2;
 };
 
 #endif
-

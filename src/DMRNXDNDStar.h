@@ -55,4 +55,3 @@ class CDMRNXDNDStar : public IProcessor {
 };
 
 #endif
-

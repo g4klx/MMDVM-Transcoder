@@ -32,7 +32,13 @@ const uint8_t INTERLEAVE[] = {0U,  3U,   6U,  9U, 12U, 15U, 18U, 21U, 24U, 27U, 
                               48U,  2U,  5U,  8U, 11U, 14U, 17U, 20U, 23U, 26U, 29U, 32U, 35U, 3U}; // u3
 
 CYSFDNDStar::CYSFDNDStar() :
-m_n(0U)
+m_n(0U),
+m_state(YDNDS_NONE),
+m_utils(),
+m_buffer1(),
+m_buffer2(),
+m_len1(0U),
+m_len2(0U)
 {
 }
 
@@ -43,7 +49,11 @@ CYSFDNDStar::~CYSFDNDStar()
 void CYSFDNDStar::init(uint8_t n)
 {
   m_n = n;
-  
+
+  // Create mode change frames for later
+  m_len1 = m_utils.createModeChange(m_n, YSFDN_TO_PCM, m_buffer1);  
+  m_len2 = m_utils.createModeChange(m_n, PCM_TO_DSTAR, m_buffer2);  
+
   ambe3000.init(n, YSFDN_TO_PCM);
 }
 
@@ -51,6 +61,11 @@ uint8_t CYSFDNDStar::input(const uint8_t* buffer, uint16_t length)
 {
   if (length != YSFDN_DATA_LENGTH) {
     DEBUG2("YSF DN frame length is invalid", length);
+    return 0x04U;
+  }
+
+  if (m_state != YDNDS_NONE) {
+    DEBUG1("The AMBE3000 is busy");
     return 0x04U;
   }
 
@@ -89,15 +104,43 @@ uint8_t CYSFDNDStar::input(const uint8_t* buffer, uint16_t length)
     WRITE_BIT1(ambe, pos, b);
   }
 
+  m_state = YDNDS_STATE1;
+
   return ambe3000.writeAMBE(m_n, ambe);
+}
+
+void CYSFDNDStar::process()
+{
+  if (m_state == YDNDS_STATE1) {
+    uint8_t buffer[400U];
+    bool ret = ambe3000.read(m_n, buffer);
+    if (!ret)
+      return;
+
+    // Receive PCM from YSF DN, send back to the chip and switch back to YSF DN to PCM
+    ambe3000.writePCM(m_n, buffer, m_buffer1, m_len1);
+
+    m_state = YDNDS_STATE2;
+  }
 }
 
 uint16_t CYSFDNDStar::output(uint8_t* buffer)
 {
+  if (m_state != YDNDS_STATE2)
+    return 0U;
+
   bool ret = ambe3000.read(m_n, buffer);
   if (!ret)
     return 0U;
 
+  m_state = YDNDS_NONE;
+
   return DSTAR_DATA_LENGTH;
 }
 
+void CYSFDNDStar::finish()
+{
+  // Drain any outstanding replies from the chip
+  uint8_t buffer[400U];
+  ambe3000.read(m_n, buffer);
+}
