@@ -89,7 +89,7 @@ uint8_t CYSFDNPCM::input(const uint8_t* buffer, uint16_t length)
     WRITE_BIT1(ambe, pos, b);
   }
 
-  return ambe3000.writeAMBE(m_n, ambe, length);
+  return ambe3000.writeAMBE(m_n, ambe);
 }
 
 uint16_t CYSFDNPCM::output(uint8_t* buffer)
@@ -100,4 +100,3 @@ uint16_t CYSFDNPCM::output(uint8_t* buffer)
 
   return PCM_DATA_LENGTH;
 }
-

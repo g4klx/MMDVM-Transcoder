@@ -28,9 +28,9 @@ class CPCMCodec21600 : public IProcessor {
     CPCMCodec21600();
     virtual ~CPCMCodec21600();
 
-    virtual uint8_t  input(const uint8_t* buffer, uint16_t length);
+    virtual uint8_t  input(const uint8_t* buffer, uint16_t length) override;
 
-    virtual uint16_t output(uint8_t* buffer);
+    virtual uint16_t output(uint8_t* buffer) override;
 
   private:
     uint8_t m_buffer[CODEC2_1600_DATA_LENGTH];

@@ -45,7 +45,7 @@ uint8_t CPCMDStar::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-  return ambe3000.writePCM(m_n, buffer, length);
+  return ambe3000.writePCM(m_n, buffer);
 }
 
 uint16_t CPCMDStar::output(uint8_t* buffer)

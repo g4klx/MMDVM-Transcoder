@@ -45,7 +45,7 @@ uint8_t CDStarDMRNXDN::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-  return ambe3000.writeAMBE(m_n, buffer, length);
+  return ambe3000.writeAMBE(m_n, buffer);
 }
 
 uint16_t CDStarDMRNXDN::output(uint8_t* buffer)

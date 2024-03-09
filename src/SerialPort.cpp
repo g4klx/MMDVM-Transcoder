@@ -29,53 +29,53 @@ const struct {
   IProcessor* m_step1;
   IProcessor* m_step2;
 } PROCESSOR_TABLE[] = {
-  {MODE_DSTAR,       MODE_DSTAR,       &dstarfec,      NULL},
+  {MODE_DSTAR,       MODE_DSTAR,       &dstarfec,      nullptr},
 #if AMBE_TYPE > 0
 #if AMBE_TYPE == 2
   {MODE_DSTAR,       MODE_DMR_NXDN,    &dstarpcm,      &pcmdmrnxdn},
   {MODE_DSTAR,       MODE_YSFDN,       &dstarpcm,      &pcmysfdn},
 #else
-  {MODE_DSTAR,       MODE_DMR_NXDN,    &dstardmrnxdn,  NULL},
-  {MODE_DSTAR,       MODE_YSFDN,       &dstarysfdn,    NULL},
+  {MODE_DSTAR,       MODE_DMR_NXDN,    &dstardmrnxdn,  nullptr},
+  {MODE_DSTAR,       MODE_YSFDN,       &dstarysfdn,    nullptr},
 #endif
   {MODE_DSTAR,       MODE_YSFVW_P25,   &dstarpcm,      &pcmysfvwp25},
   {MODE_DSTAR,       MODE_CODEC2_3200, &dstarpcm,      &pcmcodec23200},
 #if defined(BROKEN_CODEC2_1600)
   {MODE_DSTAR,       MODE_CODEC2_1600, &dstarpcm,      &pcmcodec21600},
 #endif
-  {MODE_DSTAR,       MODE_PCM,         &dstarpcm,      NULL},
+  {MODE_DSTAR,       MODE_PCM,         &dstarpcm,      nullptr},
 #endif
 
 #if AMBE_TYPE > 0
 #if AMBE_TYPE == 2
   {MODE_DMR_NXDN,    MODE_DSTAR,       &dmrnxdnpcm,    &pcmdstar},
 #else
-  {MODE_DMR_NXDN,    MODE_DSTAR,       &dmrnxdndstar,  NULL},
+  {MODE_DMR_NXDN,    MODE_DSTAR,       &dmrnxdndstar,  nullptr},
 #endif
-  {MODE_DMR_NXDN,    MODE_DMR_NXDN,    &dmrnxdnfec,    NULL},
+  {MODE_DMR_NXDN,    MODE_DMR_NXDN,    &dmrnxdnfec,    nullptr},
   {MODE_DMR_NXDN,    MODE_YSFDN,       &dmrnxdnfec,    &dmrnxdnysfdn},
   {MODE_DMR_NXDN,    MODE_YSFVW_P25,   &dmrnxdnpcm,    &pcmysfvwp25},
   {MODE_DMR_NXDN,    MODE_CODEC2_3200, &dmrnxdnpcm,    &pcmcodec23200},
 #if defined(BROKEN_CODEC2_1600)
   {MODE_DMR_NXDN,    MODE_CODEC2_1600, &dmrnxdnpcm,    &pcmcodec21600},
 #endif
-  {MODE_DMR_NXDN,    MODE_PCM,         &dmrnxdnpcm,    NULL},
+  {MODE_DMR_NXDN,    MODE_PCM,         &dmrnxdnpcm,    nullptr},
 #endif
 
 #if AMBE_TYPE > 0
 #if AMBE_TYPE == 2
   {MODE_YSFDN,       MODE_DSTAR,       &ysfdnpcm,      &pcmdstar},
 #else
-  {MODE_YSFDN,       MODE_DSTAR,       &ysfdndstar,    NULL},
+  {MODE_YSFDN,       MODE_DSTAR,       &ysfdndstar,    nullptr},
 #endif
   {MODE_YSFDN,       MODE_DMR_NXDN,    &ysfdnfec,      &ysfdndmrnxdn},
-  {MODE_YSFDN,       MODE_YSFDN,       &ysfdnfec,      NULL},
+  {MODE_YSFDN,       MODE_YSFDN,       &ysfdnfec,      nullptr},
   {MODE_YSFDN,       MODE_YSFVW_P25,   &ysfdnpcm,      &pcmysfvwp25},
   {MODE_YSFDN,       MODE_CODEC2_3200, &ysfdnpcm,      &pcmcodec23200},
 #if defined(BROKEN_CODEC2_1600)
   {MODE_YSFDN,       MODE_CODEC2_1600, &ysfdnpcm,      &pcmcodec21600},
 #endif
-  {MODE_YSFDN,       MODE_PCM,         &ysfdnpcm,      NULL},
+  {MODE_YSFDN,       MODE_PCM,         &ysfdnpcm,      nullptr},
 #endif
 
 #if AMBE_TYPE > 0
@@ -83,12 +83,12 @@ const struct {
   {MODE_YSFVW_P25,   MODE_DMR_NXDN,    &ysfvwp25pcm,   &pcmdmrnxdn},
   {MODE_YSFVW_P25,   MODE_YSFDN,       &ysfvwp25pcm,   &pcmysfdn},
 #endif
-  {MODE_YSFVW_P25,   MODE_YSFVW_P25,   &ysfvwp25fec,   NULL},
+  {MODE_YSFVW_P25,   MODE_YSFVW_P25,   &ysfvwp25fec,   nullptr},
   {MODE_YSFVW_P25,   MODE_CODEC2_3200, &ysfvwp25pcm,   &pcmcodec23200},
 #if defined(BROKEN_CODEC2_1600)
   {MODE_YSFVW_P25,   MODE_CODEC2_1600, &ysfvwp25pcm,   &pcmcodec21600},
 #endif
-  {MODE_YSFVW_P25,   MODE_PCM,         &ysfvwp25pcm,   NULL},
+  {MODE_YSFVW_P25,   MODE_PCM,         &ysfvwp25pcm,   nullptr},
 
 #if AMBE_TYPE > 0
   {MODE_CODEC2_3200, MODE_DSTAR,       &codec23200pcm, &pcmdstar},
@@ -96,11 +96,11 @@ const struct {
   {MODE_CODEC2_3200, MODE_YSFDN,       &codec23200pcm, &pcmysfdn},
 #endif
   {MODE_CODEC2_3200, MODE_YSFVW_P25,   &codec23200pcm, &pcmysfvwp25},
-  {MODE_CODEC2_3200, MODE_CODEC2_3200, NULL,           NULL},
+  {MODE_CODEC2_3200, MODE_CODEC2_3200, nullptr,           nullptr},
 #if defined(BROKEN_CODEC2_1600)
   {MODE_CODEC2_3200, MODE_CODEC2_1600, &codec23200pcm, &pcmcodec21600},
 #endif
-  {MODE_CODEC2_3200, MODE_PCM,         &codec23200pcm, NULL},
+  {MODE_CODEC2_3200, MODE_PCM,         &codec23200pcm, nullptr},
 
 #if defined(BROKEN_CODEC2_1600)
 #if AMBE_TYPE > 0
@@ -110,21 +110,21 @@ const struct {
 #endif
   {MODE_CODEC2_1600, MODE_YSFVW_P25,   &codec21600pcm, &pcmysfvwp25},
   {MODE_CODEC2_1600, MODE_CODEC2_3200, &codec21600pcm, &pcmcodec23200},
-  {MODE_CODEC2_1600, MODE_CODEC2_1600, NULL,           NULL},
-  {MODE_CODEC2_1600, MODE_PCM,         &codec21600pcm, NULL},
+  {MODE_CODEC2_1600, MODE_CODEC2_1600, nullptr,           nullptr},
+  {MODE_CODEC2_1600, MODE_PCM,         &codec21600pcm, nullptr},
 #endif
 
 #if AMBE_TYPE > 0
-  {MODE_PCM,         MODE_DSTAR,       &pcmdstar,      NULL},
-  {MODE_PCM,         MODE_DMR_NXDN,    &pcmdmrnxdn,    NULL},
-  {MODE_PCM,         MODE_YSFDN,       &pcmysfdn,      NULL},
+  {MODE_PCM,         MODE_DSTAR,       &pcmdstar,      nullptr},
+  {MODE_PCM,         MODE_DMR_NXDN,    &pcmdmrnxdn,    nullptr},
+  {MODE_PCM,         MODE_YSFDN,       &pcmysfdn,      nullptr},
 #endif
-  {MODE_PCM,         MODE_YSFVW_P25,   &pcmysfvwp25,   NULL},
-  {MODE_PCM,         MODE_CODEC2_3200, &pcmcodec23200, NULL},
+  {MODE_PCM,         MODE_YSFVW_P25,   &pcmysfvwp25,   nullptr},
+  {MODE_PCM,         MODE_CODEC2_3200, &pcmcodec23200, nullptr},
 #if defined(BROKEN_CODEC2_1600)
-  {MODE_PCM,         MODE_CODEC2_1600, &pcmcodec21600, NULL},
+  {MODE_PCM,         MODE_CODEC2_1600, &pcmcodec21600, nullptr},
 #endif
-  {MODE_PCM,         MODE_PCM,         NULL,           NULL}
+  {MODE_PCM,         MODE_PCM,         nullptr,           nullptr}
 };
 
 const uint8_t PROCESSOR_LENGTH = sizeof(PROCESSOR_TABLE) / sizeof(PROCESSOR_TABLE[0U]);
@@ -162,8 +162,8 @@ m_buffer(),
 m_ptr(0U),
 m_len(0U),
 m_start(0UL),
-m_step1(NULL),
-m_step2(NULL)
+m_step1(nullptr),
+m_step2(nullptr)
 {
 }
 
@@ -244,14 +244,14 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
     return 0x02U;
   }
 
-  if (m_step1 != NULL) {
+  if (m_step1 != nullptr) {
     m_step1->finish();
-    m_step1 = NULL;
+    m_step1 = nullptr;
   }
 
-  if (m_step2 != NULL) {
+  if (m_step2 != nullptr) {
     m_step2->finish();
-    m_step2 = NULL;
+    m_step2 = nullptr;
   }
 
   opmode = OPMODE_NONE;
@@ -270,9 +270,9 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
       m_step1 = PROCESSOR_TABLE[i].m_step1;
       m_step2 = PROCESSOR_TABLE[i].m_step2;
 
-      if (m_step1 != NULL)
+      if (m_step1 != nullptr)
         m_step1->init(0U);
-      if (m_step2 != NULL)
+      if (m_step2 != nullptr)
         m_step2->init(1U);
 
       return 0x00U;
@@ -302,7 +302,7 @@ uint8_t CSerialPort::sendData(const uint8_t* buffer, uint16_t length)
 
     case OPMODE_TRANSCODING:
     default:
-      if (m_step1 != NULL) {
+      if (m_step1 != nullptr) {
         // Start the pipeline
         return m_step1->input(buffer, length);
       } else {
@@ -319,17 +319,17 @@ void CSerialPort::processData()
   uint16_t length = 0U;
 
   if (opmode == OPMODE_TRANSCODING) {
-    if (m_step1 != NULL) {
+    if (m_step1 != nullptr) {
       m_step1->process();
       length = m_step1->output(buffer);
     }
 
-    if ((m_step2 != NULL) && (length > 0U)) {
+    if ((m_step2 != nullptr) && (length > 0U)) {
       m_step2->input(buffer, length);
       length = 0U;
     }
 
-    if (m_step2 != NULL) {
+    if (m_step2 != nullptr) {
       m_step2->process();
       length = m_step2->output(buffer);
     }

@@ -59,13 +59,9 @@ uint8_t CDMRNXDNDStar::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-  // Send DMR/NXDN AMBE with a mode change to PCM to D-Star following
-  uint8_t frame[50U];
-  uint16_t len = m_utils.createAMBEFrame(m_n, buffer, frame);
-
   m_state = DNDS_STATE1;
 
-  return ambe3000.write(frame, len, m_buffer2, m_len2);
+  return ambe3000.writeAMBE(m_n, buffer, m_buffer2, m_len2);
 }
 
 void CDMRNXDNDStar::process()
@@ -77,10 +73,7 @@ void CDMRNXDNDStar::process()
       return;
 
     // Receive PCM from DMR/NXDN, send back to the chip and switch back to DMR/NXDN to PCM
-    uint8_t frame[400U];
-    uint16_t length = m_utils.createPCMFrame(m_n, buffer, frame);
-
-    ambe3000.write(frame, length, m_buffer1, m_len1);
+    ambe3000.writePCM(m_n, buffer, m_buffer1, m_len1);
 
     m_state = DNDS_STATE2;
   }
@@ -98,4 +91,11 @@ uint16_t CDMRNXDNDStar::output(uint8_t* buffer)
   m_state = DNDS_NONE;
 
   return DSTAR_DATA_LENGTH;
+}
+
+void CDMRNXDNDStar::finish()
+{
+  // Drain any outstanding replies from the chip
+  uint8_t buffer[400U];
+  ambe3000.read(m_n, buffer);
 }

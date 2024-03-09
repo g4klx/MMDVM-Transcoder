@@ -142,24 +142,7 @@ void CAMBE3000Driver::process()
   }
 }
 
-uint8_t CAMBE3000Driver::write(const uint8_t* buffer, uint16_t length, const uint8_t* frame, uint16_t len)
-{
-  // If the RTS pin is high, then the chip does not expect any more data to be sent through
-  if (!dvsi.ready()) {
-    DEBUG1("The AMBE3000/3003 chip is not ready to receive any more data");
-    return 0x05U;
-  }
-
-#if defined(HAS_LEDS)
-  leds.setLED1(true);
-#endif
-
-  dvsi.write(buffer, length, frame, len);
-
-  return 0x00U;
-}
-
-uint8_t CAMBE3000Driver::writeAMBE(uint8_t n, const uint8_t* buffer, uint16_t length)
+uint8_t CAMBE3000Driver::writeAMBE(uint8_t n, const uint8_t* buffer, const uint8_t* frame, uint16_t len)
 {
 #if AMBE_TYPE == 1
   n = 0U;
@@ -178,12 +161,12 @@ uint8_t CAMBE3000Driver::writeAMBE(uint8_t n, const uint8_t* buffer, uint16_t le
   leds.setLED1(true);
 #endif
 
-  dvsi.write(out, pos);
+  dvsi.write(out, pos, frame, len);
 
   return 0x00U;
 }
 
-uint8_t CAMBE3000Driver::writePCM(uint8_t n, const uint8_t* buffer, uint16_t length)
+uint8_t CAMBE3000Driver::writePCM(uint8_t n, const uint8_t* buffer, const uint8_t* frame, uint16_t len)
 {
 #if AMBE_TYPE == 1
   n = 0U;
@@ -202,7 +185,7 @@ uint8_t CAMBE3000Driver::writePCM(uint8_t n, const uint8_t* buffer, uint16_t len
   leds.setLED1(true);
 #endif
 
-  dvsi.write(out, pos);
+  dvsi.write(out, pos, frame, len);
 
   return 0x00U;
 }

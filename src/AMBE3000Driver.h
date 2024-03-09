@@ -37,11 +37,9 @@ class CAMBE3000Driver {
 
     void process();
 
-    uint8_t write(const uint8_t* buffer, uint16_t length, const uint8_t* frame, uint16_t len);
+    uint8_t writeAMBE(uint8_t n, const uint8_t* buffer, const uint8_t* frame = nullptr, uint16_t len = 0U);
 
-    uint8_t writeAMBE(uint8_t n, const uint8_t* buffer, uint16_t length);
-
-    uint8_t writePCM(uint8_t n, const uint8_t* buffer, uint16_t length);
+    uint8_t writePCM(uint8_t n, const uint8_t* buffer, const uint8_t* frame = nullptr, uint16_t len = 0U);
 
     bool read(uint8_t n, uint8_t* buffer);
 

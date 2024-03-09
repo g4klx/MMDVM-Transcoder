@@ -86,11 +86,6 @@ void CDVSIDriver::write(const uint8_t* buffer, uint16_t length, const uint8_t* f
   }
 }
 
-void CDVSIDriver::write(const uint8_t* buffer, uint16_t length)
-{
-  SerialAMBE.write(buffer, length);
-}
-
 uint16_t CDVSIDriver::read(uint8_t* buffer)
 {
   while (SerialAMBE.available() > 0) {

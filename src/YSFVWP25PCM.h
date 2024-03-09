@@ -28,9 +28,9 @@ class CYSFVWP25PCM : public IProcessor {
     CYSFVWP25PCM();
     virtual ~CYSFVWP25PCM();
 
-    virtual uint8_t  input(const uint8_t* buffer, uint16_t length);
+    virtual uint8_t  input(const uint8_t* buffer, uint16_t length) override;
 
-    virtual uint16_t output(uint8_t* buffer);
+    virtual uint16_t output(uint8_t* buffer) override;
 
   private:
     uint8_t m_buffer[PCM_DATA_LENGTH];

@@ -35,8 +35,7 @@ class CDVSIDriver {
 
     bool     ready() const;
 
-    void     write(const uint8_t* buffer, uint16_t length, const uint8_t* frame, uint16_t len);
-    void     write(const uint8_t* buffer, uint16_t length);
+    void     write(const uint8_t* buffer, uint16_t length, const uint8_t* frame = nullptr, uint16_t len = 0U);
 
     uint16_t read(uint8_t* buffer);
 
