@@ -40,4 +40,3 @@ class CDStarFEC : public IProcessor {
 };
 
 #endif
-

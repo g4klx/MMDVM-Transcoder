@@ -182,4 +182,3 @@ uint16_t CYSFVWP25PCM::output(uint8_t* buffer)
 
   return PCM_DATA_LENGTH;
 }
-

@@ -37,4 +37,3 @@ class CPCMDStar : public IProcessor {
 };
 
 #endif
-

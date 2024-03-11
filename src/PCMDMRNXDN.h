@@ -37,4 +37,3 @@ class CPCMDMRNXDN : public IProcessor {
 };
 
 #endif
-

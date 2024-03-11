@@ -37,4 +37,3 @@ class CYSFDNDMRNXDN : public IProcessor {
     bool    m_inUse;};
 
 #endif
-

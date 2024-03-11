@@ -50,10 +50,16 @@ uint8_t CPCMDStar::input(const uint8_t* buffer, uint16_t length)
 
 uint16_t CPCMDStar::output(uint8_t* buffer)
 {
-  bool ret = ambe3000.read(m_n, buffer);
-  if (!ret)
-    return 0U;
+  AD_STATE ret = ambe3000.readAMBE(m_n, buffer);
+  switch (ret) {
+      case ADS_NO_DATA:
+        return 0U;
 
-  return DSTAR_DATA_LENGTH;
+      case ADS_DATA:
+        return DSTAR_DATA_LENGTH;
+
+      default:
+        DEBUG1("PCMDStar: Invalid returned data type");
+        return 0U;
+  }
 }
-

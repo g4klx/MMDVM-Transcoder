@@ -59,4 +59,3 @@ uint16_t CPCMCodec21600::output(uint8_t* buffer)
 
   return CODEC2_1600_DATA_LENGTH;
 }
-

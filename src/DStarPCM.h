@@ -37,4 +37,3 @@ class CDStarPCM : public IProcessor {
 };
 
 #endif
-

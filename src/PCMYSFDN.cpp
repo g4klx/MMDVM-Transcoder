@@ -60,9 +60,18 @@ uint8_t CPCMYSFDN::input(const uint8_t* buffer, uint16_t length)
 uint16_t CPCMYSFDN::output(uint8_t* buffer)
 {
   uint8_t ambe[7U];
-  bool ret = ambe3000.read(m_n, ambe);
-  if (!ret)
-    return 0U;
+  AD_STATE ret = ambe3000.readAMBE(m_n, ambe);
+  switch (ret) {
+      case ADS_NO_DATA:
+        return 0U;
+
+      case ADS_WRONG_TYPE:
+        DEBUG1("PCMYSFDN: Invalid returned data type");
+        return 0U;
+
+      default:
+        break;
+  }
 
   uint8_t n = 0U;
 
@@ -90,4 +99,3 @@ uint16_t CPCMYSFDN::output(uint8_t* buffer)
 
   return YSFDN_DATA_LENGTH;
 }
-

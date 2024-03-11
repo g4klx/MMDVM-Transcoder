@@ -66,16 +66,26 @@ uint8_t CDStarDMRNXDN::input(const uint8_t* buffer, uint16_t length)
 
 void CDStarDMRNXDN::process()
 {
-  if (m_state == DDNS_STATE1) {
-    uint8_t buffer[400U];
-    bool ret = ambe3000.read(m_n, buffer);
-    if (!ret)
-      return;
+  if (m_state != DDNS_STATE1)
+    return;
 
-    // Receive PCM from D-Star, send back to the chip and switch back to D-Star to PCM
-    ambe3000.writePCM(m_n, buffer, m_buffer1, m_len1);
+  uint8_t buffer[400U];
+  AD_STATE ret = ambe3000.readPCM(m_n, buffer);
 
-    m_state = DDNS_STATE2;
+  switch (ret) {
+    case ADS_NO_DATA:
+      break;
+
+    case ADS_DATA:
+      // Receive PCM from D-Star, send back to the chip and switch back to D-Star to PCM
+      ambe3000.writePCM(m_n, buffer, m_buffer1, m_len1);
+      m_state = DDNS_STATE2;
+      break;
+
+    default:
+      DEBUG1("DStarDMRNXDN:1: Invalid returned data type");
+      m_state = DDNS_NONE;
+      break;
   }
 }
 
@@ -84,18 +94,24 @@ uint16_t CDStarDMRNXDN::output(uint8_t* buffer)
   if (m_state != DDNS_STATE2)
     return 0U;
 
-  bool ret = ambe3000.read(m_n, buffer);
-  if (!ret)
-    return 0U;
+  AD_STATE ret = ambe3000.readAMBE(m_n, buffer);
+  switch (ret) {
+      case ADS_NO_DATA:
+        return 0U;
 
-  m_state = DDNS_NONE;
+      case ADS_DATA:
+        m_state = DDNS_NONE;
+        return DMR_NXDN_DATA_LENGTH;
 
-  return DMR_NXDN_DATA_LENGTH;
+      default:
+        DEBUG1("DStarDMRNXDN:2: Invalid returned data type");
+        m_state = DDNS_NONE;
+        return 0U;
+  }
 }
 
 void CDStarDMRNXDN::finish()
 {
   // Drain any outstanding replies from the chip
-  uint8_t buffer[400U];
-  ambe3000.read(m_n, buffer);
+  ambe3000.drain(m_n);
 }

@@ -89,4 +89,3 @@ uint16_t CYSFDNFEC::output(uint8_t* buffer)
 
   return YSFDN_DATA_LENGTH;
 }
-

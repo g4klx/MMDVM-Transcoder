@@ -37,4 +37,3 @@ class CYSFDNPCM : public IProcessor {
 };
 
 #endif
-

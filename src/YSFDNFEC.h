@@ -38,4 +38,3 @@ class CYSFDNFEC : public IProcessor {
 };
 
 #endif
-

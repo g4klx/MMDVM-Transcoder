@@ -77,16 +77,26 @@ uint8_t CDStarYSFDN::input(const uint8_t* buffer, uint16_t length)
 
 void CDStarYSFDN::process()
 {
-  if (m_state == DYDNS_STATE1) {
-    uint8_t buffer[400U];
-    bool ret = ambe3000.read(m_n, buffer);
-    if (!ret)
-      return;
+  if (m_state != DYDNS_STATE1)
+    return;
 
-    // Receive PCM from D-Star, send back to the chip and switch back to D-Star to PCM
-    ambe3000.writePCM(m_n, buffer, m_buffer1, m_len1);
+  uint8_t buffer[400U];
+  AD_STATE ret = ambe3000.readPCM(m_n, buffer);
 
-    m_state = DYDNS_STATE2;
+  switch (ret) {
+    case ADS_NO_DATA:
+      break;
+
+    case ADS_DATA:
+      // Receive PCM from D-Star, send back to the chip and switch back to D-Star to PCM
+      ambe3000.writePCM(m_n, buffer, m_buffer1, m_len1);
+      m_state = DYDNS_STATE2;
+      break;
+
+    default:
+      DEBUG1("DStarYSFDN:1: Invalid returned data type");
+      m_state = DYDNS_NONE;
+      break;
   }
 }
 
@@ -96,9 +106,19 @@ uint16_t CDStarYSFDN::output(uint8_t* buffer)
     return 0U;
 
   uint8_t ambe[7U];
-  bool ret = ambe3000.read(m_n, ambe);
-  if (!ret)
-    return 0U;
+  AD_STATE ret = ambe3000.readAMBE(m_n, ambe);
+  switch (ret) {
+      case ADS_NO_DATA:
+        return 0U;
+
+      case ADS_WRONG_TYPE:
+        DEBUG1("DStarYSFDN:2: Invalid returned data type");
+        m_state = DYDNS_NONE;
+        return 0U;
+
+      default:
+        break;
+  }
 
   uint8_t n = 0U;
 
@@ -132,6 +152,5 @@ uint16_t CDStarYSFDN::output(uint8_t* buffer)
 void CDStarYSFDN::finish()
 {
   // Drain any outstanding replies from the chip
-  uint8_t buffer[400U];
-  ambe3000.read(m_n, buffer);
+  ambe3000.drain(m_n);
 }

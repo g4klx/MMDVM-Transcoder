@@ -27,6 +27,12 @@
 
 #include <cstdint>
 
+enum AD_STATE {
+  ADS_NO_DATA,
+  ADS_WRONG_TYPE,
+  ADS_DATA
+};
+
 class CAMBE3000Driver {
   public:
     CAMBE3000Driver();
@@ -41,7 +47,11 @@ class CAMBE3000Driver {
 
     uint8_t writePCM(uint8_t n, const uint8_t* buffer, const uint8_t* frame = nullptr, uint16_t len = 0U);
 
-    bool read(uint8_t n, uint8_t* buffer);
+    AD_STATE readAMBE(uint8_t n, uint8_t* buffer);
+
+    AD_STATE readPCM(uint8_t n, uint8_t* buffer);
+
+    void drain(uint8_t n);
 
   private:
 #if AMBE_TYPE == 2

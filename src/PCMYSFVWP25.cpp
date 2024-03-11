@@ -207,4 +207,3 @@ uint16_t CPCMYSFVWP25::output(uint8_t* buffer)
 
   return YSFVW_P25_DATA_LENGTH;
 }
-

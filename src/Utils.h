@@ -30,4 +30,3 @@ uint8_t countBits32(uint32_t bits);
 uint8_t countBits64(uint64_t bits);
 
 #endif
-

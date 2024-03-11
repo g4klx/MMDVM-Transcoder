@@ -38,4 +38,3 @@ class CPCMCodec23200 : public IProcessor {
 };
 
 #endif
-

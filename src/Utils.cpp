@@ -64,5 +64,3 @@ uint8_t countBits64(uint64_t bits)
   n += BITS_TABLE[p[7U]];
   return n;
 }
-
-

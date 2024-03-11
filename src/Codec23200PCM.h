@@ -38,4 +38,3 @@ class CCodec23200PCM : public IProcessor {
 };
 
 #endif
-

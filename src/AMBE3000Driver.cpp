@@ -35,6 +35,9 @@ const uint8_t DVSI_PKT_CHANNEL0 = 0x40U;
 const uint8_t DVSI_PKT_CHANNEL1 = 0x41U;
 const uint8_t DVSI_PKT_CHANNEL2 = 0x42U;
 
+const uint16_t DVSI_PCM_SAMPLES = 160U;
+const uint16_t DVSI_PCM_BYTES   = DVSI_PCM_SAMPLES * sizeof(int16_t);
+
 CAMBE3000Driver::CAMBE3000Driver() :
 m_buffer(),
 m_length(),
@@ -190,19 +193,55 @@ uint8_t CAMBE3000Driver::writePCM(uint8_t n, const uint8_t* buffer, const uint8_
   return 0x00U;
 }
 
-bool CAMBE3000Driver::read(uint8_t n, uint8_t* buffer)
+AD_STATE CAMBE3000Driver::readAMBE(uint8_t n, uint8_t* buffer)
 {
 #if AMBE_TYPE == 1
   n = 0U;
 #endif
 
-  if (m_length[n] > 0U) {
-    ::memcpy(buffer, m_buffer[n], m_length[n]);
-    m_length[n] = 0U;
-    return true;
-  }
+  switch (m_length[n]) {
+    case 0U:
+      return ADS_NO_DATA;
 
-  return false;
+    case DVSI_PCM_BYTES:
+      m_length[n] = 0U;
+      return ADS_WRONG_TYPE;
+
+    default:
+      ::memcpy(buffer, m_buffer[n], m_length[n]);
+      m_length[n] = 0U;
+      return ADS_DATA;
+  }
+}
+
+AD_STATE CAMBE3000Driver::readPCM(uint8_t n, uint8_t* buffer)
+{
+#if AMBE_TYPE == 1
+  n = 0U;
+#endif
+
+  switch (m_length[n]) {
+    case 0U:
+      return ADS_NO_DATA;
+
+    case DVSI_PCM_BYTES:
+      ::memcpy(buffer, m_buffer[n], DVSI_PCM_BYTES);
+      m_length[n] = 0U;
+      return ADS_DATA;
+
+    default:
+      m_length[n] = 0U;
+      return ADS_WRONG_TYPE;
+  }
+}
+
+void CAMBE3000Driver::drain(uint8_t n)
+{
+#if AMBE_TYPE == 1
+  n = 0U;
+#endif
+
+  m_length[n] = 0U;
 }
 
 #endif

@@ -37,4 +37,3 @@ class CPCMYSFVWP25 : public IProcessor {
     bool    m_inUse;};
 
 #endif
-

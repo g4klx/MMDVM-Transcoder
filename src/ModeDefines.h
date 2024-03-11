@@ -42,4 +42,3 @@ const uint16_t CODEC2_1600_DATA_LENGTH = 4U;
 const uint16_t PCM_DATA_LENGTH         = 320U;
 
 #endif
-

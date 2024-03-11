@@ -37,4 +37,3 @@ class CDMRNXDNPCM : public IProcessor {
 };
 
 #endif
-

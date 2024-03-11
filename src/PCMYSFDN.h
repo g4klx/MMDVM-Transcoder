@@ -37,4 +37,3 @@ class CPCMYSFDN : public IProcessor {
 };
 
 #endif
-

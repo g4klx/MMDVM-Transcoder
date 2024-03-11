@@ -126,4 +126,3 @@ uint16_t CYSFDNDMRNXDN::output(uint8_t* buffer)
 
   return DMR_NXDN_DATA_LENGTH;
 }
-

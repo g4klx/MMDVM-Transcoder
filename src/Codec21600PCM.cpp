@@ -59,4 +59,3 @@ uint16_t CCodec21600PCM::output(uint8_t* buffer)
 
   return PCM_DATA_LENGTH;
 }
-

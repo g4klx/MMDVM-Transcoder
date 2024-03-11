@@ -155,4 +155,3 @@ bool CDMRNXDNFEC::regenerateDMR(uint32_t& a, uint32_t& b, uint32_t& c) const
 
   return true;
 }
-

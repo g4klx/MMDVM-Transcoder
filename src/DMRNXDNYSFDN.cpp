@@ -133,4 +133,3 @@ uint16_t CDMRNXDNYSFDN::output(uint8_t* buffer)
 
   return YSFDN_DATA_LENGTH;
 }
-

@@ -38,4 +38,3 @@ class CDMRNXDNYSFDN : public IProcessor {
 };
 
 #endif
-

@@ -118,4 +118,3 @@ void CDStarFEC::regenerateDStar(uint32_t& a, uint32_t& b) const
 
   b ^= p;
 }
-

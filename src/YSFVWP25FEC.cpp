@@ -193,4 +193,3 @@ uint16_t CYSFVWP25FEC::output(uint8_t* buffer)
 
   return YSFVW_P25_DATA_LENGTH;
 }
-
