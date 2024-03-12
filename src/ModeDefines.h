@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ const uint8_t MODE_DMR_NXDN     = 0x02U;
 const uint8_t MODE_YSFDN        = 0x03U;
 const uint8_t MODE_YSFVW_P25    = 0x04U;
 const uint8_t MODE_CODEC2_3200  = 0x05U;
-const uint8_t MODE_CODEC2_1600  = 0x06U;
 
 const uint8_t MODE_PCM          = 0xFFU;
 
@@ -37,7 +36,6 @@ const uint16_t DMR_NXDN_DATA_LENGTH    = 9U;
 const uint16_t YSFDN_DATA_LENGTH       = 13U;
 const uint16_t YSFVW_P25_DATA_LENGTH   = 18U;
 const uint16_t CODEC2_3200_DATA_LENGTH = 8U;
-const uint16_t CODEC2_1600_DATA_LENGTH = 4U;
 
 const uint16_t PCM_DATA_LENGTH         = 320U;
 

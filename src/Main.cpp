@@ -36,21 +36,18 @@ CDStarPCM       dstarpcm;
 CDMRNXDNPCM     dmrnxdnpcm;
 CYSFVWP25PCM    ysfvwp25pcm;
 CCodec23200PCM  codec23200pcm;
-CCodec21600PCM  codec21600pcm;
 
 CPCMYSFDN       pcmysfdn;
 CPCMDStar       pcmdstar;
 CPCMDMRNXDN     pcmdmrnxdn;
 CPCMYSFVWP25    pcmysfvwp25;
 CPCMCodec23200  pcmcodec23200;
-CPCMCodec21600  pcmcodec21600;
 
 CYSFDNDMRNXDN   ysfdndmrnxdn;
 CDMRNXDNYSFDN   dmrnxdnysfdn;
 
 imbe_vocoder    imbe;
 CCodec2         codec23200(true);
-CCodec2         codec21600(false);
 
 #if AMBE_TYPE > 0
 CDVSIDriver     dvsi;

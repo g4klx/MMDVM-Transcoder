@@ -26,9 +26,7 @@
 #include "Codec2/codec2.h"
 
 #include "AMBE3000Driver.h"
-#include "Codec21600PCM.h"
 #include "Codec23200PCM.h"
-#include "PCMCodec21600.h"
 #include "PCMCodec23200.h"
 #include "DStarDMRNXDN.h"
 #include "DMRNXDNDStar.h"
@@ -72,21 +70,18 @@ extern CDStarPCM       dstarpcm;
 extern CDMRNXDNPCM     dmrnxdnpcm;
 extern CYSFVWP25PCM    ysfvwp25pcm;
 extern CCodec23200PCM  codec23200pcm;
-extern CCodec21600PCM  codec21600pcm;
 
 extern CPCMYSFDN       pcmysfdn;
 extern CPCMDStar       pcmdstar;
 extern CPCMDMRNXDN     pcmdmrnxdn;
 extern CPCMYSFVWP25    pcmysfvwp25;
 extern CPCMCodec23200  pcmcodec23200;
-extern CPCMCodec21600  pcmcodec21600;
 
 extern CYSFDNDMRNXDN   ysfdndmrnxdn;
 extern CDMRNXDNYSFDN   dmrnxdnysfdn;
 
 extern imbe_vocoder    imbe;
 extern CCodec2         codec23200;
-extern CCodec2         codec21600;
 
 #if AMBE_TYPE > 0
 extern CDVSIDriver     dvsi;

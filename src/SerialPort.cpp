@@ -40,9 +40,6 @@ const struct {
 #endif
   {MODE_DSTAR,       MODE_YSFVW_P25,   &dstarpcm,      &pcmysfvwp25},
   {MODE_DSTAR,       MODE_CODEC2_3200, &dstarpcm,      &pcmcodec23200},
-#if defined(BROKEN_CODEC2_1600)
-  {MODE_DSTAR,       MODE_CODEC2_1600, &dstarpcm,      &pcmcodec21600},
-#endif
   {MODE_DSTAR,       MODE_PCM,         &dstarpcm,      nullptr},
 #endif
 
@@ -56,9 +53,6 @@ const struct {
   {MODE_DMR_NXDN,    MODE_YSFDN,       &dmrnxdnfec,    &dmrnxdnysfdn},
   {MODE_DMR_NXDN,    MODE_YSFVW_P25,   &dmrnxdnpcm,    &pcmysfvwp25},
   {MODE_DMR_NXDN,    MODE_CODEC2_3200, &dmrnxdnpcm,    &pcmcodec23200},
-#if defined(BROKEN_CODEC2_1600)
-  {MODE_DMR_NXDN,    MODE_CODEC2_1600, &dmrnxdnpcm,    &pcmcodec21600},
-#endif
   {MODE_DMR_NXDN,    MODE_PCM,         &dmrnxdnpcm,    nullptr},
 #endif
 
@@ -72,9 +66,6 @@ const struct {
   {MODE_YSFDN,       MODE_YSFDN,       &ysfdnfec,      nullptr},
   {MODE_YSFDN,       MODE_YSFVW_P25,   &ysfdnpcm,      &pcmysfvwp25},
   {MODE_YSFDN,       MODE_CODEC2_3200, &ysfdnpcm,      &pcmcodec23200},
-#if defined(BROKEN_CODEC2_1600)
-  {MODE_YSFDN,       MODE_CODEC2_1600, &ysfdnpcm,      &pcmcodec21600},
-#endif
   {MODE_YSFDN,       MODE_PCM,         &ysfdnpcm,      nullptr},
 #endif
 
@@ -85,9 +76,6 @@ const struct {
 #endif
   {MODE_YSFVW_P25,   MODE_YSFVW_P25,   &ysfvwp25fec,   nullptr},
   {MODE_YSFVW_P25,   MODE_CODEC2_3200, &ysfvwp25pcm,   &pcmcodec23200},
-#if defined(BROKEN_CODEC2_1600)
-  {MODE_YSFVW_P25,   MODE_CODEC2_1600, &ysfvwp25pcm,   &pcmcodec21600},
-#endif
   {MODE_YSFVW_P25,   MODE_PCM,         &ysfvwp25pcm,   nullptr},
 
 #if AMBE_TYPE > 0
@@ -97,22 +85,7 @@ const struct {
 #endif
   {MODE_CODEC2_3200, MODE_YSFVW_P25,   &codec23200pcm, &pcmysfvwp25},
   {MODE_CODEC2_3200, MODE_CODEC2_3200, nullptr,           nullptr},
-#if defined(BROKEN_CODEC2_1600)
-  {MODE_CODEC2_3200, MODE_CODEC2_1600, &codec23200pcm, &pcmcodec21600},
-#endif
   {MODE_CODEC2_3200, MODE_PCM,         &codec23200pcm, nullptr},
-
-#if defined(BROKEN_CODEC2_1600)
-#if AMBE_TYPE > 0
-  {MODE_CODEC2_1600, MODE_DSTAR,       &codec21600pcm, &pcmdstar},
-  {MODE_CODEC2_1600, MODE_DMR_NXDN,    &codec21600pcm, &pcmdmrnxdn},
-  {MODE_CODEC2_1600, MODE_YSFDN,       &codec21600pcm, &pcmysfdn},
-#endif
-  {MODE_CODEC2_1600, MODE_YSFVW_P25,   &codec21600pcm, &pcmysfvwp25},
-  {MODE_CODEC2_1600, MODE_CODEC2_3200, &codec21600pcm, &pcmcodec23200},
-  {MODE_CODEC2_1600, MODE_CODEC2_1600, nullptr,           nullptr},
-  {MODE_CODEC2_1600, MODE_PCM,         &codec21600pcm, nullptr},
-#endif
 
 #if AMBE_TYPE > 0
   {MODE_PCM,         MODE_DSTAR,       &pcmdstar,      nullptr},
@@ -121,9 +94,6 @@ const struct {
 #endif
   {MODE_PCM,         MODE_YSFVW_P25,   &pcmysfvwp25,   nullptr},
   {MODE_PCM,         MODE_CODEC2_3200, &pcmcodec23200, nullptr},
-#if defined(BROKEN_CODEC2_1600)
-  {MODE_PCM,         MODE_CODEC2_1600, &pcmcodec21600, nullptr},
-#endif
   {MODE_PCM,         MODE_PCM,         nullptr,           nullptr}
 };
 
