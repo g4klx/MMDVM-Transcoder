@@ -710,10 +710,10 @@ bool CHandler::test(const char* title, const uint8_t* inData, uint16_t inLen, co
 
     if (outData != NULL) {
         if (::memcmp(buffer, outData, outLen) == 0) {
-            printf(", OK (%u ms)\n", elapsed);
+            printf(", OK (%.1f ms)\n", float(elapsed) / 1000.0F);
             m_ok++;
         } else {
-            printf(", Failed (%u ms)\n", elapsed);
+            printf(", Failed (%.1f ms)\n", float(elapsed) / 1000.0F);
             dump("Expected", outData, outLen);
             dump("Read", buffer, len);
             printf("\n");
@@ -806,7 +806,7 @@ uint16_t CHandler::read(uint8_t* buffer, uint16_t timeout)
                 }
             }
         } else {
-            unsigned long elapsed = m_stopwatch.elapsed();
+            unsigned long elapsed = m_stopwatch.elapsed() / 1000U;
             if (elapsed > timeout) {
                 ::fprintf(stderr, "Read has timed out after %u ms\n", timeout);
                 return len;

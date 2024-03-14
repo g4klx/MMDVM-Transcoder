@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015,2016,2018 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2015,2016,2018,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,32 +21,21 @@
 #if defined(_WIN32) || defined(_WIN64)
 
 CStopWatch::CStopWatch() :
-m_frequencyS(),
-m_frequencyMS(),
+m_frequency(),
 m_start()
 {
-	::QueryPerformanceFrequency(&m_frequencyS);
-
-	m_frequencyMS.QuadPart = m_frequencyS.QuadPart / 1000ULL;
+	::QueryPerformanceFrequency(&m_frequency);
 }
 
 CStopWatch::~CStopWatch()
 {
 }
 
-unsigned long long CStopWatch::time() const
-{
-	LARGE_INTEGER now;
-	::QueryPerformanceCounter(&now);
-
-	return (unsigned long long)(now.QuadPart / m_frequencyMS.QuadPart);
-}
-
 unsigned long long CStopWatch::start()
 {
 	::QueryPerformanceCounter(&m_start);
 
-	return (unsigned long long)(m_start.QuadPart / m_frequencyS.QuadPart);
+	return (unsigned long long)(m_start.QuadPart / m_frequency.QuadPart);
 }
 
 unsigned int CStopWatch::elapsed()
@@ -54,10 +43,11 @@ unsigned int CStopWatch::elapsed()
 	LARGE_INTEGER now;
 	::QueryPerformanceCounter(&now);
 
-	LARGE_INTEGER temp;
-	temp.QuadPart = (now.QuadPart - m_start.QuadPart) * 1000;
+	LARGE_INTEGER elapsed;
+	elapsed.QuadPart = now.QuadPart - m_start.QuadPart;
 
-	return (unsigned int)(temp.QuadPart / m_frequencyS.QuadPart);
+	elapsed.QuadPart *= 1000000;
+	return (unsigned int)(elapsed.QuadPart / m_frequency.QuadPart);
 }
 
 #else
@@ -66,7 +56,7 @@ unsigned int CStopWatch::elapsed()
 #include <ctime>
 
 CStopWatch::CStopWatch() :
-m_startMS(0ULL)
+m_startUS(0ULL)
 {
 }
 
@@ -74,22 +64,14 @@ CStopWatch::~CStopWatch()
 {
 }
 
-unsigned long long CStopWatch::time() const
-{
-	struct timeval now;
-	::gettimeofday(&now, NULL);
-
-	return now.tv_sec * 1000ULL + now.tv_usec / 1000ULL;
-}
-
 unsigned long long CStopWatch::start()
 {
 	struct timespec now;
 	::clock_gettime(CLOCK_MONOTONIC, &now);
 
-	m_startMS = now.tv_sec * 1000ULL + now.tv_nsec / 1000000ULL;
+	m_startUS = now.tv_sec * 1000000ULL + now.tv_nsec / 1000ULL;
 
-	return m_startMS;
+	return m_startUS;
 }
 
 unsigned int CStopWatch::elapsed()
@@ -97,9 +79,9 @@ unsigned int CStopWatch::elapsed()
 	struct timespec now;
 	::clock_gettime(CLOCK_MONOTONIC, &now);
 
-	unsigned long long nowMS = now.tv_sec * 1000ULL + now.tv_nsec / 1000000ULL;
+	unsigned long long nowUS = now.tv_sec * 1000000ULL + now.tv_nsec / 1000ULL;
 
-	return nowMS - m_startMS;
+	return nowUS - m_startUS;
 }
 
 #endif
