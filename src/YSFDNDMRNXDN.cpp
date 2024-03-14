@@ -116,10 +116,10 @@ uint8_t CYSFDNDMRNXDN::input(const uint8_t* buffer, uint16_t length)
   return 0x00U;
 }
 
-uint16_t CYSFDNDMRNXDN::output(uint8_t* buffer)
+int16_t CYSFDNDMRNXDN::output(uint8_t* buffer)
 {
   if (!m_inUse)
-    return 0U;
+    return 0;
 
   ::memcpy(buffer, m_buffer, DMR_NXDN_DATA_LENGTH);
   m_inUse = false;

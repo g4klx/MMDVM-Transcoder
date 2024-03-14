@@ -40,11 +40,13 @@ CPCMYSFDN::~CPCMYSFDN()
 {
 }
 
-void CPCMYSFDN::init(uint8_t n)
+uint8_t CPCMYSFDN::init(uint8_t n)
 {
   m_n = n;
   
   ambe3000.init(n, PCM_TO_YSFDN);
+
+  return 0x00U;
 }
 
 uint8_t CPCMYSFDN::input(const uint8_t* buffer, uint16_t length)
@@ -57,17 +59,17 @@ uint8_t CPCMYSFDN::input(const uint8_t* buffer, uint16_t length)
   return ambe3000.writePCM(m_n, buffer);
 }
 
-uint16_t CPCMYSFDN::output(uint8_t* buffer)
+int16_t CPCMYSFDN::output(uint8_t* buffer)
 {
   uint8_t ambe[7U];
   AD_STATE ret = ambe3000.readAMBE(m_n, ambe);
   switch (ret) {
       case ADS_NO_DATA:
-        return 0U;
+        return 0;
 
       case ADS_WRONG_TYPE:
         DEBUG1("PCMYSFDN: Invalid returned data type");
-        return 0U;
+        return -0x06;
 
       default:
         break;

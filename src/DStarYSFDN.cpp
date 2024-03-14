@@ -47,7 +47,7 @@ CDStarYSFDN::~CDStarYSFDN()
 {
 }
 
-void CDStarYSFDN::init(uint8_t n)
+uint8_t CDStarYSFDN::init(uint8_t n)
 {
   m_n = n;
 
@@ -56,6 +56,8 @@ void CDStarYSFDN::init(uint8_t n)
   m_len2 = m_utils.createModeChange(m_n, PCM_TO_YSFDN, m_buffer2);  
 
   ambe3000.init(n, DSTAR_TO_PCM);
+
+  return 0x00U;
 }
 
 uint8_t CDStarYSFDN::input(const uint8_t* buffer, uint16_t length)
@@ -100,21 +102,21 @@ void CDStarYSFDN::process()
   }
 }
 
-uint16_t CDStarYSFDN::output(uint8_t* buffer)
+int16_t CDStarYSFDN::output(uint8_t* buffer)
 {
   if (m_state != DYDNS_STATE2)
-    return 0U;
+    return 0;
 
   uint8_t ambe[7U];
   AD_STATE ret = ambe3000.readAMBE(m_n, ambe);
   switch (ret) {
       case ADS_NO_DATA:
-        return 0U;
+        return 0;
 
       case ADS_WRONG_TYPE:
         DEBUG1("DStarYSFDN:2: Invalid returned data type");
         m_state = DYDNS_NONE;
-        return 0U;
+        return -0x06;
 
       default:
         break;

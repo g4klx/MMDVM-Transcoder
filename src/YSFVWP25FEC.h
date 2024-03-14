@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -28,9 +28,9 @@ class CYSFVWP25FEC : public IProcessor {
     CYSFVWP25FEC();
     virtual ~CYSFVWP25FEC();
 
-    virtual uint8_t  input(const uint8_t* buffer, uint16_t length) override;
+    virtual uint8_t input(const uint8_t* buffer, uint16_t length) override;
 
-    virtual uint16_t output(uint8_t* buffer) override;
+    virtual int16_t output(uint8_t* buffer) override;
 
   private:
     uint8_t m_buffer[YSFVW_P25_DATA_LENGTH];

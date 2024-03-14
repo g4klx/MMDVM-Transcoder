@@ -40,11 +40,13 @@ CYSFDNPCM::~CYSFDNPCM()
 {
 }
 
-void CYSFDNPCM::init(uint8_t n)
+uint8_t CYSFDNPCM::init(uint8_t n)
 {
   m_n = n;
   
   ambe3000.init(n, YSFDN_TO_PCM);
+
+  return 0x00U;
 }
 
 uint8_t CYSFDNPCM::input(const uint8_t* buffer, uint16_t length)
@@ -92,18 +94,18 @@ uint8_t CYSFDNPCM::input(const uint8_t* buffer, uint16_t length)
   return ambe3000.writeAMBE(m_n, ambe);
 }
 
-uint16_t CYSFDNPCM::output(uint8_t* buffer)
+int16_t CYSFDNPCM::output(uint8_t* buffer)
 {
   AD_STATE ret = ambe3000.readPCM(m_n, buffer);
   switch (ret) {
       case ADS_NO_DATA:
-        return 0U;
+        return 0;
 
       case ADS_DATA:
         return PCM_DATA_LENGTH;
 
       default:
         DEBUG1("YSFDNPCM: Invalid returned data type");
-        return 0U;
+        return -0x06;
   }
 }

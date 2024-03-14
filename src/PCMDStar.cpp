@@ -31,11 +31,13 @@ CPCMDStar::~CPCMDStar()
 {
 }
 
-void CPCMDStar::init(uint8_t n)
+uint8_t CPCMDStar::init(uint8_t n)
 {
   m_n = n;
 
   ambe3000.init(n, PCM_TO_DSTAR);
+
+  return 0x00U;
 }
 
 uint8_t CPCMDStar::input(const uint8_t* buffer, uint16_t length)
@@ -48,18 +50,18 @@ uint8_t CPCMDStar::input(const uint8_t* buffer, uint16_t length)
   return ambe3000.writePCM(m_n, buffer);
 }
 
-uint16_t CPCMDStar::output(uint8_t* buffer)
+int16_t CPCMDStar::output(uint8_t* buffer)
 {
   AD_STATE ret = ambe3000.readAMBE(m_n, buffer);
   switch (ret) {
       case ADS_NO_DATA:
-        return 0U;
+        return 0;
 
       case ADS_DATA:
         return DSTAR_DATA_LENGTH;
 
       default:
         DEBUG1("PCMDStar: Invalid returned data type");
-        return 0U;
+        return -0x06;
   }
 }

@@ -26,11 +26,11 @@ class CPCMYSFDN : public IProcessor {
     CPCMYSFDN();
     virtual ~CPCMYSFDN();
 
-    virtual void     init(uint8_t n) override;
+    virtual uint8_t init(uint8_t n) override;
 
-    virtual uint8_t  input(const uint8_t* buffer, uint16_t length) override;
+    virtual uint8_t input(const uint8_t* buffer, uint16_t length) override;
 
-    virtual uint16_t output(uint8_t* buffer) override;
+    virtual int16_t output(uint8_t* buffer) override;
 
   private:
     uint8_t m_n;

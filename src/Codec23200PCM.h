@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -28,9 +28,9 @@ class CCodec23200PCM : public IProcessor {
     CCodec23200PCM();
     virtual ~CCodec23200PCM();
 
-    virtual uint8_t  input(const uint8_t* buffer, uint16_t length);
+    virtual uint8_t input(const uint8_t* buffer, uint16_t length);
 
-    virtual uint16_t output(uint8_t* buffer);
+    virtual int16_t output(uint8_t* buffer);
 
   private:
     uint8_t m_buffer[PCM_DATA_LENGTH];

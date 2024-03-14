@@ -30,11 +30,13 @@ CPCMDMRNXDN::~CPCMDMRNXDN()
 {
 }
 
-void CPCMDMRNXDN::init(uint8_t n)
+uint8_t CPCMDMRNXDN::init(uint8_t n)
 {
   m_n = n;
   
   ambe3000.init(n, PCM_TO_DMR_NXDN);
+
+  return 0x00U;
 }
 
 uint8_t CPCMDMRNXDN::input(const uint8_t* buffer, uint16_t length)
@@ -47,18 +49,18 @@ uint8_t CPCMDMRNXDN::input(const uint8_t* buffer, uint16_t length)
   return ambe3000.writePCM(m_n, buffer);
 }
 
-uint16_t CPCMDMRNXDN::output(uint8_t* buffer)
+int16_t CPCMDMRNXDN::output(uint8_t* buffer)
 {
   AD_STATE ret = ambe3000.readAMBE(m_n, buffer);
   switch (ret) {
       case ADS_NO_DATA:
-        return 0U;
+        return 0;
 
       case ADS_DATA:
         return DMR_NXDN_DATA_LENGTH;
 
       default:
         DEBUG1("PCMDMRNXDN: Invalid returned data type");
-        return 0U;
+        return -0x06;
   }
 }

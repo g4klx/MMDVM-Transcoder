@@ -240,10 +240,17 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
       m_step1 = PROCESSOR_TABLE[i].m_step1;
       m_step2 = PROCESSOR_TABLE[i].m_step2;
 
-      if (m_step1 != nullptr)
-        m_step1->init(0U);
-      if (m_step2 != nullptr)
-        m_step2->init(1U);
+      if (m_step1 != nullptr) {
+        int8_t ret = m_step1->init(0U);
+        if (ret != 0x00U)
+          return ret;
+      }
+
+      if (m_step2 != nullptr) {
+        int8_t ret = m_step2->init(1U);
+        if (ret != 0x00U)
+          return ret;
+      }
 
       return 0x00U;
     }
@@ -285,16 +292,20 @@ uint8_t CSerialPort::sendData(const uint8_t* buffer, uint16_t length)
 
 void CSerialPort::processData()
 {
-  uint8_t  buffer[500U];
-  uint16_t length = 0U;
+  uint8_t buffer[500U];
+  int16_t length = 0;
 
   if (opmode == OPMODE_TRANSCODING) {
     if (m_step1 != nullptr) {
       m_step1->process();
       length = m_step1->output(buffer);
+      if (length < 0) {
+        sendNAK(-length);
+        return;
+      }
     }
 
-    if ((m_step2 != nullptr) && (length > 0U)) {
+    if ((m_step2 != nullptr) && (length > 0)) {
       m_step2->input(buffer, length);
       length = 0U;
     }
@@ -302,9 +313,13 @@ void CSerialPort::processData()
     if (m_step2 != nullptr) {
       m_step2->process();
       length = m_step2->output(buffer);
+      if (length < 0) {
+        sendNAK(-length);
+        return;
+      }
     }
 
-    if (length > 0U)
+    if (length > 0)
       writeData(buffer, length);
   } else if (opmode == OPMODE_PASSTHROUGH) {
     length = dvsi.read(buffer);

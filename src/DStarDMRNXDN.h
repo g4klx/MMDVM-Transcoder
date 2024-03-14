@@ -34,13 +34,13 @@ class CDStarDMRNXDN : public IProcessor {
     CDStarDMRNXDN();
     virtual ~CDStarDMRNXDN();
 
-    virtual void     init(uint8_t n) override;
+    virtual uint8_t init(uint8_t n) override;
 
-    virtual uint8_t  input(const uint8_t* buffer, uint16_t length) override;
+    virtual uint8_t input(const uint8_t* buffer, uint16_t length) override;
 
-    virtual void     process() override;
+    virtual void    process() override;
 
-    virtual uint16_t output(uint8_t* buffer) override;
+    virtual int16_t output(uint8_t* buffer) override;
 
     virtual void     finish() override;
 
