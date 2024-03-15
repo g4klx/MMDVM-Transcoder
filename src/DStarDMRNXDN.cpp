@@ -66,28 +66,28 @@ uint8_t CDStarDMRNXDN::input(const uint8_t* buffer, uint16_t length)
   return ambe3000.writeAMBE(m_n, buffer, m_buffer2, m_len2);
 }
 
-void CDStarDMRNXDN::process()
+uint8_t CDStarDMRNXDN::process()
 {
   if (m_state != DDNS_STATE1)
-    return;
+    return 0x00U;
 
   uint8_t buffer[400U];
   AD_STATE ret = ambe3000.readPCM(m_n, buffer);
 
   switch (ret) {
     case ADS_NO_DATA:
-      break;
+      return 0x00U;
 
     case ADS_DATA:
       // Receive PCM from D-Star, send back to the chip and switch back to D-Star to PCM
       ambe3000.writePCM(m_n, buffer, m_buffer1, m_len1);
       m_state = DDNS_STATE2;
-      break;
+      return 0x00U;
 
     default:
       DEBUG1("DStarDMRNXDN:1: Invalid returned data type");
       m_state = DDNS_NONE;
-      break;
+      return 0x06U;
   }
 }
 

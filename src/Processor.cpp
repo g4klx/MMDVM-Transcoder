@@ -27,7 +27,7 @@ uint8_t IProcessor::init(uint8_t n)
   return 0x00U;
 }
 
-void IProcessor::process()
+uint8_t IProcessor::process()
 {
 }
 

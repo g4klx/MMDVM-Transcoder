@@ -297,7 +297,12 @@ void CSerialPort::processData()
 
   if (opmode == OPMODE_TRANSCODING) {
     if (m_step1 != nullptr) {
-      m_step1->process();
+      uint8_t err = m_step1->process();
+      if (err != 0U) {
+        sendNAK(err);
+        return;
+      }
+
       length = m_step1->output(buffer);
       if (length < 0) {
         sendNAK(-length);
@@ -311,7 +316,12 @@ void CSerialPort::processData()
     }
 
     if (m_step2 != nullptr) {
-      m_step2->process();
+      uint8_t err = m_step2->process();
+      if (err != 0U) {
+        sendNAK(err);
+        return;
+      }
+
       length = m_step2->output(buffer);
       if (length < 0) {
         sendNAK(-length);

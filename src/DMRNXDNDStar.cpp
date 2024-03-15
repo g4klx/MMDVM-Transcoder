@@ -66,28 +66,28 @@ uint8_t CDMRNXDNDStar::input(const uint8_t* buffer, uint16_t length)
   return ambe3000.writeAMBE(m_n, buffer, m_buffer2, m_len2);
 }
 
-void CDMRNXDNDStar::process()
+uint8_t CDMRNXDNDStar::process()
 {
   if (m_state != DNDS_STATE1)
-    return;
+    return 0x00U;
 
   uint8_t buffer[400U];
   AD_STATE ret = ambe3000.readPCM(m_n, buffer);
 
   switch (ret) {
     case ADS_NO_DATA:
-      break;
+      return 0x00U;
 
     case ADS_DATA:
       // Receive PCM from DMR/NXDN, send back to the chip and switch back to DMR/NXDN to PCM
       ambe3000.writePCM(m_n, buffer, m_buffer1, m_len1);
       m_state = DNDS_STATE2;
-      break;
+      return 0x00U;
 
     default:
       DEBUG1("DMRNXDNDStar:1: Invalid returned data type");
       m_state = DNDS_NONE;
-      break;
+      return 0x06U;
   }
 }
 

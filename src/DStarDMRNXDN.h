@@ -38,7 +38,7 @@ class CDStarDMRNXDN : public IProcessor {
 
     virtual uint8_t input(const uint8_t* buffer, uint16_t length) override;
 
-    virtual void    process() override;
+    virtual uint8_t process() override;
 
     virtual int16_t output(uint8_t* buffer) override;
 
