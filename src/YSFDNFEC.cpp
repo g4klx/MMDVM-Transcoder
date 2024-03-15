@@ -18,12 +18,8 @@
 
 #include "YSFDNFEC.h"
 
+#include "YSFDNUtils.h"
 #include "Debug.h"
-
-const uint8_t BIT_MASK_TABLE[] = {0x80U, 0x40U, 0x20U, 0x10U, 0x08U, 0x04U, 0x02U, 0x01U};
-
-#define WRITE_BIT1(p,i,b) p[(i)>>3] = (b) ? (p[(i)>>3] | BIT_MASK_TABLE[(i)&7]) : (p[(i)>>3] & ~BIT_MASK_TABLE[(i)&7])
-#define READ_BIT1(p,i)    (p[(i)>>3] & BIT_MASK_TABLE[(i)&7])
 
 CYSFDNFEC::CYSFDNFEC() :
 m_buffer(),
@@ -47,32 +43,9 @@ uint8_t CYSFDNFEC::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-  for (uint8_t i = 0U; i < 81U; i += 3) {
-    uint8_t vote = 0U;
-    vote += READ_BIT1(buffer, i + 0U) ? 1U : 0U;
-    vote += READ_BIT1(buffer, i + 1U) ? 1U : 0U;
-    vote += READ_BIT1(buffer, i + 2U) ? 1U : 0U;
-
-    switch (vote) {
-      case 0U:    // 0 0 0
-      case 1U:    // 1 0 0, or 0 1 0, or 0 0 1, convert to 0 0 0
-        WRITE_BIT1(m_buffer, i + 0U, false);
-        WRITE_BIT1(m_buffer, i + 1U, false);
-        WRITE_BIT1(m_buffer, i + 2U, false);
-        break;
-      case 3U:    // 1 1 1
-      case 2U:    // 1 1 0, or 0 1 1, or 1 0 1, convert to 1 1 1
-        WRITE_BIT1(m_buffer, i + 0U, true);
-        WRITE_BIT1(m_buffer, i + 1U, true);
-        WRITE_BIT1(m_buffer, i + 2U, true);
-        break;
-    }
-  }
-
-  for (uint8_t i = 81U; i < 104U; i++) {
-    bool b = READ_BIT1(buffer, i) != 0U;
-    WRITE_BIT1(m_buffer, i, b);
-  }
+  uint8_t ambe[7U];
+  CYSFDNUtils::toMode34(buffer, ambe);
+  CYSFDNUtils::fromMode34(ambe, m_buffer);
 
   m_inUse = true;
 
