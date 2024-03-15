@@ -334,7 +334,7 @@ void CSerialPort::processData()
   } else if (opmode == OPMODE_PASSTHROUGH) {
     length = dvsi.read(buffer);
 
-    if (length > 0U)
+    if (length > 0)
       writeData(buffer, length);
   }
 }
