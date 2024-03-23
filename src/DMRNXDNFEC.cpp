@@ -127,9 +127,7 @@ bool CDMRNXDNFEC::regenerateDMR(uint32_t& a, uint32_t& b, uint32_t& c) const
   uint32_t orig_b = b;
 
   uint32_t data;
-  bool valid = CGolay::decode24128(a, data);
-  if (!valid)
-    return false;
+  CGolay::decode24128(a, data);
 
   a = CGolay::encode24128(data);
 
