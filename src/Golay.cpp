@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2010,2016,2021,2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2010,2016,2021,2023,2024 by Jonathan Naylor G4KLX
  *   Copyright (C) 2002 by Robert H. Morelos-Zaragoza. All rights reserved.
  */
 
@@ -658,7 +658,7 @@ static uint32_t get_syndrome_23127(uint32_t pattern)
 
 uint32_t CGolay::encode23127(uint32_t data)
 {
-	return ENCODING_TABLE_24128[data] & 0xFFFEU;
+	return ENCODING_TABLE_24128[data] & 0xFFFFFEU;
 }
 
 uint32_t CGolay::encode24128(uint32_t data)
