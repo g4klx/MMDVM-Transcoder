@@ -27,7 +27,7 @@ class CYSFVWUtils {
 
     static void toIMBE(const uint8_t* buffer, int16_t* out);
 
-  private:
+private:
 };
 
 #endif

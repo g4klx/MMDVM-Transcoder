@@ -19,13 +19,35 @@
 #include "YSFVWUtils.h"
 
 #include "Hamming.h"
-#include "Debug.h"
 #include "Golay.h"
+#include "Debug.h"
 
-const uint8_t  BIT_MASK_TABLE[]  = { 0x80U, 0x40U, 0x20U, 0x10U, 0x08U, 0x04U, 0x02U, 0x01U };
+const uint8_t BIT_MASK_TABLE8[]  = { 0x80U, 0x40U, 0x20U, 0x10U,
+                                     0x08U, 0x04U, 0x02U, 0x01U };
 
-#define WRITE_BIT1(p,i,b)   p[(i)>>3] = (b) ? (p[(i)>>3] | BIT_MASK_TABLE[(i)&7]) : (p[(i)>>3] & ~BIT_MASK_TABLE[(i)&7])
-#define READ_BIT1(p,i)     (p[(i)>>3] & BIT_MASK_TABLE[(i)&7])
+#define WRITE_BIT8(p,i,b)   p[(i)>>3] = (b) ? (p[(i)>>3] | BIT_MASK_TABLE8[(i)&7]) : (p[(i)>>3] & ~BIT_MASK_TABLE8[(i)&7])
+#define READ_BIT8(p,i)     (p[(i)>>3] & BIT_MASK_TABLE8[(i)&7])
+
+const int16_t BIT_MASK_TABLE16[] = { 0x0000, 0x4000, 0x2000, 0x1000,
+                                     0x0800, 0x0400, 0x0200, 0x0100,
+                                     0x0080, 0x0040, 0x0020, 0x0010,
+                                     0x0008, 0x0004, 0x0002, 0x0001 };
+
+#define WRITE_BIT16(p,i,b)   p[(i)>>4] = (b) ? (p[(i)>>4] | BIT_MASK_TABLE16[(i)&15]) : (p[(i)>>4] & ~BIT_MASK_TABLE16[(i)&15])
+#define READ_BIT16(p,i)     (p[(i)>>4] & BIT_MASK_TABLE16[(i)&15])
+
+const uint32_t BIT_MASK_TABLE32[] = { 0x80000000U, 0x40000000U, 0x20000000U, 0x10000000U,
+                                      0x08000000U, 0x04000000U, 0x02000000U, 0x01000000U,
+                                      0x00800000U, 0x00400000U, 0x00200000U, 0x00100000U,
+                                      0x00080000U, 0x00040000U, 0x00020000U, 0x00010000U,
+                                      0x00008000U, 0x00004000U, 0x00002000U, 0x00001000U,
+                                      0x00000800U, 0x00000400U, 0x00000200U, 0x00000100U,
+                                      0x00000080U, 0x00000040U, 0x00000020U, 0x00000010U,
+                                      0x00000008U, 0x00000004U, 0x00000002U, 0x00000001U };
+
+#define WRITE_BIT32(p,i,b)   p = (b) ? (p | BIT_MASK_TABLE32[(i)]) : (p & ~BIT_MASK_TABLE32[(i)])
+#define READ_BIT32(p,i)     (p & BIT_MASK_TABLE32[(i)])
+
 
 const uint8_t IMBE_INTERLEAVE[] = {
   0U,  7U, 12U, 19U, 24U, 31U, 36U, 43U, 48U, 55U, 60U, 67U, 72U, 79U, 84U, 91U,
@@ -43,117 +65,58 @@ const uint8_t IMBE_INTERLEAVE[] = {
 
 void CYSFVWUtils::fromIMBE(const int16_t* in, uint8_t* out)
 {
-  uint8_t frame[11U];
-  unsigned int offset = 0U;
-
-  int16_t mask = 0x0800;
-  for (unsigned int i = 0U; i < 12U; i++, mask >>= 1, offset++)
-    WRITE_BIT1(frame, offset, (in[0U] & mask) != 0);
-
-  mask = 0x0800;
-  for (unsigned int i = 0U; i < 12U; i++, mask >>= 1, offset++)
-    WRITE_BIT1(frame, offset, (in[1U] & mask) != 0);
-
-  mask = 0x0800;
-  for (unsigned int i = 0U; i < 12U; i++, mask >>= 1, offset++)
-    WRITE_BIT1(frame, offset, (in[2U] & mask) != 0);
-
-  mask = 0x0800;
-  for (unsigned int i = 0U; i < 12U; i++, mask >>= 1, offset++)
-    WRITE_BIT1(frame, offset, (in[3U] & mask) != 0);
-
-  mask = 0x0400;
-  for (unsigned int i = 0U; i < 11U; i++, mask >>= 1, offset++)
-    WRITE_BIT1(frame, offset, (in[4U] & mask) != 0);
-
-  mask = 0x0400;
-  for (unsigned int i = 0U; i < 11U; i++, mask >>= 1, offset++)
-    WRITE_BIT1(frame, offset, (in[5U] & mask) != 0);
-
-  mask = 0x0400;
-  for (unsigned int i = 0U; i < 11U; i++, mask >>= 1, offset++)
-    WRITE_BIT1(frame, offset, (in[6U] & mask) != 0);
-
-  mask = 0x0040;
-  for (unsigned int i = 0U; i < 7U; i++, mask >>= 1, offset++)
-    WRITE_BIT1(frame, offset, (in[7U] & mask) != 0);
-
   bool bTemp[144U];
   bool* bit = bTemp;
 
   // c0
-  unsigned int c0 = 0U;
-  for (unsigned int i = 0U; i < 12U; i++) {
-    bool b = READ_BIT1(frame, i);
-    c0 = (c0 << 1) | (b ? 0x01U : 0x00U);
-  }
-  unsigned int g2 = CGolay::encode23127(c0);
-  for (int i = 23; i >= 0; i--) {
-    bit[i] = (g2 & 0x01U) == 0x01U;
-    g2 >>= 1;
-  }
+  uint32_t c0 = in[0U];
+  uint32_t g0 = CGolay::encode23127(c0) >> 1;
+  for (unsigned int i = 0U; i < 23U; i++)
+    bit[i] = READ_BIT32(g0, i + 9U) != 0;
   bit += 23U;
 
   // c1
-  unsigned int c1 = 0U;
-  for (unsigned int i = 12U; i < 24U; i++) {
-    bool b = READ_BIT1(frame, i);
-    c1 = (c1 << 1) | (b ? 0x01U : 0x00U);
-  }
-  g2 = CGolay::encode23127(c1);
-  for (int i = 23; i >= 0; i--) {
-    bit[i] = (g2 & 0x01U) == 0x01U;
-    g2 >>= 1;
-  }
+  uint32_t c1 = in[1U];
+  uint32_t g1 = CGolay::encode23127(c1) >> 1;
+  for (unsigned int i = 0U; i < 23U; i++)
+    bit[i] = READ_BIT32(g1, i + 9U) != 0;
   bit += 23U;
 
   // c2
-  unsigned int c2 = 0;
-  for (unsigned int i = 24U; i < 36U; i++) {
-    bool b = READ_BIT1(frame, i);
-    c2 = (c2 << 1) | (b ? 0x01U : 0x00U);
-  }
-  g2 = CGolay::encode23127(c2);
-  for (int i = 23; i >= 0; i--) {
-    bit[i] = (g2 & 0x01U) == 0x01U;
-    g2 >>= 1;
-  }
+  uint32_t c2 = in[2U];
+  uint32_t g2 = CGolay::encode23127(c2) >> 1;
+  for (unsigned int i = 0U; i < 23U; i++)
+    bit[i] = READ_BIT32(g2, i + 9U) != 0;
   bit += 23U;
 
   // c3
-  unsigned int c3 = 0U;
-  for (unsigned int i = 36U; i < 48U; i++) {
-    bool b = READ_BIT1(frame, i);
-    c3 = (c3 << 1) | (b ? 0x01U : 0x00U);
-  }
-  g2 = CGolay::encode23127(c3);
-  for (int i = 23; i >= 0; i--) {
-    bit[i] = (g2 & 0x01U) == 0x01U;
-    g2 >>= 1;
-  }
+  uint32_t c3 = in[3U];
+  uint32_t g3 = CGolay::encode23127(c3) >> 1;
+  for (unsigned int i = 0U; i < 23U; i++)
+    bit[i] = READ_BIT32(g3, i + 9U) != 0;
   bit += 23U;
 
   // c4
   for (unsigned int i = 0U; i < 11U; i++)
-    bit[i] = READ_BIT1(frame, i + 48U);
+    bit[i] = READ_BIT16(in, i + 69U) != 0;
   CHamming::encode15113(bit);
   bit += 15U;
 
   // c5
   for (unsigned int i = 0U; i < 11U; i++)
-    bit[i] = READ_BIT1(frame, i + 59U);
+    bit[i] = READ_BIT16(in, i + 85U) != 0;
   CHamming::encode15113(bit);
   bit += 15U;
 
   // c6
   for (unsigned int i = 0U; i < 11U; i++)
-    bit[i] = READ_BIT1(frame, i + 70U);
+    bit[i] = READ_BIT16(in, i + 100U) != 0;
   CHamming::encode15113(bit);
   bit += 15U;
 
   // c7
   for (unsigned int i = 0U; i < 7U; i++)
-    bit[i] = READ_BIT1(frame, i + 81U);
+    bit[i] = READ_BIT16(in, i + 121U) != 0;
 
   bool prn[114U];
 
@@ -171,7 +134,7 @@ void CYSFVWUtils::fromIMBE(const int16_t* in, uint8_t* out)
   // Interleave
   for (unsigned int i = 0U; i < 144U; i++) {
     unsigned int n = IMBE_INTERLEAVE[i];
-    WRITE_BIT1(out, n, bTemp[i]);
+    WRITE_BIT8(out, n, bTemp[i]);
   }
 }
 
@@ -182,7 +145,7 @@ void CYSFVWUtils::toIMBE(const uint8_t* in, int16_t* out)
   // De-interleave
   for (uint8_t i = 0U; i < 144U; i++) {
     uint8_t n = IMBE_INTERLEAVE[i];
-    temp[i] = READ_BIT1(in, n);
+    temp[i] = READ_BIT8(in, n) != 0;
   }
 
   // now ..
@@ -216,17 +179,17 @@ void CYSFVWUtils::toIMBE(const uint8_t* in, int16_t* out)
   bool* bit = temp;
 
   // c0
-  uint32_t g1 = 0U;
+  uint32_t g0 = 0U;
   for (uint8_t i = 0U; i < 23U; i++)
-    g1 = (g1 << 1) | (bit[i] ? 0x01U : 0x00U);
-  uint32_t c0 = CGolay::decode23127(g1);
+    WRITE_BIT32(g0, i + 9U, bit[i]);
+  uint32_t c0 = CGolay::decode23127(g0);
   bit += 23U;
 
   bool prn[114U];
 
   // Create the whitening vector and save it for future use
-  uint8_t p = 16U * c0;
-  for (uint8_t i = 0U; i < 114U; i++) {
+  unsigned int p = 16U * c0;
+  for (unsigned int i = 0U; i < 114U; i++) {
     p = (173U * p + 13849U) % 65536U;
     prn[i] = p >= 32768U;
   }
@@ -236,24 +199,24 @@ void CYSFVWUtils::toIMBE(const uint8_t* in, int16_t* out)
     temp[i + 23U] ^= prn[i];
 
   // c1
-  g1 = 0U;
+  uint32_t g1 = 0U;
   for (uint8_t i = 0U; i < 23U; i++)
-    g1 = (g1 << 1) | (bit[i] ? 0x01U : 0x00U);
+    WRITE_BIT32(g1, i + 9U, bit[i]);
   uint32_t c1 = CGolay::decode23127(g1);
   bit += 23U;
 
   // c2
-  g1 = 0;
+  uint32_t g2 = 0U;
   for (uint8_t i = 0U; i < 23U; i++)
-    g1 = (g1 << 1) | (bit[i] ? 0x01U : 0x00U);
-  uint32_t c2 = CGolay::decode23127(g1);
+    WRITE_BIT32(g2, i + 9U, bit[i]);
+  uint32_t c2 = CGolay::decode23127(g2);
   bit += 23U;
 
   // c3
-  g1 = 0U;
+  uint32_t g3 = 0U;
   for (uint8_t i = 0U; i < 23U; i++)
-    g1 = (g1 << 1) | (bit[i] ? 0x01U : 0x00U);
-  uint32_t c3 = CGolay::decode23127(g1);
+    WRITE_BIT32(g3, i + 9U, bit[i]);
+  uint32_t c3 = CGolay::decode23127(g3);
   bit += 23U;
 
   // c4
@@ -274,36 +237,20 @@ void CYSFVWUtils::toIMBE(const uint8_t* in, int16_t* out)
   out[1U] = c1;
   out[2U] = c2;
   out[3U] = c3;
+  out[4U] = 0;
+  out[5U] = 0;
+  out[6U] = 0;
+  out[7U] = 0;
 
-  unsigned int offset = 92U;
-  int16_t mask = 0x0400;
-  out[4U] = 0x0000;
-  for (unsigned int i = 0U; i < 11U; i++, mask >>= 1, offset++) {
-    if (temp[offset])
-      out[4U] |= mask;
-  }
+  for (unsigned int i = 0U; i < 11U; i++)
+    WRITE_BIT16(out, i + 69U, temp[i + 92U]);
 
-  offset = 107U;
-  mask = 0x0400;
-  out[5U] = 0x0000;
-  for (unsigned int i = 0U; i < 11U; i++, mask >>= 1, offset++) {
-    if (temp[offset])
-      out[5U] |= mask;
-  }
+  for (unsigned int i = 0U; i < 11U; i++)
+    WRITE_BIT16(out, i + 85U, temp[i + 107U]);
 
-  offset = 122U;
-  mask = 0x0400;
-  out[6U] = 0x0000;
-  for (unsigned int i = 0U; i < 11U; i++, mask >>= 1, offset++) {
-    if (temp[offset])
-      out[6U] |= mask;
-  }
+  for (unsigned int i = 0U; i < 11U; i++)
+    WRITE_BIT16(out, i + 101U, temp[i + 122U]);
 
-  offset = 137U;
-  mask = 0x0040;
-  out[7U] = 0x0000;
-  for (unsigned int i = 0U; i < 7U; i++, mask >>= 1, offset++) {
-    if (temp[offset])
-      out[7U] |= mask;
-  }
+  for (unsigned int i = 0U; i < 7U; i++)
+    WRITE_BIT16(out, i + 121U, temp[i + 137U]);
 }
