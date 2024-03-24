@@ -24,8 +24,8 @@
 #include "Version.h"
 
 const struct {
-  uint16_t    m_input;
-  uint16_t    m_output;
+  uint8_t     m_input;
+  uint8_t     m_output;
   IProcessor* m_step1;
   IProcessor* m_step2;
 } PROCESSOR_TABLE[] = {
@@ -84,7 +84,7 @@ const struct {
   {MODE_CODEC2_3200, MODE_YSFDN,       &codec23200pcm, &pcmysfdn},
 #endif
   {MODE_CODEC2_3200, MODE_YSFVW_P25,   &codec23200pcm, &pcmysfvwp25},
-  {MODE_CODEC2_3200, MODE_CODEC2_3200, nullptr,           nullptr},
+  {MODE_CODEC2_3200, MODE_CODEC2_3200, nullptr,        nullptr},
   {MODE_CODEC2_3200, MODE_PCM,         &codec23200pcm, nullptr},
 
 #if AMBE_TYPE > 0
@@ -94,7 +94,7 @@ const struct {
 #endif
   {MODE_PCM,         MODE_YSFVW_P25,   &pcmysfvwp25,   nullptr},
   {MODE_PCM,         MODE_CODEC2_3200, &pcmcodec23200, nullptr},
-  {MODE_PCM,         MODE_PCM,         nullptr,           nullptr}
+  {MODE_PCM,         MODE_PCM,         nullptr,        nullptr}
 };
 
 const uint8_t PROCESSOR_LENGTH = sizeof(PROCESSOR_TABLE) / sizeof(PROCESSOR_TABLE[0U]);
@@ -270,10 +270,10 @@ uint8_t CSerialPort::sendData(const uint8_t* buffer, uint16_t length)
 
     case OPMODE_PASSTHROUGH:
       // If the RTS pin is high, then the chip does not expect any more data to be sent through
-      // if (!dvsi.ready3000()) {
-      //   DEBUG1("The AMBE3003/3000 chip is not ready to receive any more data");
-      //   return 0x05U;
-      // }
+      if (!dvsi.ready()) {
+        DEBUG1("The AMBE3003/3000 chip is not ready to receive any more data");
+        return 0x05U;
+      }
       dvsi.write(buffer, length);
       return 0x00U;
 
