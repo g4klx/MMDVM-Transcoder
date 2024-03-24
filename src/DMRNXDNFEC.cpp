@@ -138,7 +138,7 @@ bool CDMRNXDNFEC::regenerateDMR(uint32_t& a, uint32_t& b, uint32_t& c) const
 
   uint32_t datb = CGolay::decode23127(b);
 
-  b = CGolay::encode23127(datb) >> 1;
+  b = CGolay::encode23127(datb);
 
   b ^= p;
 

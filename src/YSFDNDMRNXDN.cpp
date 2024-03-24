@@ -90,7 +90,7 @@ uint8_t CYSFDNDMRNXDN::input(const uint8_t* buffer, uint16_t length)
 
   uint8_t a = CGolay::encode24128(data);
   uint8_t p = CAMBEPRNGTable::TABLE[data] >> 1;
-  uint8_t b = CGolay::encode23127(datb) >> 1;
+  uint8_t b = CGolay::encode23127(datb);
   b ^= p;
 
   uint32_t MASK = 0x800000U;

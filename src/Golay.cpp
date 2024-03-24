@@ -658,7 +658,7 @@ static uint32_t get_syndrome_23127(uint32_t pattern)
 
 uint32_t CGolay::encode23127(uint32_t data)
 {
-	return ENCODING_TABLE_24128[data] & 0xFFFFFEU;
+	return ENCODING_TABLE_24128[data] >> 1;
 }
 
 uint32_t CGolay::encode24128(uint32_t data)

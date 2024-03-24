@@ -70,28 +70,28 @@ void CYSFVWUtils::fromIMBE(const int16_t* in, uint8_t* out)
 
   // c0
   uint32_t c0 = in[0U];
-  uint32_t g0 = CGolay::encode23127(c0) >> 1;
+  uint32_t g0 = CGolay::encode23127(c0);
   for (unsigned int i = 0U; i < 23U; i++)
     bit[i] = READ_BIT32(g0, i + 9U) != 0;
   bit += 23U;
 
   // c1
   uint32_t c1 = in[1U];
-  uint32_t g1 = CGolay::encode23127(c1) >> 1;
+  uint32_t g1 = CGolay::encode23127(c1);
   for (unsigned int i = 0U; i < 23U; i++)
     bit[i] = READ_BIT32(g1, i + 9U) != 0;
   bit += 23U;
 
   // c2
   uint32_t c2 = in[2U];
-  uint32_t g2 = CGolay::encode23127(c2) >> 1;
+  uint32_t g2 = CGolay::encode23127(c2);
   for (unsigned int i = 0U; i < 23U; i++)
     bit[i] = READ_BIT32(g2, i + 9U) != 0;
   bit += 23U;
 
   // c3
   uint32_t c3 = in[3U];
-  uint32_t g3 = CGolay::encode23127(c3) >> 1;
+  uint32_t g3 = CGolay::encode23127(c3);
   for (unsigned int i = 0U; i < 23U; i++)
     bit[i] = READ_BIT32(g3, i + 9U) != 0;
   bit += 23U;
