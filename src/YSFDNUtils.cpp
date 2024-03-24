@@ -18,18 +18,22 @@
 
 #include "YSFDNUtils.h"
 
+#include <cstring>
+
 const uint8_t BIT_MASK_TABLE[] = {0x80U, 0x40U, 0x20U, 0x10U, 0x08U, 0x04U, 0x02U, 0x01U};
 
 #define WRITE_BIT1(p,i,b) p[(i)>>3] = (b) ? (p[(i)>>3] | BIT_MASK_TABLE[(i)&7]) : (p[(i)>>3] & ~BIT_MASK_TABLE[(i)&7])
 #define READ_BIT1(p,i)    (p[(i)>>3] & BIT_MASK_TABLE[(i)&7])
 
-const uint8_t INTERLEAVE[] = {0U,  3U,   6U,  9U, 12U, 15U, 18U, 21U, 24U, 27U, 30U, 33U,           // u0
-                              36U, 39U, 41U, 43U, 45U, 47U,  1U,  4U,  7U, 10U, 13U, 16U,           // u1
-                              19U, 22U, 25U, 28U, 31U, 34U, 37U, 40U, 42U, 44U, 46U,                // u2
-                              48U,  2U,  5U,  8U, 11U, 14U, 17U, 20U, 23U, 26U, 29U, 32U, 35U, 3U}; // u3
+const uint8_t INTERLEAVE[] = {0U,  3U,   6U,  9U, 12U, 15U, 18U, 21U, 24U, 27U, 30U, 33U,            // u0
+                              36U, 39U, 41U, 43U, 45U, 47U,  1U,  4U,  7U, 10U, 13U, 16U,            // u1
+                              19U, 22U, 25U, 28U, 31U, 34U, 37U, 40U, 42U, 44U, 46U,                 // u2
+                              48U,  2U,  5U,  8U, 11U, 14U, 17U, 20U, 23U, 26U, 29U, 32U, 35U, 38U}; // u3
 
 void CYSFDNUtils::fromMode34(const uint8_t* in, uint8_t* out)
 {
+  ::memset(out, 0x00U, 13U);
+
   uint8_t n = 0U;
 
   // u0 + u1
@@ -57,22 +61,18 @@ void CYSFDNUtils::fromMode34(const uint8_t* in, uint8_t* out)
 
 void CYSFDNUtils::toMode34(const uint8_t* in, uint8_t* out)
 {
-  out[0U] = 0x00U;
-  out[1U] = 0x00U;
-  out[2U] = 0x00U;
-  out[3U] = 0x00U;
-  out[4U] = 0x00U;
-  out[5U] = 0x00U;
-  out[6U] = 0x00U;
-
-  uint8_t n = 0U;
+  ::memset(out, 0x00U, 7U);
 
   // u0 + u1
-  for (uint8_t i = 0U; i < 81U; i += 3, n++) {
+  unsigned int offset = 0U;
+  for (uint8_t n = 0U; n < 27U; n++) {
     uint8_t vote = 0U;
-    vote += READ_BIT1(in, i + 0U) ? 1U : 0U;
-    vote += READ_BIT1(in, i + 1U) ? 1U : 0U;
-    vote += READ_BIT1(in, i + 2U) ? 1U : 0U;
+    vote += READ_BIT1(in, offset) ? 1U : 0U;
+    offset++;
+    vote += READ_BIT1(in, offset) ? 1U : 0U;
+    offset++;
+    vote += READ_BIT1(in, offset) ? 1U : 0U;
+    offset++;
 
     uint8_t pos = INTERLEAVE[n];
 
@@ -89,8 +89,9 @@ void CYSFDNUtils::toMode34(const uint8_t* in, uint8_t* out)
   }
 
   // u2 + u3
-  for (uint8_t i = 81U; i < 103U; i++, n++) {
-    bool b = READ_BIT1(in, i) != 0U;
+  for (uint8_t n = 27U; n < 49U; n++) {
+    bool b = READ_BIT1(in, offset) != 0U;
+    offset++;
 
     uint8_t pos = INTERLEAVE[n];
 
