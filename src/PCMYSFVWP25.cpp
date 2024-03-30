@@ -34,7 +34,7 @@ CPCMYSFVWP25::~CPCMYSFVWP25()
 uint8_t CPCMYSFVWP25::input(const uint8_t* buffer, uint16_t length)
 {
   if (m_inUse) {
-    DEBUG1("YSF VW/P25 frame is being overwritten");
+    DEBUG1("YSF VW/P25 FEC frame is being overwritten");
     return 0x05U;
   }
 
@@ -58,8 +58,8 @@ int16_t CPCMYSFVWP25::output(uint8_t* buffer)
   if (!m_inUse)
     return 0;
 
-  ::memcpy(buffer, m_buffer, YSFVW_P25_DATA_LENGTH);
+  ::memcpy(buffer, m_buffer, YSFVW_P25_FEC_DATA_LENGTH);
   m_inUse = false;
 
-  return YSFVW_P25_DATA_LENGTH;
+  return YSFVW_P25_FEC_DATA_LENGTH;
 }

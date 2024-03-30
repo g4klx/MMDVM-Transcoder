@@ -21,22 +21,22 @@
 
 #include <cstdint>
 
-const uint8_t MODE_PASS_THROUGH = 0x00U;
+const uint8_t MODE_PASS_THROUGH  = 0x00U;
 
-const uint8_t MODE_DSTAR        = 0x01U;
-const uint8_t MODE_DMR_NXDN     = 0x02U;
-const uint8_t MODE_YSFDN        = 0x03U;
-const uint8_t MODE_YSFVW_P25    = 0x04U;
-const uint8_t MODE_CODEC2_3200  = 0x05U;
+const uint8_t MODE_DSTAR         = 0x01U;
+const uint8_t MODE_DMR_NXDN      = 0x02U;
+const uint8_t MODE_YSFDN         = 0x03U;
+const uint8_t MODE_YSFVW_P25_FEC = 0x04U;
+const uint8_t MODE_CODEC2_3200   = 0x06U;
 
-const uint8_t MODE_PCM          = 0xFFU;
+const uint8_t MODE_PCM           = 0xFFU;
 
-const uint16_t DSTAR_DATA_LENGTH       = 9U;
-const uint16_t DMR_NXDN_DATA_LENGTH    = 9U;
-const uint16_t YSFDN_DATA_LENGTH       = 13U;
-const uint16_t YSFVW_P25_DATA_LENGTH   = 18U;
-const uint16_t CODEC2_3200_DATA_LENGTH = 8U;
+const uint16_t DSTAR_DATA_LENGTH         = 9U;
+const uint16_t DMR_NXDN_DATA_LENGTH      = 9U;
+const uint16_t YSFDN_DATA_LENGTH         = 13U;
+const uint16_t YSFVW_P25_FEC_DATA_LENGTH = 18U;
+const uint16_t CODEC2_3200_DATA_LENGTH   = 8U;
 
-const uint16_t PCM_DATA_LENGTH         = 320U;
+const uint16_t PCM_DATA_LENGTH           = 320U;
 
 #endif

@@ -33,7 +33,7 @@ class CYSFVWP25FEC : public IProcessor {
     virtual int16_t output(uint8_t* buffer) override;
 
   private:
-    uint8_t m_buffer[YSFVW_P25_DATA_LENGTH];
+    uint8_t m_buffer[YSFVW_P25_FEC_DATA_LENGTH];
     bool    m_inUse;
 };
 

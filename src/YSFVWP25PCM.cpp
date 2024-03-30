@@ -39,8 +39,8 @@ uint8_t CYSFVWP25PCM::input(const uint8_t* buffer, uint16_t length)
     return 0x05U;
   }
 
-  if (length != YSFVW_P25_DATA_LENGTH) {
-    DEBUG2("YSF VW/P25 frame length is invalid", length);
+  if (length != YSFVW_P25_FEC_DATA_LENGTH) {
+    DEBUG2("YSF VW/P25 FEC frame length is invalid", length);
     return 0x04U;
   }
 
