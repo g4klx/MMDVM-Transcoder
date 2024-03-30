@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,51 +16,50 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "YSFVWP25PCM.h"
+#include "PCMYSFVWP25FEC.h"
 
 #include "YSFVWUtils.h"
 #include "Debug.h"
 
-
-CYSFVWP25PCM::CYSFVWP25PCM() :
+CPCMYSFVWP25FEC::CPCMYSFVWP25FEC() :
 m_buffer(),
 m_inUse(false)
 {
 }
 
-CYSFVWP25PCM::~CYSFVWP25PCM()
+CPCMYSFVWP25FEC::~CPCMYSFVWP25FEC()
 {
 }
 
-uint8_t CYSFVWP25PCM::input(const uint8_t* buffer, uint16_t length)
+uint8_t CPCMYSFVWP25FEC::input(const uint8_t* buffer, uint16_t length)
 {
   if (m_inUse) {
-    DEBUG1("PCM frame is being overwritten");
+    DEBUG1("YSF VW/P25 FEC frame is being overwritten");
     return 0x05U;
   }
 
-  if (length != YSFVW_P25_FEC_DATA_LENGTH) {
-    DEBUG2("YSF VW/P25 FEC frame length is invalid", length);
+  if (length != PCM_DATA_LENGTH) {
+    DEBUG2("PCM frame length is invalid", length);
     return 0x04U;
   }
 
   int16_t frame[8U];
-  CYSFVWUtils::toIMBE(buffer, frame);
+  imbe.imbe_encode(frame, (int16_t*)buffer);
 
-  imbe.imbe_decode(frame, (int16_t*)m_buffer);
+  CYSFVWUtils::fromIMBE(frame, m_buffer);
 
   m_inUse = true;
 
   return 0x00U;
 }
 
-int16_t CYSFVWP25PCM::output(uint8_t* buffer)
+int16_t CPCMYSFVWP25FEC::output(uint8_t* buffer)
 {
   if (!m_inUse)
     return 0;
 
-  ::memcpy(buffer, m_buffer, PCM_DATA_LENGTH);
+  ::memcpy(buffer, m_buffer, YSFVW_P25_FEC_DATA_LENGTH);
   m_inUse = false;
 
-  return PCM_DATA_LENGTH;
+  return YSFVW_P25_FEC_DATA_LENGTH;
 }

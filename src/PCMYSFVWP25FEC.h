@@ -16,17 +16,17 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	PCMYSFVWP25_H
-#define	PCMYSFVWP25_H
+#ifndef	PCMYSFVWP25FEC_H
+#define	PCMYSFVWP25FEC_H
 
 #include "Processor.h"
 
 #include "ModeDefines.h"
 
-class CPCMYSFVWP25 : public IProcessor {
+class CPCMYSFVWP25FEC : public IProcessor {
   public:
-    CPCMYSFVWP25();
-    virtual ~CPCMYSFVWP25();
+    CPCMYSFVWP25FEC();
+    virtual ~CPCMYSFVWP25FEC();
 
     virtual uint8_t input(const uint8_t* buffer, uint16_t length) override;
 

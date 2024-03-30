@@ -111,7 +111,7 @@ const uint8_t  SET_MODE1B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x01U 
 const uint16_t SET_MODE1B_REQ_LEN = 6U;
 
 // D-Star to YSF VW/P25 FEC Mode Set
-const uint8_t  SET_MODE1C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x04U };
+const uint8_t  SET_MODE1C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x05U };
 const uint16_t SET_MODE1C_REQ_LEN = 6U;
 
 // D-Star to Codec2 3200 Mode Set
@@ -141,7 +141,7 @@ const uint8_t  SET_MODE2C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x03U 
 const uint16_t SET_MODE2C_REQ_LEN = 6U;
 
 // DMR/NXDN to YSF VW/P25 FEC Mode Set
-const uint8_t  SET_MODE2D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x04U };
+const uint8_t  SET_MODE2D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x05U };
 const uint16_t SET_MODE2D_REQ_LEN = 6U;
 
 // DMR/NXDN to Codec2 3200 Mode Set
@@ -167,7 +167,7 @@ const uint8_t  SET_MODE3C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x02U 
 const uint16_t SET_MODE3C_REQ_LEN = 6U;
 
 // YSF DN to YSF VW/P25 FEC Mode Set
-const uint8_t  SET_MODE3D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x04U };
+const uint8_t  SET_MODE3D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x05U };
 const uint16_t SET_MODE3D_REQ_LEN = 6U;
 
 // YSF DN to Codec2 3200 Mode Set
@@ -181,27 +181,27 @@ const uint16_t SET_MODE3G_REQ_LEN = 6U;
 /* YSF VW/P25 FEC */
 
 // YSF VW/P25 FEC to PCM Mode Set
-const uint8_t  SET_MODE4A_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0xFFU };
+const uint8_t  SET_MODE4A_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0xFFU };
 const uint16_t SET_MODE4A_REQ_LEN = 6U;
 
 // YSF VW/P25 FEC to YSF/VW P25 FEC Mode Set
-const uint8_t  SET_MODE4B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x04U };
+const uint8_t  SET_MODE4B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x05U };
 const uint16_t SET_MODE4B_REQ_LEN = 6U;
 
 // YSF VW/P25 FEC to D-Star Mode Set
-const uint8_t  SET_MODE4C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x01U };
+const uint8_t  SET_MODE4C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x01U };
 const uint16_t SET_MODE4C_REQ_LEN = 6U;
 
 // YSF VW/P25 FEC to DMR/NXDN Mode Set
-const uint8_t  SET_MODE4D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x02U };
+const uint8_t  SET_MODE4D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x02U };
 const uint16_t SET_MODE4D_REQ_LEN = 6U;
 
 // YSF VW/P25 FEC to YSF DN Mode Set
-const uint8_t  SET_MODE4E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x03U };
+const uint8_t  SET_MODE4E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x03U };
 const uint16_t SET_MODE4E_REQ_LEN = 6U;
 
 // YSF VW/P25 FEC to Codec2 3200 Mode Set
-const uint8_t  SET_MODE4F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x06U };
+const uint8_t  SET_MODE4F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x06U };
 const uint16_t SET_MODE4F_REQ_LEN = 6U;
 
 /* Codec2 3200 */
@@ -227,7 +227,7 @@ const uint8_t  SET_MODE5E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x03U 
 const uint16_t SET_MODE5E_REQ_LEN = 6U;
 
 // Codec2 3200 to YSF VW/P25 FEC Mode Set
-const uint8_t  SET_MODE5F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x04U };
+const uint8_t  SET_MODE5F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x05U };
 const uint16_t SET_MODE5F_REQ_LEN = 6U;
 
 /* PCM */
@@ -245,7 +245,7 @@ const uint8_t  SET_MODE9C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x03U 
 const uint16_t SET_MODE9C_REQ_LEN = 6U;
 
 // PCM to YSF VW/P25 FEC Mode Set
-const uint8_t  SET_MODE9D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x04U };
+const uint8_t  SET_MODE9D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x05U };
 const uint16_t SET_MODE9D_REQ_LEN = 6U;
 
 // PCM to Codec2 3200 Mode Set

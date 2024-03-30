@@ -26,6 +26,8 @@
 #include "Codec2/codec2.h"
 
 #include "AMBE3000Driver.h"
+#include "YSFVWP25FECPCM.h"
+#include "PCMYSFVWP25FEC.h"
 #include "Codec23200PCM.h"
 #include "PCMCodec23200.h"
 #include "DStarDMRNXDN.h"
@@ -33,8 +35,6 @@
 #include "YSFDNDMRNXDN.h"
 #include "DMRNXDNYSFDN.h"
 #include "YSFVWP25FEC.h"
-#include "YSFVWP25PCM.h"
-#include "PCMYSFVWP25.h"
 #include "DStarYSFDN.h"
 #include "YSFDNDStar.h"
 #include "DMRNXDNFEC.h"
@@ -68,13 +68,13 @@ extern CYSFDNDStar     ysfdndstar;
 extern CYSFDNPCM       ysfdnpcm;
 extern CDStarPCM       dstarpcm;
 extern CDMRNXDNPCM     dmrnxdnpcm;
-extern CYSFVWP25PCM    ysfvwp25pcm;
+extern CYSFVWP25FECPCM ysfvwp25fecpcm;
 extern CCodec23200PCM  codec23200pcm;
 
 extern CPCMYSFDN       pcmysfdn;
 extern CPCMDStar       pcmdstar;
 extern CPCMDMRNXDN     pcmdmrnxdn;
-extern CPCMYSFVWP25    pcmysfvwp25;
+extern CPCMYSFVWP25FEC pcmysfvwp25fec;
 extern CPCMCodec23200  pcmcodec23200;
 
 extern CYSFDNDMRNXDN   ysfdndmrnxdn;

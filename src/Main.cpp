@@ -34,13 +34,13 @@ CYSFDNDStar     ysfdndstar;
 CYSFDNPCM       ysfdnpcm;
 CDStarPCM       dstarpcm;
 CDMRNXDNPCM     dmrnxdnpcm;
-CYSFVWP25PCM    ysfvwp25pcm;
+CYSFVWP25FECPCM ysfvwp25fecpcm;
 CCodec23200PCM  codec23200pcm;
 
 CPCMYSFDN       pcmysfdn;
 CPCMDStar       pcmdstar;
 CPCMDMRNXDN     pcmdmrnxdn;
-CPCMYSFVWP25    pcmysfvwp25;
+CPCMYSFVWP25FEC pcmysfvwp25fec;
 CPCMCodec23200  pcmcodec23200;
 
 CYSFDNDMRNXDN   ysfdndmrnxdn;
