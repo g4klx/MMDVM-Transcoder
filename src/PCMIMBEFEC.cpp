@@ -16,25 +16,25 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "PCMYSFVWP25FEC.h"
+#include "PCMIMBEFEC.h"
 
-#include "YSFVWUtils.h"
+#include "IMBEUtils.h"
 #include "Debug.h"
 
-CPCMYSFVWP25FEC::CPCMYSFVWP25FEC() :
+CPCMIMBEFEC::CPCMIMBEFEC() :
 m_buffer(),
 m_inUse(false)
 {
 }
 
-CPCMYSFVWP25FEC::~CPCMYSFVWP25FEC()
+CPCMIMBEFEC::~CPCMIMBEFEC()
 {
 }
 
-uint8_t CPCMYSFVWP25FEC::input(const uint8_t* buffer, uint16_t length)
+uint8_t CPCMIMBEFEC::input(const uint8_t* buffer, uint16_t length)
 {
   if (m_inUse) {
-    DEBUG1("YSF VW/P25 FEC frame is being overwritten");
+    DEBUG1("IMBE FEC frame is being overwritten");
     return 0x05U;
   }
 
@@ -46,20 +46,20 @@ uint8_t CPCMYSFVWP25FEC::input(const uint8_t* buffer, uint16_t length)
   int16_t frame[8U];
   imbe.imbe_encode(frame, (int16_t*)buffer);
 
-  CYSFVWUtils::fromIMBE(frame, m_buffer);
+  CIMBEUtils::imbeToFEC(frame, m_buffer);
 
   m_inUse = true;
 
   return 0x00U;
 }
 
-int16_t CPCMYSFVWP25FEC::output(uint8_t* buffer)
+int16_t CPCMIMBEFEC::output(uint8_t* buffer)
 {
   if (!m_inUse)
     return 0;
 
-  ::memcpy(buffer, m_buffer, YSFVW_P25_FEC_DATA_LENGTH);
+  ::memcpy(buffer, m_buffer, IMBE_FEC_DATA_LENGTH);
   m_inUse = false;
 
-  return YSFVW_P25_FEC_DATA_LENGTH;
+  return IMBE_FEC_DATA_LENGTH;
 }

@@ -26,21 +26,19 @@
 #include "Codec2/codec2.h"
 
 #include "AMBE3000Driver.h"
-#include "YSFVWP25FECPCM.h"
-#include "PCMYSFVWP25FEC.h"
 #include "Codec23200PCM.h"
 #include "PCMCodec23200.h"
 #include "DStarDMRNXDN.h"
 #include "DMRNXDNDStar.h"
 #include "YSFDNDMRNXDN.h"
 #include "DMRNXDNYSFDN.h"
-#include "YSFVWP25FEC.h"
 #include "DStarYSFDN.h"
 #include "YSFDNDStar.h"
 #include "DMRNXDNFEC.h"
 #include "DMRNXDNPCM.h"
 #include "PCMDMRNXDN.h"
-#include "YSFDNPCM.h"
+#include "IMBEFECPCM.h"
+#include "PCMIMBEFEC.h"
 #include "DVSIDriver.h"
 #include "SerialPort.h"
 #include "LEDDriver.h"
@@ -50,6 +48,8 @@
 #include "DStarFEC.h"
 #include "DStarPCM.h"
 #include "PCMDStar.h"
+#include "YSFDNPCM.h"
+#include "IMBEFEC.h"
 #include "Config.h"
 #include "Debug.h"
 
@@ -58,7 +58,7 @@ extern CSerialPort     serial;
 extern CDStarFEC       dstarfec;
 extern CDMRNXDNFEC     dmrnxdnfec;
 extern CYSFDNFEC       ysfdnfec;
-extern CYSFVWP25FEC    ysfvwp25fec;
+extern CIMBEFEC        imbefec;
 
 extern CDStarDMRNXDN   dstardmrnxdn;
 extern CDMRNXDNDStar   dmrnxdndstar;
@@ -68,13 +68,13 @@ extern CYSFDNDStar     ysfdndstar;
 extern CYSFDNPCM       ysfdnpcm;
 extern CDStarPCM       dstarpcm;
 extern CDMRNXDNPCM     dmrnxdnpcm;
-extern CYSFVWP25FECPCM ysfvwp25fecpcm;
+extern CIMBEFECPCM     imbefecpcm;
 extern CCodec23200PCM  codec23200pcm;
 
 extern CPCMYSFDN       pcmysfdn;
 extern CPCMDStar       pcmdstar;
 extern CPCMDMRNXDN     pcmdmrnxdn;
-extern CPCMYSFVWP25FEC pcmysfvwp25fec;
+extern CPCMIMBEFEC     pcmimbefec;
 extern CPCMCodec23200  pcmcodec23200;
 
 extern CYSFDNDMRNXDN   ysfdndmrnxdn;

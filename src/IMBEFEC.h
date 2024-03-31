@@ -16,24 +16,25 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	PCMYSFVWP25FEC_H
-#define	PCMYSFVWP25FEC_H
+#ifndef	IMBEFEC_H
+#define	IMBEFEC_H
 
 #include "Processor.h"
 
 #include "ModeDefines.h"
 
-class CPCMYSFVWP25FEC : public IProcessor {
+class CIMBEFEC : public IProcessor {
   public:
-    CPCMYSFVWP25FEC();
-    virtual ~CPCMYSFVWP25FEC();
+    CIMBEFEC();
+    virtual ~CIMBEFEC();
 
     virtual uint8_t input(const uint8_t* buffer, uint16_t length) override;
 
     virtual int16_t output(uint8_t* buffer) override;
 
   private:
-    uint8_t m_buffer[YSFVW_P25_FEC_DATA_LENGTH];
-    bool    m_inUse;};
+    uint8_t m_buffer[IMBE_FEC_DATA_LENGTH];
+    bool    m_inUse;
+};
 
 #endif

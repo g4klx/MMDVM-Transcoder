@@ -16,51 +16,24 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "YSFVWP25FECPCM.h"
+#ifndef	PCMIMBEFEC_H
+#define	PCMIMBEFEC_H
 
-#include "YSFVWUtils.h"
-#include "Debug.h"
+#include "Processor.h"
 
+#include "ModeDefines.h"
 
-CYSFVWP25FECPCM::CYSFVWP25FECPCM() :
-m_buffer(),
-m_inUse(false)
-{
-}
+class CPCMIMBEFEC : public IProcessor {
+  public:
+    CPCMIMBEFEC();
+    virtual ~CPCMIMBEFEC();
 
-CYSFVWP25FECPCM::~CYSFVWP25FECPCM()
-{
-}
+    virtual uint8_t input(const uint8_t* buffer, uint16_t length) override;
 
-uint8_t CYSFVWP25FECPCM::input(const uint8_t* buffer, uint16_t length)
-{
-  if (m_inUse) {
-    DEBUG1("PCM frame is being overwritten");
-    return 0x05U;
-  }
+    virtual int16_t output(uint8_t* buffer) override;
 
-  if (length != YSFVW_P25_FEC_DATA_LENGTH) {
-    DEBUG2("YSF VW/P25 FEC frame length is invalid", length);
-    return 0x04U;
-  }
+  private:
+    uint8_t m_buffer[IMBE_FEC_DATA_LENGTH];
+    bool    m_inUse;};
 
-  int16_t frame[8U];
-  CYSFVWUtils::toIMBE(buffer, frame);
-
-  imbe.imbe_decode(frame, (int16_t*)m_buffer);
-
-  m_inUse = true;
-
-  return 0x00U;
-}
-
-int16_t CYSFVWP25FECPCM::output(uint8_t* buffer)
-{
-  if (!m_inUse)
-    return 0;
-
-  ::memcpy(buffer, m_buffer, PCM_DATA_LENGTH);
-  m_inUse = false;
-
-  return PCM_DATA_LENGTH;
-}
+#endif

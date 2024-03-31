@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,25 +16,18 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	YSFVWP25FECPCM_H
-#define	YSFVWP25FECPCM_H
+#ifndef	IMBEUtils_H
+#define	IMBEUtils_H
 
-#include "Processor.h"
+#include <cstdint>
 
-#include "ModeDefines.h"
-
-class CYSFVWP25FECPCM : public IProcessor {
+class CIMBEUtils {
   public:
-    CYSFVWP25FECPCM();
-    virtual ~CYSFVWP25FECPCM();
+    static void imbeToFEC(const int16_t* in, uint8_t* out);
 
-    virtual uint8_t input(const uint8_t* buffer, uint16_t length) override;
+    static void fecToIMBE(const uint8_t* buffer, int16_t* out);
 
-    virtual int16_t output(uint8_t* buffer) override;
-
-  private:
-    uint8_t m_buffer[PCM_DATA_LENGTH];
-    bool    m_inUse;
+private:
 };
 
 #endif

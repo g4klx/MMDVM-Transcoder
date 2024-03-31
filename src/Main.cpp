@@ -24,7 +24,7 @@ CSerialPort     serial;
 CDStarFEC       dstarfec;
 CDMRNXDNFEC     dmrnxdnfec;
 CYSFDNFEC       ysfdnfec;
-CYSFVWP25FEC    ysfvwp25fec;
+CIMBEFEC        imbefec;
 
 CDStarDMRNXDN   dstardmrnxdn;
 CDMRNXDNDStar   dmrnxdndstar;
@@ -34,13 +34,13 @@ CYSFDNDStar     ysfdndstar;
 CYSFDNPCM       ysfdnpcm;
 CDStarPCM       dstarpcm;
 CDMRNXDNPCM     dmrnxdnpcm;
-CYSFVWP25FECPCM ysfvwp25fecpcm;
+CIMBEFECPCM     imbefecpcm;
 CCodec23200PCM  codec23200pcm;
 
 CPCMYSFDN       pcmysfdn;
 CPCMDStar       pcmdstar;
 CPCMDMRNXDN     pcmdmrnxdn;
-CPCMYSFVWP25FEC pcmysfvwp25fec;
+CPCMIMBEFEC     pcmimbefec;
 CPCMCodec23200  pcmcodec23200;
 
 CYSFDNDMRNXDN   ysfdndmrnxdn;

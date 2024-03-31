@@ -16,7 +16,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "YSFVWUtils.h"
+#include "IMBEUtils.h"
 
 #include "Hamming.h"
 #include "Golay.h"
@@ -63,7 +63,7 @@ const uint8_t IMBE_INTERLEAVE[] = {
   5U, 10U, 17U, 22U, 29U, 34U, 41U, 46U, 53U, 58U, 65U, 70U, 77U, 82U, 89U, 94U,
      101U, 106U, 113U, 118U, 125U, 130U, 137U, 142U};
 
-void CYSFVWUtils::fromIMBE(const int16_t* in, uint8_t* out)
+void CIMBEUtils::imbeToFEC(const int16_t* in, uint8_t* out)
 {
   bool bTemp[144U];
   bool* bit = bTemp;
@@ -138,7 +138,7 @@ void CYSFVWUtils::fromIMBE(const int16_t* in, uint8_t* out)
   }
 }
 
-void CYSFVWUtils::toIMBE(const uint8_t* in, int16_t* out)
+void CIMBEUtils::fecToIMBE(const uint8_t* in, int16_t* out)
 {
   bool temp[144U];
 
