@@ -77,8 +77,8 @@ const struct {
   {MODE_IMBE,         MODE_DMR_NXDN,      &imbepcm,        &pcmdmrnxdn},
   {MODE_IMBE,         MODE_YSFDN,         &imbepcm,        &pcmysfdn},
 #endif
-  {MODE_IMBE,         MODE_IMBE,          &imbe,           nullptr},
-  {MODE_IMBE,         MODE_IMBE_FEC,      &imbefec1,       nullptr},
+  {MODE_IMBE,         MODE_IMBE,          nullptr,         nullptr},
+  {MODE_IMBE,         MODE_IMBE_FEC,      &imbeimbefec,    nullptr},
   {MODE_IMBE,         MODE_CODEC2_3200,   &imbepcm,        &pcmcodec23200},
   {MODE_IMBE,         MODE_PCM,           &imbepcm,        nullptr},
 
@@ -87,7 +87,7 @@ const struct {
   {MODE_IMBE_FEC,     MODE_DMR_NXDN,      &imbefecpcm,     &pcmdmrnxdn},
   {MODE_IMBE_FEC,     MODE_YSFDN,         &imbefecpcm,     &pcmysfdn},
 #endif
-  {MODE_IMBE_FEC,     MODE_IMBE,          &imbefec2,       nullptr},
+  {MODE_IMBE_FEC,     MODE_IMBE,          &imbefecimbe,    nullptr},
   {MODE_IMBE_FEC,     MODE_IMBE_FEC,      &imbefec,        nullptr},
   {MODE_IMBE_FEC,     MODE_CODEC2_3200,   &imbefecpcm,     &pcmcodec23200},
   {MODE_IMBE_FEC,     MODE_PCM,           &imbefecpcm,     nullptr},

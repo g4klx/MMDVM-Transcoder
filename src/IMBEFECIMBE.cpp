@@ -16,20 +16,50 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	IMBEUtils_H
-#define	IMBEUtils_H
+#include "IMBEFECIMBE.h"
 
-#include <cstdint>
+#include "IMBEUtils.h"
+#include "Debug.h"
 
-class CIMBEUtils {
-  public:
-    static void imbeToFEC(const int16_t* in, uint8_t* out);
-    static void imbeToPacked(const int16_t* in, uint8_t* out);
 
-    static void fecToIMBE(const uint8_t* buffer, int16_t* out);
-    static void packedToIMBE(const uint8_t* buffer, int16_t* out);
+CIMBEFECIMBE::CIMBEFECIMBE() :
+m_buffer(),
+m_inUse(false)
+{
+}
 
-private:
-};
+CIMBEFECIMBE::~CIMBEFECIMBE()
+{
+}
 
-#endif
+uint8_t CIMBEFECIMBE::input(const uint8_t* buffer, uint16_t length)
+{
+  if (m_inUse) {
+    DEBUG1("IMBE frame is being overwritten");
+    return 0x05U;
+  }
+
+  if (length != IMBE_FEC_DATA_LENGTH) {
+    DEBUG2("IMBE FEC frame length is invalid", length);
+    return 0x04U;
+  }
+
+  int16_t frame[8U];
+  CIMBEUtils::fecToIMBE(buffer, frame);
+  CIMBEUtils::imbeToPacked(frame, m_buffer);
+
+  m_inUse = true;
+
+  return 0x00U;
+}
+
+int16_t CIMBEFECIMBE::output(uint8_t* buffer)
+{
+  if (!m_inUse)
+    return 0;
+
+  ::memcpy(buffer, m_buffer, IMBE_DATA_LENGTH);
+  m_inUse = false;
+
+  return IMBE_DATA_LENGTH;
+}

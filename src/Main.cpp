@@ -34,17 +34,22 @@ CYSFDNDStar     ysfdndstar;
 CYSFDNPCM       ysfdnpcm;
 CDStarPCM       dstarpcm;
 CDMRNXDNPCM     dmrnxdnpcm;
+CIMBEPCM        imbepcm;
 CIMBEFECPCM     imbefecpcm;
 CCodec23200PCM  codec23200pcm;
 
 CPCMYSFDN       pcmysfdn;
 CPCMDStar       pcmdstar;
 CPCMDMRNXDN     pcmdmrnxdn;
+CPCMIMBE        pcmimbe;
 CPCMIMBEFEC     pcmimbefec;
 CPCMCodec23200  pcmcodec23200;
 
 CYSFDNDMRNXDN   ysfdndmrnxdn;
 CDMRNXDNYSFDN   dmrnxdnysfdn;
+
+CIMBEIMBEFEC    imbeimbefec;
+CIMBEFECIMBE    imbefecimbe;
 
 imbe_vocoder    imbe;
 CCodec2         codec23200(true);

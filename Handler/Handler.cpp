@@ -92,6 +92,10 @@ const uint8_t  YSFDN_DATA[] = { MARKER, 0x11U, 0x00U, 0x05U, 0xE0U, 0x01U, 0xC0U
 const uint16_t YSFDN_DATA_REQ_LEN = 17U;
 const uint16_t YSFDN_DATA_REP_LEN = 4U;
 
+const uint8_t  IMBE_DATA[] = { MARKER, 0x0FU, 0x00U, 0x05U, 0x08U, 0x71U, 0x6DU, 0x0BU, 0xABU, 0xC7U, 0xC6U, 0x49U, 0x38U, 0xDDU, 0x09U };
+const uint16_t IMBE_DATA_REQ_LEN = 15U;
+const uint16_t IMBE_DATA_REP_LEN = 4U;
+
 const uint8_t  IMBE_FEC_DATA[] = { MARKER, 0x16U, 0x00U, 0x05U, 0x0AU, 0x02U, 0x25U, 0x32U, 0x21U, 0xE6U, 0x77U, 0x0AU, 0x5DU, 0xAFU, 0xF7U, 0xAEU, 0x44U, 0xC0U, 0xB8U, 0xBEU, 0x97U, 0x97U };
 const uint16_t IMBE_FEC_DATA_REQ_LEN = 22U;
 const uint16_t IMBE_FEC_DATA_REP_LEN = 4U;
@@ -110,20 +114,24 @@ const uint16_t SET_MODE1A_REQ_LEN = 6U;
 const uint8_t  SET_MODE1B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x01U };
 const uint16_t SET_MODE1B_REQ_LEN = 6U;
 
-// D-Star to IMBE FEC Mode Set
-const uint8_t  SET_MODE1C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x05U };
+// D-Star to DMR/NXDN Mode Set
+const uint8_t  SET_MODE1C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x02U };
 const uint16_t SET_MODE1C_REQ_LEN = 6U;
 
-// D-Star to Codec2 3200 Mode Set
-const uint8_t  SET_MODE1D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x06U };
+// D-Star to YSF DN Mode Set
+const uint8_t  SET_MODE1D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x03U };
 const uint16_t SET_MODE1D_REQ_LEN = 6U;
 
-// D-Star to DMR/NXDN Mode Set
-const uint8_t  SET_MODE1F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x02U };
+// D-Star to IMBE Mode Set
+const uint8_t  SET_MODE1E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x04U };
+const uint16_t SET_MODE1E_REQ_LEN = 6U;
+
+// D-Star to IMBE FEC Mode Set
+const uint8_t  SET_MODE1F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x05U };
 const uint16_t SET_MODE1F_REQ_LEN = 6U;
 
-// D-Star to YSF DN Mode Set
-const uint8_t  SET_MODE1G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x03U };
+// D-Star to Codec2 3200 Mode Set
+const uint8_t  SET_MODE1G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x06U };
 const uint16_t SET_MODE1G_REQ_LEN = 6U;
 
 /* DMR/NXDN */
@@ -136,20 +144,24 @@ const uint16_t SET_MODE2A_REQ_LEN = 6U;
 const uint8_t  SET_MODE2B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x02U };
 const uint16_t SET_MODE2B_REQ_LEN = 6U;
 
-// DMR/NXDN to YSF DN Mode Set
-const uint8_t  SET_MODE2C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x03U };
+// DMR/NXDN to D-Star Mode Set
+const uint8_t  SET_MODE2C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x01U };
 const uint16_t SET_MODE2C_REQ_LEN = 6U;
 
-// DMR/NXDN to IMBE FEC Mode Set
-const uint8_t  SET_MODE2D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x05U };
+// DMR/NXDN to YSF DN Mode Set
+const uint8_t  SET_MODE2D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x03U };
 const uint16_t SET_MODE2D_REQ_LEN = 6U;
 
-// DMR/NXDN to Codec2 3200 Mode Set
-const uint8_t  SET_MODE2E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x06U };
+// DMR/NXDN to IMBE Mode Set
+const uint8_t  SET_MODE2E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x04U };
 const uint16_t SET_MODE2E_REQ_LEN = 6U;
 
-// DMR/NXDN to D-Star Mode Set
-const uint8_t  SET_MODE2G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x01U };
+// DMR/NXDN to IMBE FEC Mode Set
+const uint8_t  SET_MODE2F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x05U };
+const uint16_t SET_MODE2F_REQ_LEN = 6U;
+
+// DMR/NXDN to Codec2 3200 Mode Set
+const uint8_t  SET_MODE2G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x06U };
 const uint16_t SET_MODE2G_REQ_LEN = 6U;
 
 /* YSF DN */
@@ -162,21 +174,55 @@ const uint16_t SET_MODE3A_REQ_LEN = 6U;
 const uint8_t  SET_MODE3B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x03U };
 const uint16_t SET_MODE3B_REQ_LEN = 6U;
 
-// YSF DN to DMR/NXDN Mode Set
-const uint8_t  SET_MODE3C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x02U };
+// YSF DN to D-Star Mode Set
+const uint8_t  SET_MODE3C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x01U };
 const uint16_t SET_MODE3C_REQ_LEN = 6U;
 
-// YSF DN to IMBE FEC Mode Set
-const uint8_t  SET_MODE3D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x05U };
+// YSF DN to DMR/NXDN Mode Set
+const uint8_t  SET_MODE3D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x02U };
 const uint16_t SET_MODE3D_REQ_LEN = 6U;
 
-// YSF DN to Codec2 3200 Mode Set
-const uint8_t  SET_MODE3E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x06U };
+// YSF DN to IMBE Mode Set
+const uint8_t  SET_MODE3E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x04U };
 const uint16_t SET_MODE3E_REQ_LEN = 6U;
 
-// YSF DN to D-Star Mode Set
-const uint8_t  SET_MODE3G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x01U };
+// YSF DN to IMBE FEC Mode Set
+const uint8_t  SET_MODE3F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x05U };
+const uint16_t SET_MODE3F_REQ_LEN = 6U;
+
+// YSF DN to Codec2 3200 Mode Set
+const uint8_t  SET_MODE3G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x06U };
 const uint16_t SET_MODE3G_REQ_LEN = 6U;
+
+/* IMBE */
+
+// IMBE to PCM Mode Set
+const uint8_t  SET_MODE6A_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0xFFU };
+const uint16_t SET_MODE6A_REQ_LEN = 6U;
+
+// IMBE to IMBE Mode Set
+const uint8_t  SET_MODE6B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x04U };
+const uint16_t SET_MODE6B_REQ_LEN = 6U;
+
+// IMBE to IMBE FEC Mode Set
+const uint8_t  SET_MODE6C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x05U };
+const uint16_t SET_MODE6C_REQ_LEN = 6U;
+
+// IMBE to D-Star Mode Set
+const uint8_t  SET_MODE6D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x01U };
+const uint16_t SET_MODE6D_REQ_LEN = 6U;
+
+// IMBE to DMR/NXDN Mode Set
+const uint8_t  SET_MODE6E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x02U };
+const uint16_t SET_MODE6E_REQ_LEN = 6U;
+
+// IMBE to YSF DN Mode Set
+const uint8_t  SET_MODE6F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x03U };
+const uint16_t SET_MODE6F_REQ_LEN = 6U;
+
+// IMBE to Codec2 3200 Mode Set
+const uint8_t  SET_MODE6G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x06U };
+const uint16_t SET_MODE6G_REQ_LEN = 6U;
 
 /* IMBE FEC */
 
@@ -184,25 +230,29 @@ const uint16_t SET_MODE3G_REQ_LEN = 6U;
 const uint8_t  SET_MODE4A_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0xFFU };
 const uint16_t SET_MODE4A_REQ_LEN = 6U;
 
-// IMBE FEC to YSF/VW P25 FEC Mode Set
+// IMBE FEC to IMBE FEC Mode Set
 const uint8_t  SET_MODE4B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x05U };
 const uint16_t SET_MODE4B_REQ_LEN = 6U;
 
-// IMBE FEC to D-Star Mode Set
-const uint8_t  SET_MODE4C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x01U };
+// IMBE FEC to IMBE Mode Set
+const uint8_t  SET_MODE4C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x04U };
 const uint16_t SET_MODE4C_REQ_LEN = 6U;
 
-// IMBE FEC to DMR/NXDN Mode Set
-const uint8_t  SET_MODE4D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x02U };
+// IMBE FEC to D-Star Mode Set
+const uint8_t  SET_MODE4D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x01U };
 const uint16_t SET_MODE4D_REQ_LEN = 6U;
 
-// IMBE FEC to YSF DN Mode Set
-const uint8_t  SET_MODE4E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x03U };
+// IMBE FEC to DMR/NXDN Mode Set
+const uint8_t  SET_MODE4E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x02U };
 const uint16_t SET_MODE4E_REQ_LEN = 6U;
 
-// IMBE FEC to Codec2 3200 Mode Set
-const uint8_t  SET_MODE4F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x06U };
+// IMBE FEC to YSF DN Mode Set
+const uint8_t  SET_MODE4F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x03U };
 const uint16_t SET_MODE4F_REQ_LEN = 6U;
+
+// IMBE FEC to Codec2 3200 Mode Set
+const uint8_t  SET_MODE4G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x06U };
+const uint16_t SET_MODE4G_REQ_LEN = 6U;
 
 /* Codec2 3200 */
 
@@ -226,9 +276,13 @@ const uint16_t SET_MODE5D_REQ_LEN = 6U;
 const uint8_t  SET_MODE5E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x03U };
 const uint16_t SET_MODE5E_REQ_LEN = 6U;
 
-// Codec2 3200 to IMBE FEC Mode Set
-const uint8_t  SET_MODE5F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x05U };
+// Codec2 3200 to IMBE Mode Set
+const uint8_t  SET_MODE5F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x04U };
 const uint16_t SET_MODE5F_REQ_LEN = 6U;
+
+// Codec2 3200 to IMBE FEC Mode Set
+const uint8_t  SET_MODE5G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x05U };
+const uint16_t SET_MODE5G_REQ_LEN = 6U;
 
 /* PCM */
 
@@ -244,13 +298,17 @@ const uint16_t SET_MODE9B_REQ_LEN = 6U;
 const uint8_t  SET_MODE9C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x03U };
 const uint16_t SET_MODE9C_REQ_LEN = 6U;
 
-// PCM to IMBE FEC Mode Set
-const uint8_t  SET_MODE9D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x05U };
+// PCM to IMBE Mode Set
+const uint8_t  SET_MODE9D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x04U };
 const uint16_t SET_MODE9D_REQ_LEN = 6U;
 
-// PCM to Codec2 3200 Mode Set
-const uint8_t  SET_MODE9E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x06U };
+// PCM to IMBE FEC Mode Set
+const uint8_t  SET_MODE9E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x05U };
 const uint16_t SET_MODE9E_REQ_LEN = 6U;
+
+// PCM to Codec2 3200 Mode Set
+const uint8_t  SET_MODE9F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x06U };
+const uint16_t SET_MODE9F_REQ_LEN = 6U;
 
 // PCM to PCM Mode Set
 const uint8_t  SET_MODE9G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0xFFU };
@@ -358,7 +416,7 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode D-Star to DMR/NXDN", SET_MODE1F_REQ, SET_MODE1F_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode D-Star to DMR/NXDN", SET_MODE1C_REQ, SET_MODE1C_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
@@ -366,7 +424,7 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode D-Star to YSF DN", SET_MODE1G_REQ, SET_MODE1G_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode D-Star to YSF DN", SET_MODE1D_REQ, SET_MODE1D_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
@@ -374,7 +432,15 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode D-Star to IMBE FEC", SET_MODE1C_REQ, SET_MODE1C_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode D-Star to IMBE", SET_MODE1E_REQ, SET_MODE1E_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode D-Star to IMBE", DSTAR_DATA, DSTAR_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode D-Star to IMBE FEC", SET_MODE1F_REQ, SET_MODE1F_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
@@ -382,7 +448,7 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode D-Star to Codec2 3200", SET_MODE1D_REQ, SET_MODE1D_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode D-Star to Codec2 3200", SET_MODE1G_REQ, SET_MODE1G_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
@@ -408,7 +474,7 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode DMR/NXDN to D-Star", SET_MODE2G_REQ, SET_MODE2G_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode DMR/NXDN to D-Star", SET_MODE2C_REQ, SET_MODE2C_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
@@ -416,7 +482,7 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode DMR/NXDN to YSF DN", SET_MODE2C_REQ, SET_MODE2C_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode DMR/NXDN to YSF DN", SET_MODE2D_REQ, SET_MODE2D_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
@@ -424,7 +490,15 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode DMR/NXDN to IMBE FEC", SET_MODE2D_REQ, SET_MODE2D_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode DMR/NXDN to IMBE", SET_MODE2E_REQ, SET_MODE2E_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode DMR/NXDN to IMBE", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode DMR/NXDN to IMBE FEC", SET_MODE2F_REQ, SET_MODE2F_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
@@ -432,7 +506,7 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode DMR/NXDN to Codec2 3200", SET_MODE2E_REQ, SET_MODE2E_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode DMR/NXDN to Codec2 3200", SET_MODE2G_REQ, SET_MODE2G_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
@@ -458,7 +532,7 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode YSF DN to D-Star", SET_MODE3G_REQ, SET_MODE3G_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode YSF DN to D-Star", SET_MODE3C_REQ, SET_MODE3C_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
@@ -466,7 +540,7 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode YSF DN to DMR/NXDN", SET_MODE3C_REQ, SET_MODE3C_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode YSF DN to DMR/NXDN", SET_MODE3D_REQ, SET_MODE3D_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
@@ -474,7 +548,15 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode YSF DN to IMBE FEC", SET_MODE3D_REQ, SET_MODE3D_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode YSF DN to IMBE", SET_MODE3E_REQ, SET_MODE3E_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode YSF DN to IMBE", YSFDN_DATA, YSFDN_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode YSF DN to IMBE FEC", SET_MODE3F_REQ, SET_MODE3F_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
@@ -482,11 +564,69 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode YSF DN to Codec2 3200", SET_MODE3E_REQ, SET_MODE3E_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode YSF DN to Codec2 3200", SET_MODE3G_REQ, SET_MODE3G_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
     ret = test("Transcode YSF DN to Codec2 3200", YSFDN_DATA, YSFDN_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    printf("\nIMBE\n");
+
+    ret = test("Set Mode IMBE to PCM", SET_MODE6A_REQ, SET_MODE6A_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode IMBE to PCM", IMBE_DATA, IMBE_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode IMBE to IMBE", SET_MODE6B_REQ, SET_MODE6B_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode IMBE to IMBE", IMBE_DATA, IMBE_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode IMBE to IMBE FEC", SET_MODE6C_REQ, SET_MODE6C_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode IMBE to IMBE FEC", IMBE_DATA, IMBE_DATA_REQ_LEN, IMBE_FEC_DATA, IMBE_FEC_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode IMBE to D-Star", SET_MODE6D_REQ, SET_MODE6D_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode IMBE to D-Star", IMBE_DATA, IMBE_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode IMBE to DMR/NXDN", SET_MODE6E_REQ, SET_MODE6E_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode IMBE to DMR/NXDN", IMBE_DATA, IMBE_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode IMBE to YSF DN", SET_MODE6F_REQ, SET_MODE6F_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode IMBE to YSF DN", IMBE_DATA, IMBE_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode IMBE to Codec2 3200", SET_MODE6G_REQ, SET_MODE6G_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode IMBE to Codec2 3200", IMBE_DATA, IMBE_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
     if (!ret)
         return 1;
 
@@ -508,7 +648,15 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode IMBE FEC to D-Star", SET_MODE4C_REQ, SET_MODE4C_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode IMBE FEC to IMBE", SET_MODE4C_REQ, SET_MODE4C_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode IMBE FEC to IMBE", IMBE_FEC_DATA, IMBE_FEC_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode IMBE FEC to D-Star", SET_MODE4D_REQ, SET_MODE4D_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
@@ -516,7 +664,7 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode IMBE FEC to DMR/NXDN", SET_MODE4D_REQ, SET_MODE4D_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode IMBE FEC to DMR/NXDN", SET_MODE4E_REQ, SET_MODE4E_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
@@ -524,7 +672,7 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode IMBE FEC to YSF DN", SET_MODE4E_REQ, SET_MODE4E_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode IMBE FEC to YSF DN", SET_MODE4F_REQ, SET_MODE4F_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
@@ -532,7 +680,7 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode IMBE FEC to Codec2 3200", SET_MODE4F_REQ, SET_MODE4F_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode IMBE FEC to Codec2 3200", SET_MODE4G_REQ, SET_MODE4G_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
@@ -582,7 +730,15 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode Codec2 3200 to IMBE FEC", SET_MODE5F_REQ, SET_MODE5F_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode Codec2 3200 to IMBE", SET_MODE5F_REQ, SET_MODE5F_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode Codec2 3200 to IMBE", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode Codec2 3200 to IMBE FEC", SET_MODE5G_REQ, SET_MODE5G_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
@@ -616,7 +772,15 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode PCM to IMBE FEC", SET_MODE9D_REQ, SET_MODE9D_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode PCM to IMBE", SET_MODE9D_REQ, SET_MODE9D_REQ_LEN, ACK, ACK_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Transcode PCM to IMBE", PCM_DATA, PCM_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set Mode PCM to IMBE FEC", SET_MODE9E_REQ, SET_MODE9E_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 
@@ -624,7 +788,7 @@ int CHandler::run()
     if (!ret)
         return 1;
 
-    ret = test("Set Mode PCM to Codec2 3200", SET_MODE9E_REQ, SET_MODE9E_REQ_LEN, ACK, ACK_LEN);
+    ret = test("Set Mode PCM to Codec2 3200", SET_MODE9F_REQ, SET_MODE9F_REQ_LEN, ACK, ACK_LEN);
     if (!ret)
         return 1;
 

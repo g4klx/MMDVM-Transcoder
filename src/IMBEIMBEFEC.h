@@ -16,20 +16,24 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	IMBEUtils_H
-#define	IMBEUtils_H
+#ifndef	IMBEIMBEFEC_H
+#define	IMBEIMBEFEC_H
 
-#include <cstdint>
+#include "Processor.h"
 
-class CIMBEUtils {
+#include "ModeDefines.h"
+
+class CIMBEIMBEFEC : public IProcessor {
   public:
-    static void imbeToFEC(const int16_t* in, uint8_t* out);
-    static void imbeToPacked(const int16_t* in, uint8_t* out);
+    CIMBEIMBEFEC();
+    virtual ~CIMBEIMBEFEC();
 
-    static void fecToIMBE(const uint8_t* buffer, int16_t* out);
-    static void packedToIMBE(const uint8_t* buffer, int16_t* out);
+    virtual uint8_t input(const uint8_t* buffer, uint16_t length) override;
 
-private:
-};
+    virtual int16_t output(uint8_t* buffer) override;
+
+  private:
+    uint8_t m_buffer[IMBE_FEC_DATA_LENGTH];
+    bool    m_inUse;};
 
 #endif

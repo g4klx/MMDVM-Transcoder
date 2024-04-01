@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,20 +16,24 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	IMBEUtils_H
-#define	IMBEUtils_H
+#ifndef	PCMIMBE_H
+#define	PCMIMBE_H
 
-#include <cstdint>
+#include "Processor.h"
 
-class CIMBEUtils {
+#include "ModeDefines.h"
+
+class CPCMIMBE : public IProcessor {
   public:
-    static void imbeToFEC(const int16_t* in, uint8_t* out);
-    static void imbeToPacked(const int16_t* in, uint8_t* out);
+    CPCMIMBE();
+    virtual ~CPCMIMBE();
 
-    static void fecToIMBE(const uint8_t* buffer, int16_t* out);
-    static void packedToIMBE(const uint8_t* buffer, int16_t* out);
+    virtual uint8_t input(const uint8_t* buffer, uint16_t length) override;
 
-private:
-};
+    virtual int16_t output(uint8_t* buffer) override;
+
+  private:
+    uint8_t m_buffer[IMBE_DATA_LENGTH];
+    bool    m_inUse;};
 
 #endif

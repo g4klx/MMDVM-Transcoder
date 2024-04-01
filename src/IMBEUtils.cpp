@@ -138,6 +138,59 @@ void CIMBEUtils::imbeToFEC(const int16_t* in, uint8_t* out)
   }
 }
 
+void CIMBEUtils::imbeToPacked(const int16_t* in, uint8_t* out)
+{
+  uint8_t offset = 0U;
+
+  // c0
+  for (uint8_t i = 0U; i < 12U; i++, offset++) {
+    bool b = READ_BIT16(in, i + 4U) != 0;
+    WRITE_BIT8(out, offset, b);
+  }
+
+  // c1
+  for (uint8_t i = 0U; i < 12U; i++, offset++) {
+    bool b = READ_BIT16(in, i + 20U) != 0;
+    WRITE_BIT8(out, offset, b);
+  }
+
+  // c2
+  for (uint8_t i = 0U; i < 12U; i++, offset++) {
+    bool b = READ_BIT16(in, i + 36U) != 0;
+    WRITE_BIT8(out, offset, b);
+  }
+
+  // c3
+  for (uint8_t i = 0U; i < 12U; i++, offset++) {
+    bool b = READ_BIT16(in, i + 52U) != 0;
+    WRITE_BIT8(out, offset, b);
+  }
+
+  // c4
+  for (uint8_t i = 0U; i < 11U; i++, offset++) {
+    bool b = READ_BIT16(in, i + 69U) != 0;
+    WRITE_BIT8(out, offset, b);
+  }
+
+  // c5
+  for (uint8_t i = 0U; i < 11U; i++, offset++) {
+    bool b = READ_BIT16(in, i + 85U) != 0;
+    WRITE_BIT8(out, offset, b);
+  }
+
+  // c6
+  for (uint8_t i = 0U; i < 11U; i++, offset++) {
+    bool b = READ_BIT16(in, i + 100U) != 0;
+    WRITE_BIT8(out, offset, b);
+  }
+
+  // c7
+  for (uint8_t i = 0U; i < 7U; i++, offset++) {
+    bool b = READ_BIT16(in, i + 121U) != 0;
+    WRITE_BIT8(out, offset, b);
+  }
+}
+
 void CIMBEUtils::fecToIMBE(const uint8_t* in, int16_t* out)
 {
   bool temp[144U];
@@ -253,4 +306,66 @@ void CIMBEUtils::fecToIMBE(const uint8_t* in, int16_t* out)
 
   for (unsigned int i = 0U; i < 7U; i++)
     WRITE_BIT16(out, i + 121U, temp[i + 137U]);
+}
+
+void CIMBEUtils::packedToIMBE(const uint8_t* in, int16_t* out)
+{
+  out[0U] = 0;
+  out[1U] = 0;
+  out[2U] = 0;
+  out[3U] = 0;
+  out[4U] = 0;
+  out[5U] = 0;
+  out[6U] = 0;
+  out[7U] = 0;
+
+  uint8_t offset = 0U;
+
+  // c0
+  for (uint8_t i = 0U; i < 12U; i++, offset++) {
+    bool b = READ_BIT8(in, offset) != 0;
+    WRITE_BIT16(out, i + 4U, b);
+  }
+
+  // c1
+  for (uint8_t i = 0U; i < 12U; i++, offset++) {
+    bool b = READ_BIT8(in, offset) != 0;
+    WRITE_BIT16(out, i + 20U, b);
+  }
+
+  // c2
+  for (uint8_t i = 0U; i < 12U; i++, offset++) {
+    bool b = READ_BIT8(in, offset) != 0;
+    WRITE_BIT16(out, i + 36U, b);
+  }
+
+  // c3
+  for (uint8_t i = 0U; i < 12U; i++, offset++) {
+    bool b = READ_BIT8(in, offset) != 0;
+    WRITE_BIT16(out, i + 52U, b);
+  }
+
+  // c4
+  for (uint8_t i = 0U; i < 11U; i++, offset++) {
+    bool b = READ_BIT8(in, offset) != 0;
+    WRITE_BIT16(out, i + 69U, b);
+  }
+
+  // c5
+  for (uint8_t i = 0U; i < 11U; i++, offset++) {
+    bool b = READ_BIT8(in, offset) != 0;
+    WRITE_BIT16(out, i + 85U, b);
+  }
+
+  // c6
+  for (uint8_t i = 0U; i < 11U; i++, offset++) {
+    bool b = READ_BIT8(in, offset) != 0;
+    WRITE_BIT16(out, i + 100U, b);
+  }
+
+  // c7
+  for (uint8_t i = 0U; i < 7U; i++, offset++) {
+    bool b = READ_BIT8(in, offset) != 0;
+    WRITE_BIT16(out, i + 121U, b);
+  }
 }

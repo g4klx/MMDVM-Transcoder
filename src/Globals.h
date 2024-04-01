@@ -32,6 +32,8 @@
 #include "DMRNXDNDStar.h"
 #include "YSFDNDMRNXDN.h"
 #include "DMRNXDNYSFDN.h"
+#include "IMBEIMBEFEC.h"
+#include "IMBEFECIMBE.h"
 #include "DStarYSFDN.h"
 #include "YSFDNDStar.h"
 #include "DMRNXDNFEC.h"
@@ -50,6 +52,8 @@
 #include "PCMDStar.h"
 #include "YSFDNPCM.h"
 #include "IMBEFEC.h"
+#include "IMBEPCM.h"
+#include "PCMIMBE.h"
 #include "Config.h"
 #include "Debug.h"
 
@@ -68,17 +72,22 @@ extern CYSFDNDStar     ysfdndstar;
 extern CYSFDNPCM       ysfdnpcm;
 extern CDStarPCM       dstarpcm;
 extern CDMRNXDNPCM     dmrnxdnpcm;
+extern CIMBEPCM        imbepcm;
 extern CIMBEFECPCM     imbefecpcm;
 extern CCodec23200PCM  codec23200pcm;
 
 extern CPCMYSFDN       pcmysfdn;
 extern CPCMDStar       pcmdstar;
 extern CPCMDMRNXDN     pcmdmrnxdn;
+extern CPCMIMBE        pcmimbe;
 extern CPCMIMBEFEC     pcmimbefec;
 extern CPCMCodec23200  pcmcodec23200;
 
 extern CYSFDNDMRNXDN   ysfdndmrnxdn;
 extern CDMRNXDNYSFDN   dmrnxdnysfdn;
+
+extern CIMBEIMBEFEC    imbeimbefec;
+extern CIMBEFECIMBE    imbefecimbe;
 
 extern imbe_vocoder    imbe;
 extern CCodec2         codec23200;
