@@ -43,7 +43,7 @@ uint8_t CYSFDNFEC::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-  uint8_t ambe[7U];
+  uint8_t ambe[10U];
   CYSFDNUtils::toMode34(buffer, ambe);
   CYSFDNUtils::fromMode34(ambe, m_buffer);
 

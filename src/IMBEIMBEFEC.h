@@ -34,6 +34,7 @@ class CIMBEIMBEFEC : public IProcessor {
 
   private:
     uint8_t m_buffer[IMBE_FEC_DATA_LENGTH];
-    bool    m_inUse;};
+    bool    m_inUse;
+};
 
 #endif

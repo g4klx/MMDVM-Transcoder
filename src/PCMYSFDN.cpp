@@ -52,7 +52,7 @@ uint8_t CPCMYSFDN::input(const uint8_t* buffer, uint16_t length)
 
 int16_t CPCMYSFDN::output(uint8_t* buffer)
 {
-  uint8_t ambe[7U];
+  uint8_t ambe[10U];
   AD_STATE ret = ambe3000.readAMBE(m_n, ambe);
   switch (ret) {
       case ADS_NO_DATA:
