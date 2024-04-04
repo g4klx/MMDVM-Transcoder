@@ -22,8 +22,15 @@
 
 #include "Globals.h"
 
-#define STAT1_LED PA7
-#define STAT2_LED PA6
+#if defined(NUCLEO_STM32F722ZE)
+#define STAT1_LED   PA7       // Arduino D11
+#define STAT2_LED   PA6       // Arduino D12
+#elif defined(NUCLEO_STM32H723ZG)
+#define STAT1_LED   PB5       // Arduino D11
+#define STAT2_LED   PA6       // Arduino D12
+#else
+#error "Unknown hardware"
+#endif
 
 CLEDDriver::CLEDDriver()
 {

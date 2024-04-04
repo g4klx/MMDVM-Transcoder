@@ -21,11 +21,20 @@
 
 #include "Globals.h"
 
-#define USART6_TX PG14      // Arduino D1
-#define USART6_RX PG9       // Arduino D0
-
+#if defined(NUCLEO_STM32F722ZE)
+#define USART6_TX       PG14    // Arduino D1
+#define USART6_RX       PG9     // Arduino D0
 #define AMBE3000_RESET  PF13    // Arduino D7
 #define AMBE3000_RTS    PA3     // Arduino A0
+#elif defined(NUCLEO_STM32H723ZG)
+#define USART6_TX       PB6     // Arduino D1
+#define USART6_RX       PB7     // Arduino D0
+#define AMBE3000_RESET  PG12    // Arduino D7
+#define AMBE3000_RTS    PA3     // Arduino A0
+#else
+#error "Unknown hardware"
+#endif
+
 
 const uint8_t DVSI_START_BYTE = 0x61U;
 
