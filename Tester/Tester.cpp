@@ -16,7 +16,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "Handler.h"
+#include "Tester.h"
 
 #include <cassert>
 
@@ -352,7 +352,7 @@ const uint16_t MALFORMED_REQ_LEN = 4U;
 int main(int argc, char** argv)
 {
     if (argc == 1) {
-        ::fprintf(stderr, "Usage: Handler <port> [speed]\n");
+        ::fprintf(stderr, "Usage: Tester <port> [speed]\n");
         return 1;
     }
 
@@ -362,12 +362,12 @@ int main(int argc, char** argv)
     if (argc == 3)
         speed = (unsigned int)atoi(argv[2]);
 
-    CHandler handler(port, speed);
+    CTester handler(port, speed);
 
     return handler.run();
 }
 
-CHandler::CHandler(const std::string& device, unsigned int speed) :
+CTester::CTester(const std::string& device, unsigned int speed) :
 m_serial(device, speed),
 m_stopwatch(),
 m_count(0U),
@@ -378,11 +378,11 @@ m_failed(0U)
 	assert(speed > 0U);
 }
 
-CHandler::~CHandler()
+CTester::~CTester()
 {
 }
 
-int CHandler::run()
+int CTester::run()
 {
     bool ret = m_serial.open();
     if (!ret)
@@ -837,7 +837,7 @@ int CHandler::run()
     return 0;
 }
 
-bool CHandler::test(const char* title, const uint8_t* inData, uint16_t inLen, const uint8_t* outData, uint16_t outLen)
+bool CTester::test(const char* title, const uint8_t* inData, uint16_t inLen, const uint8_t* outData, uint16_t outLen)
 {
     assert(title != NULL);
     assert(inData != NULL);
@@ -888,7 +888,7 @@ bool CHandler::test(const char* title, const uint8_t* inData, uint16_t inLen, co
     return true;
 }
 
-void CHandler::dump(const char* title, const uint8_t* buffer, uint16_t length) const
+void CTester::dump(const char* title, const uint8_t* buffer, uint16_t length) const
 {
     assert(title != NULL);
     assert(buffer != NULL);
@@ -925,7 +925,7 @@ void CHandler::dump(const char* title, const uint8_t* buffer, uint16_t length) c
     }
 }
 
-uint16_t CHandler::read(uint8_t* buffer, uint16_t timeout)
+uint16_t CTester::read(uint8_t* buffer, uint16_t timeout)
 {
     assert(buffer != NULL);
     assert(timeout > 0U);

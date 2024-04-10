@@ -22,8 +22,9 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{cc03f17d-0934-4c55-bdd9-85d94699e098}</ProjectGuid>
-    <RootNamespace>Handler</RootNamespace>
+    <RootNamespace>Tester</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Tester</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -139,12 +140,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Handler.h" />
+    <ClInclude Include="Tester.h" />
     <ClInclude Include="StopWatch.h" />
     <ClInclude Include="UARTController.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Handler.cpp" />
+    <ClCompile Include="Tester.cpp" />
     <ClCompile Include="StopWatch.cpp" />
     <ClCompile Include="UARTController.cpp" />
   </ItemGroup>

@@ -16,8 +16,8 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef Handler_H
-#define Handler_H
+#ifndef Tester_H
+#define Tester_H
 
 #include <string>
 #include <cstdint>
@@ -25,10 +25,10 @@
 #include "StopWatch.h"
 #include "UARTController.h"
 
-class CHandler {
+class CTester {
 public:
-	CHandler(const std::string& device, unsigned int speed);
-	~CHandler();
+	CTester(const std::string& device, unsigned int speed);
+	~CTester();
 
 	int run();
 
