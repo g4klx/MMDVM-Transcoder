@@ -11,30 +11,42 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AMBEFileReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AMBEFileWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="UARTController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Tester.h">
+    <ClInclude Include="WAVFileReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="StopWatch.h">
+    <ClInclude Include="WAVFileWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\FileConvert\UARTController.h">
+    <ClInclude Include="FileConvert.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AMBEFileReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AMBEFileWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="UARTController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tester.cpp">
+    <ClCompile Include="WAVFileReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StopWatch.cpp">
+    <ClCompile Include="WAVFileWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\FileConvert\UARTController.cpp">
+    <ClCompile Include="FileConvert.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
