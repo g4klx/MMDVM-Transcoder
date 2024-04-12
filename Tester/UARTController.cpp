@@ -211,21 +211,12 @@ void CUARTController::close()
 
 #else
 
-CUARTController::CUARTController(const std::string& device, unsigned int speed, bool assertRTS) :
+CUARTController::CUARTController(const std::string& device, unsigned int speed) :
 m_device(device),
 m_speed(speed),
-m_assertRTS(assertRTS),
 m_fd(-1)
 {
 	assert(!device.empty());
-}
-
-CUARTController::CUARTController(unsigned int speed, bool assertRTS) :
-m_device(),
-m_speed(speed),
-m_assertRTS(assertRTS),
-m_fd(-1)
-{
 }
 
 CUARTController::~CUARTController()
@@ -357,21 +348,19 @@ bool CUARTController::setRaw()
 		return false;
 	}
 
-	if (m_assertRTS) {
-		unsigned int y;
-		if (::ioctl(m_fd, TIOCMGET, &y) < 0) {
-			::fprintf(stderr, "Cannot get the control attributes for %s\n", m_device.c_str());
-			::close(m_fd);
-			return false;
-		}
+	unsigned int y;
+	if (::ioctl(m_fd, TIOCMGET, &y) < 0) {
+		::fprintf(stderr, "Cannot get the control attributes for %s\n", m_device.c_str());
+		::close(m_fd);
+		return false;
+	}
 
-		y |= TIOCM_RTS;
+	y |= TIOCM_DTR;
 
-		if (::ioctl(m_fd, TIOCMSET, &y) < 0) {
-			::fprintf(stderr, "Cannot set the control attributes for %s\n", m_device.c_str());
-			::close(m_fd);
-			return false;
-		}
+	if (::ioctl(m_fd, TIOCMSET, &y) < 0) {
+		::fprintf(stderr, "Cannot set the control attributes for %s\n", m_device.c_str());
+		::close(m_fd);
+		return false;
 	}
 
 #if defined(__APPLE__)
@@ -395,7 +384,7 @@ int CUARTController::setNonblock(bool nonblock)
 }
 #endif
 
-int CUARTController::read(unsigned char* buffer, unsigned int length)
+int16_t CUARTController::read(uint8_t* buffer, uint16_t length)
 {
 	assert(buffer != NULL);
 	assert(m_fd != -1);
@@ -403,7 +392,7 @@ int CUARTController::read(unsigned char* buffer, unsigned int length)
 	if (length == 0U)
 		return 0;
 
-	unsigned int offset = 0U;
+	uint16_t offset = 0U;
 
 	while (offset < length) {
 		fd_set fds;
@@ -463,7 +452,7 @@ bool CUARTController::canWrite(){
 #endif
 }
 
-int CUARTController::write(const unsigned char* buffer, unsigned int length)
+int16_t CUARTController::write(const uint8_t* buffer, uint16_t length)
 {
 	assert(buffer != NULL);
 	assert(m_fd != -1);
@@ -471,7 +460,7 @@ int CUARTController::write(const unsigned char* buffer, unsigned int length)
 	if (length == 0U)
 		return 0;
 
-	unsigned int ptr = 0U;
+	uint16_t ptr = 0U;
 	while (ptr < length) {
 		ssize_t n = 0U;
 		if (canWrite())

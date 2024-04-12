@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,30 +16,41 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef FileConvert_H
-#define FileConvert_H
+#if !defined(THREAD_H)
+#define	THREAD_H
 
-#include "UARTController.h"
+#if defined(_WIN32) || defined(_WIN64)
+#include <windows.h>
+#else
+#include <pthread.h>
+#endif
 
-#include <string>
-
-class CFileConvert {
+class CThread
+{
 public:
-	CFileConvert(const std::string& port, uint8_t inMode, const std::string& inFile, uint8_t outMode, const std::string& outFile);
-	~CFileConvert();
+  CThread();
+  virtual ~CThread();
 
-	int run();
+  virtual bool run();
+
+  virtual void entry() = 0;
+
+  virtual void wait();
+
+  static void sleep(unsigned int ms);
 
 private:
-	CUARTController m_serial;
-	uint8_t         m_inMode;
-	std::string     m_inFile;
-	uint8_t         m_outMode;
-	std::string     m_outFile;
-	bool            m_hasAMBE;
+#if defined(_WIN32) || defined(_WIN64)
+  HANDLE    m_handle;
+#else
+  pthread_t m_thread;
+#endif
 
-	bool open();
-	uint16_t read(uint8_t* buffer, uint16_t timeout);
+#if defined(_WIN32) || defined(_WIN64)
+  static DWORD __stdcall helper(LPVOID arg);
+#else
+  static void* helper(void* arg);
+#endif
 };
 
 #endif

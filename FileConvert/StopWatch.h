@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2015,2016,2018,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,30 +16,31 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef FileConvert_H
-#define FileConvert_H
+#if !defined(STOPWATCH_H)
+#define	STOPWATCH_H
 
-#include "UARTController.h"
+#if defined(_WIN32) || defined(_WIN64)
+#include <windows.h>
+#else
+#include <sys/time.h>
+#endif
 
-#include <string>
-
-class CFileConvert {
+class CStopWatch
+{
 public:
-	CFileConvert(const std::string& port, uint8_t inMode, const std::string& inFile, uint8_t outMode, const std::string& outFile);
-	~CFileConvert();
+	CStopWatch();
+	~CStopWatch();
 
-	int run();
+	unsigned long long start();
+	unsigned int       elapsed();
 
 private:
-	CUARTController m_serial;
-	uint8_t         m_inMode;
-	std::string     m_inFile;
-	uint8_t         m_outMode;
-	std::string     m_outFile;
-	bool            m_hasAMBE;
-
-	bool open();
-	uint16_t read(uint8_t* buffer, uint16_t timeout);
+#if defined(_WIN32) || defined(_WIN64)
+	LARGE_INTEGER  m_frequency;
+	LARGE_INTEGER  m_start;
+#else
+	unsigned long long m_startUS;
+#endif
 };
 
 #endif

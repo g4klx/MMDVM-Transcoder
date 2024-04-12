@@ -146,6 +146,9 @@
     <ClInclude Include="AMBEFileReader.h" />
     <ClInclude Include="AMBEFileWriter.h" />
     <ClInclude Include="FileConvert.h" />
+    <ClInclude Include="StopWatch.h" />
+    <ClInclude Include="Thread.h" />
+    <ClInclude Include="Transcoder.h" />
     <ClInclude Include="UARTController.h" />
     <ClInclude Include="WAVFileReader.h" />
     <ClInclude Include="WAVFileWriter.h" />
@@ -154,6 +157,8 @@
     <ClCompile Include="AMBEFileReader.cpp" />
     <ClCompile Include="AMBEFileWriter.cpp" />
     <ClCompile Include="FileConvert.cpp" />
+    <ClCompile Include="StopWatch.cpp" />
+    <ClCompile Include="Thread.cpp" />
     <ClCompile Include="UARTController.cpp" />
     <ClCompile Include="WAVFileReader.cpp" />
     <ClCompile Include="WAVFileWriter.cpp" />
