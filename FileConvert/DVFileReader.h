@@ -1,5 +1,5 @@
 /*
-*   Copyright (C) 2017 by Jonathan Naylor G4KLX
+*   Copyright (C) 2017,2024 by Jonathan Naylor G4KLX
 *
 *   This program is free software; you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by
@@ -16,20 +16,20 @@
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef	AMBEFileWriter_H
-#define AMBEFileWriter_H
+#ifndef	DVFileReader_H
+#define DVFileReader_H
 
 #include <string>
 
 #include <cstdio>
 
-class CAMBEFileWriter {
+class CDVFileReader {
 public:
-	CAMBEFileWriter(const std::string& fileName, const std::string& signature);
-	~CAMBEFileWriter();
+	CDVFileReader(const std::string& fileName, const std::string& signature);
+	~CDVFileReader();
 
 	bool         open();
-	unsigned int write(uint8_t* data, unsigned int length);
+	unsigned int read(uint8_t* data, unsigned int length);
 	void         close();
 
 private:

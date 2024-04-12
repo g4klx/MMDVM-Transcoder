@@ -143,8 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AMBEFileReader.h" />
-    <ClInclude Include="AMBEFileWriter.h" />
+    <ClInclude Include="DVFileReader.h" />
+    <ClInclude Include="DVFileWriter.h" />
     <ClInclude Include="FileConvert.h" />
     <ClInclude Include="StopWatch.h" />
     <ClInclude Include="Thread.h" />
@@ -154,8 +154,8 @@
     <ClInclude Include="WAVFileWriter.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AMBEFileReader.cpp" />
-    <ClCompile Include="AMBEFileWriter.cpp" />
+    <ClCompile Include="DVFileReader.cpp" />
+    <ClCompile Include="DVFileWriter.cpp" />
     <ClCompile Include="FileConvert.cpp" />
     <ClCompile Include="StopWatch.cpp" />
     <ClCompile Include="Thread.cpp" />

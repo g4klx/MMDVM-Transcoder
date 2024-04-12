@@ -11,10 +11,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AMBEFileReader.h">
+    <ClInclude Include="DVFileReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AMBEFileWriter.h">
+    <ClInclude Include="DVFileWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UARTController.h">
@@ -40,10 +40,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AMBEFileReader.cpp">
+    <ClCompile Include="DVFileReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AMBEFileWriter.cpp">
+    <ClCompile Include="DVFileWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="UARTController.cpp">
