@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2002-2004,2006-2009,2014,2017,2019 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2002-2004,2006-2009,2014,2017,2019,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -31,9 +31,9 @@ m_blockSize(blockSize),
 m_channels(0U),
 m_sampleRate(0U),
 m_format(FORMAT_16BIT),
-m_buffer8(NULL),
-m_buffer16(NULL),
-m_handle(NULL),
+m_buffer8(nullptr),
+m_buffer16(nullptr),
+m_handle(nullptr),
 m_parent(),
 m_child(),
 m_offset(0L)
@@ -53,8 +53,8 @@ CWAVFileReader::~CWAVFileReader()
 bool CWAVFileReader::open()
 {
 	m_handle = ::mmioOpen(LPSTR(m_fileName.c_str()), 0, MMIO_READ | MMIO_ALLOCBUF);
-	if (m_handle == NULL) {
-		::fprintf(stderr, "WAVFileReader: could not open the WAV file %s\n", m_fileName.c_str());
+	if (m_handle == nullptr) {
+		::fprintf(stderr, "FileConvert: could not open the WAV file %s\n", m_fileName.c_str());
 		return false;
 	}
 
@@ -63,9 +63,9 @@ bool CWAVFileReader::open()
 
 	MMRESULT res = ::mmioDescend(m_handle, &parent, 0, MMIO_FINDRIFF);
 	if (res != MMSYSERR_NOERROR) {
-		::fprintf(stderr, "WAVFileReader: %s has no \"WAVE\" header\n", m_fileName.c_str());
+		::fprintf(stderr, "FileConvert: %s has no \"WAVE\" header\n", m_fileName.c_str());
 		::mmioClose(m_handle, 0U);
-		m_handle = NULL;
+		m_handle = nullptr;
 		return false;
 	}
 
@@ -74,9 +74,9 @@ bool CWAVFileReader::open()
 
 	res = ::mmioDescend(m_handle, &child, &parent, MMIO_FINDCHUNK);
 	if (res != MMSYSERR_NOERROR) {
-		::fprintf(stderr, "WAVFileReader: %s has no \"fmt \" chunk\n", m_fileName.c_str());
+		::fprintf(stderr, "FileConvert: %s has no \"fmt \" chunk\n", m_fileName.c_str());
 		::mmioClose(m_handle, 0U);
-		m_handle = NULL;
+		m_handle = nullptr;
 		return false;
 	}
 
@@ -84,16 +84,16 @@ bool CWAVFileReader::open()
 
 	LONG len = ::mmioRead(m_handle, (char *)&format, child.cksize);
 	if (len != LONG(child.cksize)) {
-		::fprintf(stderr, "WAVFileReader: %s is corrupt, cannot read the WAVEFORMATEX structure\n", m_fileName.c_str());
+		::fprintf(stderr, "FileConvert: %s is corrupt, cannot read the WAVEFORMATEX structure\n", m_fileName.c_str());
 		::mmioClose(m_handle, 0U);
-		m_handle = NULL;
+		m_handle = nullptr;
 		return false;
 	}
         
 	if (format.wFormatTag != WAVE_FORMAT_PCM && format.wFormatTag != WAVE_FORMAT_IEEE_FLOAT) {
-		::fprintf(stderr, "WAVFileReader: %s is not PCM or IEEE Float format, is %u\n", m_fileName.c_str(), format.wFormatTag);
+		::fprintf(stderr, "FileConvert: %s is not PCM or IEEE Float format, is %u\n", m_fileName.c_str(), format.wFormatTag);
 		::mmioClose(m_handle, 0U);
-		m_handle = NULL;
+		m_handle = nullptr;
 		return false;
 	}
 
@@ -101,9 +101,9 @@ bool CWAVFileReader::open()
 
 	m_channels = format.nChannels;
 	if (m_channels > 2U) {
-		::fprintf(stderr, "WAVFileReader: %s has %u channels, more than 2\n", m_fileName.c_str(), m_channels);
+		::fprintf(stderr, "FileConvert: %s has %u channels, more than 2\n", m_fileName.c_str(), m_channels);
 		::mmioClose(m_handle, 0U);
-		m_handle = NULL;
+		m_handle = nullptr;
 		return false;
 	}
 
@@ -114,17 +114,17 @@ bool CWAVFileReader::open()
 	} else if (format.wBitsPerSample == 32U && format.wFormatTag == WAVE_FORMAT_IEEE_FLOAT) {
 		m_format = FORMAT_32BIT;
 	} else {
-		::fprintf(stderr, "WAVFileReader: %s has sample width %u and format %u\n", m_fileName.c_str(), format.wBitsPerSample, format.wFormatTag);
+		::fprintf(stderr, "FileConvert: %s has sample width %u and format %u\n", m_fileName.c_str(), format.wBitsPerSample, format.wFormatTag);
 		::mmioClose(m_handle, 0U);
-		m_handle = NULL;
+		m_handle = nullptr;
 		return false;
 	}
 
 	res = ::mmioAscend(m_handle, &child, 0);
 	if (res != MMSYSERR_NOERROR) {
-		::fprintf(stderr, "WAVFileReader: %s is corrupt, cannot ascend\n", m_fileName.c_str());
+		::fprintf(stderr, "FileConvert: %s is corrupt, cannot ascend\n", m_fileName.c_str());
 		::mmioClose(m_handle, 0U);
-		m_handle = NULL;
+		m_handle = nullptr;
 		return false;
 	}
 
@@ -132,9 +132,9 @@ bool CWAVFileReader::open()
 
 	res = ::mmioDescend(m_handle, &child, &parent, MMIO_FINDCHUNK);
 	if (res != MMSYSERR_NOERROR) {
-		::fprintf(stderr, "WAVFileReader: %s has no \"data\" chunk\n", m_fileName.c_str());
+		::fprintf(stderr, "FileConvert: %s has no \"data\" chunk\n", m_fileName.c_str());
 		::mmioClose(m_handle, 0U);
-		m_handle = NULL;
+		m_handle = nullptr;
 		return false;
 	}
 
@@ -146,8 +146,8 @@ bool CWAVFileReader::open()
 
 unsigned int CWAVFileReader::read(float* data, unsigned int length)
 {
-	assert(m_handle != NULL);
-	assert(data != NULL);
+	assert(m_handle != nullptr);
+	assert(data != nullptr);
 
 	if (length == 0U)
 		return 0U;
@@ -199,18 +199,18 @@ unsigned int CWAVFileReader::read(float* data, unsigned int length)
 
 void CWAVFileReader::rewind()
 {
-	assert(m_handle != NULL);
+	assert(m_handle != nullptr);
 
 	::mmioSeek(m_handle, m_offset, SEEK_SET);
 }
 
 void CWAVFileReader::close()
 {
-	assert(m_handle != NULL);
+	assert(m_handle != nullptr);
 
 	::mmioClose(m_handle, 0U);
 
-	m_handle = NULL;
+	m_handle = nullptr;
 }
 
 unsigned int CWAVFileReader::getSampleRate() const
@@ -233,7 +233,7 @@ m_fileName(fileName),
 m_blockSize(blockSize),
 m_channels(0U),
 m_sampleRate(0U),
-m_file(NULL)
+m_file(nullptr)
 {
 	assert(blockSize > 0U);
 }
@@ -248,8 +248,8 @@ bool CWAVFileReader::open()
 	info.format = 0;
 
 	m_file = ::sf_open(m_fileName.c_str(), SFM_READ, &info);
-	if (m_file == NULL) {
-		::fprintf(stderr, "WAVFileReader: could not open the WAV file %s.\n", m_fileName.c_str());
+	if (m_file == nullptr) {
+		::fprintf(stderr, "FileConvert: could not open the WAV file %s.\n", m_fileName.c_str());
 		return false;
 	}
 
@@ -261,8 +261,8 @@ bool CWAVFileReader::open()
 
 unsigned int CWAVFileReader::read(float* data, unsigned int length)
 {
-	assert(m_file != NULL);
-	assert(data != NULL);
+	assert(m_file != nullptr);
+	assert(data != nullptr);
 
 	if (length == 0U)
 		return 0U;
@@ -278,18 +278,18 @@ unsigned int CWAVFileReader::read(float* data, unsigned int length)
 
 void CWAVFileReader::rewind()
 {
-	assert(m_file != NULL);
+	assert(m_file != nullptr);
 
 	::sf_seek(m_file, 0, SEEK_SET);
 }
 
 void CWAVFileReader::close()
 {
-	assert(m_file != NULL);
+	assert(m_file != nullptr);
 
 	::sf_close(m_file);
 
-	m_file = NULL;
+	m_file = nullptr;
 }
 
 unsigned int CWAVFileReader::getSampleRate() const

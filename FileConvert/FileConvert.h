@@ -40,6 +40,13 @@ private:
 
 	bool open();
 	uint16_t read(uint8_t* buffer, uint16_t timeout);
+	std::string fileSignature(uint8_t mode) const;
+	unsigned int blockLength(uint8_t mode) const;
+	const uint8_t* getDataHeader(uint8_t mode) const;
+	bool convertPCMtoPCM();
+	bool convertPCMtoDV();
+	bool convertDVtoPCM();
+	bool convertDVtoDV();
 };
 
 #endif

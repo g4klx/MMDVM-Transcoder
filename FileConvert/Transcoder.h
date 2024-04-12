@@ -58,29 +58,32 @@ const uint16_t GET_VERSION_LEN = 4U;
 const uint8_t  GET_CAPABILITIES[]   = { MARKER, 0x04U, 0x00U, TYPE_GET_CAPABILITIES };
 const uint16_t GET_CAPABILITIES_LEN = 4U;
 
-const uint8_t  SET_MODE_HEADER[] = { MARKER, 0x06U, 0x00U, TYPE_SET_MODE };
-const uint16_t SET_MODE_LEN      = 6U;
+const uint8_t  SET_MODE_HEADER[]   = { MARKER, 0x06U, 0x00U, TYPE_SET_MODE };
+const uint16_t SET_MODE_HEADER_LEN = 4U;
+const uint16_t SET_MODE_LEN        = 6U;
+
+const uint16_t DATA_HEADER_LEN = 4U;
 
 const uint8_t  DSTAR_DATA_HEADER[] = { MARKER, 0x0DU, 0x00U, TYPE_DATA };
-const uint16_t DSTAR_DATA_LEN      = DSTAR_DATA_LENGTH + 4U;
+const uint16_t DSTAR_DATA_LEN      = DSTAR_DATA_LENGTH + DATA_HEADER_LEN;
 
 const uint8_t  DMR_DATA_HEADER[] = { MARKER, 0x0DU, 0x00U, TYPE_DATA };
-const uint16_t DMR_DATA_LEN      = DMR_NXDN_DATA_LENGTH + 4U;
+const uint16_t DMR_DATA_LEN      = DMR_NXDN_DATA_LENGTH + DATA_HEADER_LEN;
 
 const uint8_t  YSFDN_DATA_HEADER[] = { MARKER, 0x11U, 0x00U, TYPE_DATA };
-const uint16_t YSFDN_DATA_LEN      = YSFDN_DATA_LENGTH + 4U;
+const uint16_t YSFDN_DATA_LEN      = YSFDN_DATA_LENGTH + DATA_HEADER_LEN;
 
 const uint8_t  IMBE_DATA_HEADER[] = { MARKER, 0x0FU, 0x00U, TYPE_DATA };
-const uint16_t IMBE_DATA_LEN      = IMBE_DATA_LENGTH + 4U;
+const uint16_t IMBE_DATA_LEN      = IMBE_DATA_LENGTH + DATA_HEADER_LEN;
 
 const uint8_t  IMBE_FEC_DATA_HEADER[] = { MARKER, 0x16U, 0x00U, TYPE_DATA };
-const uint16_t IMBE_FEC_DATA_LEN      = IMBE_FEC_DATA_LENGTH + 4U;
+const uint16_t IMBE_FEC_DATA_LEN      = IMBE_FEC_DATA_LENGTH + DATA_HEADER_LEN;
 
 const uint8_t  CODEC2_3200_DATA_HEADER[] = { MARKER, 0x0CU, 0x00U, TYPE_DATA };
-const uint16_t CODEC2_3200_DATA_LEN      = CODEC2_3200_DATA_LENGTH + 4U;
+const uint16_t CODEC2_3200_DATA_LEN      = CODEC2_3200_DATA_LENGTH + DATA_HEADER_LEN;
 
 const uint8_t  PCM_DATA_HEADER[] = { MARKER, 0x44U, 0x01U, TYPE_DATA };
-const uint16_t PCM_DATA_LEN      = PCM_DATA_LENGTH + 4U;
+const uint16_t PCM_DATA_LEN      = PCM_DATA_LENGTH + DATA_HEADER_LEN;
 
 const uint16_t MARKER_POS     = 0U;
 const uint16_t LENGTH_LSB_POS = 1U;
@@ -89,16 +92,20 @@ const uint16_t TYPE_POS       = 3U;
 const uint16_t DATA_START_POS = 4U;
 
 // Get Version layout and data
-const uint8_t GET_VERSION_PROTOCOL_POS = 4U;
-const uint8_t GET_VERSION_HARWARE_POS  = 5U;
-const uint8_t PROTOCOL_VERSION = 1U;
+const uint16_t GET_VERSION_PROTOCOL_POS = 4U;
+const uint16_t GET_VERSION_HARWARE_POS  = 5U;
+const uint8_t  PROTOCOL_VERSION = 1U;
 
 // Get Capabilities layout and data
-const uint8_t GET_CAPABILITIES_AMBE_TYPE_POS = 4U;
-const uint8_t NO_AMBE_CHIP  = 0U;
-const uint8_t HAS_AMBE_CHIP = 1U;
+const uint16_t GET_CAPABILITIES_AMBE_TYPE_POS = 4U;
+const uint8_t  NO_AMBE_CHIP  = 0U;
+const uint8_t  HAS_AMBE_CHIP = 1U;
+
+// Set Mode layout
+const uint16_t INPUT_MODE_POS  = 4U;
+const uint16_t OUTPUT_MODE_POS = 5U;
 
 // NAK layout
-const uint8_t NAK_ERROR_POS = 4U;
+const uint16_t NAK_ERROR_POS = 4U;
 
 #endif

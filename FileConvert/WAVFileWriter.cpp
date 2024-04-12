@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2002-2004,2006-2009,2017,2019 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2002-2004,2006-2009,2017,2019,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -30,9 +30,9 @@ m_sampleRate(sampleRate),
 m_channels(channels),
 m_sampleWidth(sampleWidth),
 m_blockSize(blockSize),
-m_buffer8(NULL),
-m_buffer16(NULL),
-m_handle(NULL),
+m_buffer8(nullptr),
+m_buffer16(nullptr),
+m_handle(nullptr),
 m_parent(),
 m_child()
 {
@@ -54,8 +54,8 @@ CWAVFileWriter::~CWAVFileWriter()
 bool CWAVFileWriter::open()
 {
 	m_handle = ::mmioOpen(LPSTR(m_fileName.c_str()), 0, MMIO_WRITE | MMIO_CREATE | MMIO_ALLOCBUF);
-	if (m_handle == NULL) {
-		::fprintf(stderr, "WAVFileWriter: could not open the file %s\n", m_fileName.c_str());
+	if (m_handle == nullptr) {
+		::fprintf(stderr, "FileConvert: could not open the file %s\n", m_fileName.c_str());
 		return false;
 	}
 
@@ -64,7 +64,7 @@ bool CWAVFileWriter::open()
 
 	MMRESULT res = ::mmioCreateChunk(m_handle, &m_parent, MMIO_CREATERIFF);
 	if (res != MMSYSERR_NOERROR) {
-		::fprintf(stderr, "WAVFileWriter: could not write to file %s\n", m_fileName.c_str());
+		::fprintf(stderr, "FileConvert: could not write to file %s\n", m_fileName.c_str());
 		return false;
 	}
 
@@ -73,7 +73,7 @@ bool CWAVFileWriter::open()
 
 	res = ::mmioCreateChunk(m_handle, &m_child, 0);
 	if (res != MMSYSERR_NOERROR) {
-		::fprintf(stderr, "WAVFileWriter: could not write to the file %s\n", m_fileName.c_str());
+		::fprintf(stderr, "FileConvert: could not write to the file %s\n", m_fileName.c_str());
 		return false;
 	}
 
@@ -91,7 +91,7 @@ bool CWAVFileWriter::open()
 
 	LONG n = ::mmioWrite(m_handle, (CHAR *)&format, sizeof(WAVEFORMATEX));
 	if (n != sizeof(WAVEFORMATEX)) {
-		::fprintf(stderr, "WAVFileWriter: could not write to the file %s\n", m_fileName.c_str());
+		::fprintf(stderr, "FileConvert: could not write to the file %s\n", m_fileName.c_str());
 		return false;
 	}
 
@@ -102,7 +102,7 @@ bool CWAVFileWriter::open()
 
 	res = ::mmioCreateChunk(m_handle, &m_child, 0);
 	if (res != MMSYSERR_NOERROR) {
-		::fprintf(stderr, "WAVFileWriter: could not write to the file %s\n", m_fileName.c_str());
+		::fprintf(stderr, "FileConvert: could not write to the file %s\n", m_fileName.c_str());
 		return false;
 	}
 
@@ -111,8 +111,8 @@ bool CWAVFileWriter::open()
 
 bool CWAVFileWriter::write(const float* buffer, unsigned int length)
 {
-	assert(m_handle != NULL);
-	assert(buffer != NULL);
+	assert(m_handle != nullptr);
+	assert(buffer != nullptr);
 	assert(length > 0U);
 
 	unsigned int elements = length * m_channels;
@@ -154,13 +154,13 @@ bool CWAVFileWriter::write(const float* buffer, unsigned int length)
 
 void CWAVFileWriter::close()
 {
-	assert(m_handle != NULL);
+	assert(m_handle != nullptr);
 
 	::mmioAscend(m_handle, &m_child, 0);
 	::mmioAscend(m_handle, &m_parent, 0);
 
 	::mmioClose(m_handle, 0);
-	m_handle = NULL;
+	m_handle = nullptr;
 }
 
 #else
@@ -171,7 +171,7 @@ m_sampleRate(sampleRate),
 m_channels(channels),
 m_sampleWidth(sampleWidth),
 m_blockSize(blockSize),
-m_file(NULL)
+m_file(nullptr)
 {
 	assert(sampleRate > 0U);
 	assert(channels == 1U || channels == 2U);
@@ -191,8 +191,8 @@ bool CWAVFileWriter::open()
 	info.format     = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
 
 	m_file = ::sf_open(m_fileName.c_str(), SFM_WRITE, &info);
-	if (m_file == NULL) {
-		::fprintf(stderr, "WAVFileWriter: could not open the file %s in WAVFileWriter\n", m_fileName.c_str());
+	if (m_file == nullptr) {
+		::fprintf(stderr, "FileConvert: could not open the file %s in WAVFileWriter\n", m_fileName.c_str());
 		return false;
 	}
 
@@ -201,8 +201,8 @@ bool CWAVFileWriter::open()
 
 bool CWAVFileWriter::write(const float* buffer, unsigned int length)
 {
-	assert(m_file != NULL);
-	assert(buffer != NULL);
+	assert(m_file != nullptr);
+	assert(buffer != nullptr);
 	assert(length > 0U && length <= m_blockSize);
 
 	unsigned int elements = length * m_channels;
@@ -214,11 +214,11 @@ bool CWAVFileWriter::write(const float* buffer, unsigned int length)
 
 void CWAVFileWriter::close()
 {
-	assert(m_file != NULL);
+	assert(m_file != nullptr);
 
 	::sf_close(m_file);
 
-	m_file = NULL;
+	m_file = nullptr;
 }
 
 #endif

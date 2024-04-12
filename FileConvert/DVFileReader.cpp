@@ -23,7 +23,7 @@
 CDVFileReader::CDVFileReader(const std::string& fileName, const std::string& signature) :
 m_fileName(fileName),
 m_signature(signature),
-m_fp(NULL)
+m_fp(nullptr)
 {
 }
 
@@ -34,8 +34,8 @@ CDVFileReader::~CDVFileReader()
 bool CDVFileReader::open()
 {
 	m_fp = ::fopen(m_fileName.c_str(), "rb");
-	if (m_fp == NULL) {
-		::fprintf(stderr, "DVFileReader: could not open the DV file %s\n", m_fileName.c_str());
+	if (m_fp == nullptr) {
+		::fprintf(stderr, "FileConvert: could not open the DV file %s\n", m_fileName.c_str());
 		return false;
 	}
 
@@ -43,7 +43,7 @@ bool CDVFileReader::open()
 		char buffer[25U];
 		::fread(buffer, sizeof(uint8_t), m_signature.size(), m_fp);
 		if (m_signature != std::string(buffer, m_signature.size())) {
-			::fprintf(stderr, "DVFileReader: the file signature didn't match the one specified\n");
+			::fprintf(stderr, "FileConvert: the file signature didn't match the one specified\n");
 			close();
 			return false;
 		}
@@ -54,8 +54,8 @@ bool CDVFileReader::open()
 
 unsigned int CDVFileReader::read(uint8_t* buffer, unsigned int length)
 {
-	assert(m_fp != NULL);
-	assert(buffer != NULL);
+	assert(m_fp != nullptr);
+	assert(buffer != nullptr);
 	assert(length > 0U);
 
 	return (unsigned int)::fread(buffer, sizeof(uint8_t), length, m_fp);
@@ -63,9 +63,9 @@ unsigned int CDVFileReader::read(uint8_t* buffer, unsigned int length)
 
 void CDVFileReader::close()
 {
-	assert(m_fp != NULL);
+	assert(m_fp != nullptr);
 
 	::fclose(m_fp);
 
-	m_fp = NULL;
+	m_fp = nullptr;
 }

@@ -23,7 +23,7 @@
 CDVFileWriter::CDVFileWriter(const std::string& fileName, const std::string& signature) :
 m_fileName(fileName),
 m_signature(signature),
-m_fp(NULL)
+m_fp(nullptr)
 {
 }
 
@@ -34,8 +34,8 @@ CDVFileWriter::~CDVFileWriter()
 bool CDVFileWriter::open()
 {
 	m_fp = ::fopen(m_fileName.c_str(), "wb");
-	if (m_fp == NULL) {
-		::fprintf(stderr, "DVFileWriter: could not open the DV file %s\n", m_fileName.c_str());
+	if (m_fp == nullptr) {
+		::fprintf(stderr, "FileConvert: could not open the DV file %s\n", m_fileName.c_str());
 		return false;
 	}
 
@@ -47,8 +47,8 @@ bool CDVFileWriter::open()
 
 unsigned int CDVFileWriter::write(uint8_t* buffer, unsigned int length)
 {
-	assert(m_fp != NULL);
-	assert(buffer != NULL);
+	assert(m_fp != nullptr);
+	assert(buffer != nullptr);
 	assert(length > 0U);
 
 	return (unsigned int)::fwrite(buffer, sizeof(uint8_t), length, m_fp);
@@ -56,9 +56,9 @@ unsigned int CDVFileWriter::write(uint8_t* buffer, unsigned int length)
 
 void CDVFileWriter::close()
 {
-	assert(m_fp != NULL);
+	assert(m_fp != nullptr);
 
 	::fclose(m_fp);
 
-	m_fp = NULL;
+	m_fp = nullptr;
 }

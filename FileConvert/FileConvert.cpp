@@ -29,6 +29,11 @@
 #include <cstring>
 #include <cassert>
 
+const unsigned int SAMPLE_RATE = 8000U;
+const unsigned int BLOCK_SIZE  = 160U;		// 20ms at 8000 samples/sec
+const unsigned int BLOCK_TIME  = 20U;
+const unsigned int NO_CHANNELS = 1U;
+
 uint8_t convertMode(const char* text)
 {
 	if (::strcmp(text, "dstar") == 0)
@@ -61,7 +66,7 @@ int main(int argc, char** argv)
 		::fprintf(stderr, "           ysfdn    - YSF DN\n");
 		::fprintf(stderr, "           imbe     - IMBE (no FEC)\n");
 		::fprintf(stderr, "           imbe_fec - IMBE (with FEC)\n");
-		::fprintf(stderr, "           m17      - M17\n");
+		::fprintf(stderr, "           m17      - M17 (Codec2 3200)\n");
 		::fprintf(stderr, "           wav      - WAV\n");
 		return 1;
 	}
@@ -110,15 +115,18 @@ int CFileConvert::run()
 	if (!ret)
 		return 1;
 
-	if ((m_inMode == MODE_PCM) && (m_outMode == MODE_PCM)) {
-	} else if (m_inMode == MODE_PCM) {
-	} else if (m_outMode == MODE_PCM) {
-	} else {
-	}
+	if ((m_inMode == MODE_PCM) && (m_outMode == MODE_PCM))
+		ret = convertPCMtoPCM();
+	else if (m_inMode == MODE_PCM)
+		ret = convertPCMtoDV();
+	else if (m_outMode == MODE_PCM)
+		ret = convertDVtoPCM();
+	else
+		ret = convertDVtoDV();
 
 	m_serial.close();
 
-	return 0;
+	return ret ? 0 : 1;
 }
 
 bool CFileConvert::open()
@@ -155,6 +163,8 @@ bool CFileConvert::open()
 			m_serial.close();
 			return false;
 		}
+
+		::fprintf(stdout, "Transcoder version - %.*s\n", len - 5U, buffer + 5U);
 		break;
 
 	default:
@@ -162,8 +172,6 @@ bool CFileConvert::open()
 		m_serial.close();
 		return false;
 	}
-
-	::fprintf(stdout, "Transcoder version - %.*s\n", len - 5U, buffer + 5U);
 
 	ret2 = m_serial.write(GET_CAPABILITIES, GET_CAPABILITIES_LEN);
 	if (ret2 <= 0) {
@@ -185,6 +193,8 @@ bool CFileConvert::open()
 		return false;
 
 	case TYPE_GET_CAPABILITIES:
+		m_hasAMBE = buffer[GET_CAPABILITIES_AMBE_TYPE_POS] == HAS_AMBE_CHIP;
+		::fprintf(stdout, "Transcoder has AMBE - %s\n", m_hasAMBE ? "yes" : "no");
 		break;
 
 	default:
@@ -193,13 +203,40 @@ bool CFileConvert::open()
 		return false;
 	}
 
-	m_hasAMBE = buffer[GET_CAPABILITIES_AMBE_TYPE_POS] == HAS_AMBE_CHIP;
+	uint8_t command[10U];
+	::memcpy(command + 0U, SET_MODE_HEADER, SET_MODE_HEADER_LEN);
+	command[INPUT_MODE_POS]  = m_inMode;
+	command[OUTPUT_MODE_POS] = m_outMode;
 
-	::fprintf(stdout, "Transcoder has AMBE - %s\n", m_hasAMBE ? "yes" : "no");
+	ret2 = m_serial.write(command, SET_MODE_LEN);
+	if (ret2 <= 0) {
+		::fprintf(stderr, "FileConvert: error writing the data to the transcoder\n");
+		return false;
+	}
 
-	return true;
+	len = read(buffer, 200U);
+	if (len == 0U) {
+		::fprintf(stderr, "FileConvert: set mode read timeout (200 me)\n");
+		m_serial.close();
+		return false;
+	}
+
+	switch (buffer[TYPE_POS]) {
+	case TYPE_NAK:
+		::fprintf(stderr, "FileConvert: NAK returned for set mode - %u\n", buffer[NAK_ERROR_POS]);
+		m_serial.close();
+		return false;
+
+	case TYPE_ACK:
+		::fprintf(stdout, "FileConvert: conversion modes set\n");
+		return true;
+
+	default:
+		::fprintf(stderr, "FileConvert: unknown response from the transcoder to set mode - 0x%02X\n", buffer[TYPE_POS]);
+		m_serial.close();
+		return false;
+	}
 }
-
 
 uint16_t CFileConvert::read(uint8_t* buffer, uint16_t timeout)
 {
@@ -252,4 +289,273 @@ uint16_t CFileConvert::read(uint8_t* buffer, uint16_t timeout)
 			}
 		}
 	}
+}
+
+// The transcoder can do PCM to PCM, but it seems a bit silly to use it for such a simple task.
+bool CFileConvert::convertPCMtoPCM()
+{
+	CWAVFileReader reader(m_inFile, BLOCK_SIZE);
+	bool ret = reader.open();
+	if (!ret)
+		return false;
+
+	unsigned int sampleRate = reader.getSampleRate();
+	if (sampleRate != SAMPLE_RATE) {
+		::fprintf(stderr, "FileConvert: invalid sample rate - %u\n", sampleRate);
+		reader.close();
+		return false;
+	}
+
+	unsigned int channels = reader.getChannels();
+	if (channels != NO_CHANNELS) {
+		::fprintf(stderr, "FileConvert: invalid number of channels - %u\n", channels);
+		reader.close();
+		return false;
+	}
+
+	CWAVFileWriter writer(m_outFile, SAMPLE_RATE, NO_CHANNELS, 16U, BLOCK_SIZE);
+	ret = writer.open();
+	if (!ret) {
+		reader.close();
+		return false;
+	}
+
+	unsigned int frames = 0U;
+
+	float buffer[BLOCK_SIZE];
+
+	unsigned int length = reader.read(buffer, BLOCK_SIZE);
+	while (length > 0U) {
+		writer.write(buffer, length);
+		frames++;
+
+		length = reader.read(buffer, BLOCK_SIZE);
+	}
+
+	reader.close();
+	writer.close();
+
+	::fprintf(stdout, "Converted %u frames (%.1fs)", frames, float(frames * BLOCK_TIME) / 1000.0F);
+
+	return true;
+}
+
+bool CFileConvert::convertPCMtoDV()
+{
+	CWAVFileReader reader(m_inFile, BLOCK_SIZE);
+	bool ret = reader.open();
+	if (!ret)
+		return false;
+
+	unsigned int sampleRate = reader.getSampleRate();
+	if (sampleRate != SAMPLE_RATE) {
+		::fprintf(stderr, "FileConvert: invalid sample rate - %u\n", sampleRate);
+		reader.close();
+		return false;
+	}
+
+	unsigned int channels = reader.getChannels();
+	if (channels != NO_CHANNELS) {
+		::fprintf(stderr, "FileConvert: invalid number of channels - %u\n", channels);
+		reader.close();
+		return false;
+	}
+
+	CDVFileWriter writer(m_outFile, fileSignature(m_outMode));
+	ret = writer.open();
+	if (!ret) {
+		reader.close();
+		return false;
+	}
+
+	unsigned int dvLength = blockLength(m_outMode);
+
+	unsigned int frames = 0U;
+
+	float buffer1[BLOCK_SIZE];
+	unsigned int length = reader.read(buffer1, BLOCK_SIZE);
+	while (length > 0U) {
+		int16_t buffer2[BLOCK_SIZE];
+		for (unsigned int i = 0U; i < length; i++)
+			buffer2[i] = int16_t(buffer1[i] * 32768.0F + 0.5F);
+
+		uint8_t buffer3[PCM_DATA_LEN];
+		::memcpy(buffer3 + 0U, PCM_DATA_HEADER, DATA_HEADER_LEN);
+		::memcpy(buffer3 + DATA_START_POS, buffer2, PCM_DATA_LENGTH);
+
+		int16_t ret = m_serial.write(buffer3, PCM_DATA_LEN);
+		if (ret <= 0) {
+			::fprintf(stderr, "FileConvert: error writing the data to the transcoder\n");
+			return false;
+		}
+
+		uint16_t len = read(buffer3, 200U);
+		if (len == 0U) {
+			::fprintf(stderr, "FileConvert: transcode read timeout (200 me)\n");
+			return false;
+		}
+
+		switch (buffer3[TYPE_POS]) {
+		case TYPE_NAK:
+			::fprintf(stderr, "FileConvert: NAK returned for transcoding - %u\n", buffer3[NAK_ERROR_POS]);
+			return false;
+
+		case TYPE_DATA:
+			break;
+
+		default:
+			::fprintf(stderr, "FileConvert: unknown response from the transcoder to transcoding - 0x%02X\n", buffer3[TYPE_POS]);
+			return false;
+		}
+
+		frames++;
+
+		writer.write(buffer3 + DATA_START_POS, dvLength);
+
+		length = reader.read(buffer1, BLOCK_SIZE);
+	}
+
+	reader.close();
+	writer.close();
+
+	::fprintf(stdout, "Converted %u frames (%.1fs)", frames, float(frames * BLOCK_TIME) / 1000.0F);
+
+	return true;
+}
+
+bool CFileConvert::convertDVtoPCM()
+{
+	CDVFileReader reader(m_inFile, fileSignature(m_inMode));
+	bool ret = reader.open();
+	if (!ret)
+		return false;
+
+	CWAVFileWriter writer(m_outFile, SAMPLE_RATE, NO_CHANNELS, 16U, BLOCK_SIZE);
+	ret = writer.open();
+	if (!ret) {
+		reader.close();
+		return false;
+	}
+
+	unsigned int dvLength = blockLength(m_inMode);
+	const uint8_t* header = getDataHeader(m_inMode);
+
+	unsigned int frames = 0U;
+
+	uint8_t buffer1[50U];
+	unsigned int length = reader.read(buffer1, dvLength);
+	while (length > 0U) {
+		uint8_t buffer2[PCM_DATA_LEN];
+		::memcpy(buffer2 + 0U, header, DATA_HEADER_LEN);
+		::memcpy(buffer2 + DATA_START_POS, buffer1, dvLength);
+
+		int16_t ret = m_serial.write(buffer2, dvLength + DATA_HEADER_LEN);
+		if (ret <= 0) {
+			::fprintf(stderr, "FileConvert: error writing the data to the transcoder\n");
+			return false;
+		}
+
+		uint16_t len = read(buffer2, 200U);
+		if (len == 0U) {
+			::fprintf(stderr, "FileConvert: transcode read timeout (200 me)\n");
+			return false;
+		}
+
+		switch (buffer2[TYPE_POS]) {
+		case TYPE_NAK:
+			::fprintf(stderr, "FileConvert: NAK returned for transcoding - %u\n", buffer2[NAK_ERROR_POS]);
+			return false;
+
+		case TYPE_DATA:
+			break;
+
+		default:
+			::fprintf(stderr, "FileConvert: unknown response from the transcoder to transcoding - 0x%02X\n", buffer2[TYPE_POS]);
+			return false;
+		}
+
+		frames++;
+
+		float buffer3[BLOCK_SIZE];
+		for (unsigned int i = 0U; i < length; i++)
+			buffer3[i] = float(buffer2[i]) / 32768.0F;
+
+		writer.write(buffer3, BLOCK_SIZE);
+
+		length = reader.read(buffer1, dvLength);
+	}
+
+	reader.close();
+	writer.close();
+
+	::fprintf(stdout, "Converted %u frames (%.1fs)", frames, float(frames * BLOCK_TIME) / 1000.0F);
+
+	return true;
+}
+
+bool CFileConvert::convertDVtoDV()
+{
+	CDVFileReader reader(m_inFile, fileSignature(m_inMode));
+	bool ret = reader.open();
+	if (!ret)
+		return false;
+
+	CDVFileWriter writer(m_outFile, fileSignature(m_outMode));
+	ret = writer.open();
+	if (!ret) {
+		reader.close();
+		return false;
+	}
+
+	unsigned int inLength  = blockLength(m_inMode);
+	unsigned int outLength = blockLength(m_outMode);
+	const uint8_t* header  = getDataHeader(m_inMode);
+
+	unsigned int frames = 0U;
+
+	uint8_t buffer1[50U];
+	unsigned int length = reader.read(buffer1, inLength);
+	while (length > 0U) {
+		uint8_t buffer2[50U];
+		::memcpy(buffer2 + 0U, header, DATA_HEADER_LEN);
+		::memcpy(buffer2 + DATA_START_POS, buffer1, inLength);
+
+		int16_t ret = m_serial.write(buffer2, inLength + DATA_HEADER_LEN);
+		if (ret <= 0) {
+			::fprintf(stderr, "FileConvert: error writing the data to the transcoder\n");
+			return false;
+		}
+
+		uint16_t len = read(buffer2, 200U);
+		if (len == 0U) {
+			::fprintf(stderr, "FileConvert: transcode read timeout (200 me)\n");
+			return false;
+		}
+
+		switch (buffer2[TYPE_POS]) {
+		case TYPE_NAK:
+			::fprintf(stderr, "FileConvert: NAK returned for transcoding - %u\n", buffer2[NAK_ERROR_POS]);
+			return false;
+
+		case TYPE_DATA:
+			break;
+
+		default:
+			::fprintf(stderr, "FileConvert: unknown response from the transcoder to transcoding - 0x%02X\n", buffer2[TYPE_POS]);
+			return false;
+		}
+
+		frames++;
+
+		writer.write(buffer2 + DATA_START_POS, outLength);
+
+		length = reader.read(buffer1, inLength);
+	}
+
+	reader.close();
+	writer.close();
+
+	::fprintf(stdout, "Converted %u frames (%.1fs)", frames, float(frames * BLOCK_TIME) / 1000.0F);
+
+	return true;
 }
