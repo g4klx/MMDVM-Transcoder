@@ -47,7 +47,7 @@ unsigned int CStopWatch::elapsed()
 	elapsed.QuadPart = now.QuadPart - m_start.QuadPart;
 
 	elapsed.QuadPart *= 1000000;
-	return (unsigned int)(elapsed.QuadPart / m_frequency.QuadPart);
+	return (unsigned int)(elapsed.QuadPart / m_frequency.QuadPart) / 1000U;
 }
 
 #else

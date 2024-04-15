@@ -47,6 +47,7 @@ private:
 	bool convertPCMtoDV();
 	bool convertDVtoPCM();
 	bool convertDVtoDV();
+	void dump(const char* text, const uint8_t* buffer, size_t length) const;
 };
 
 #endif
