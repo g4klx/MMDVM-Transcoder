@@ -361,14 +361,14 @@ bool CFileConvert::convertPCMtoDV()
 		return false;
 	}
 
-	CDVFileWriter writer(m_outFile, fileSignature(m_outMode));
+	CDVFileWriter writer(m_outFile, getFileSignature(m_outMode));
 	ret = writer.open();
 	if (!ret) {
 		reader.close();
 		return false;
 	}
 
-	unsigned int dvLength = blockLength(m_outMode);
+	unsigned int dvLength = getBlockLength(m_outMode);
 
 	unsigned int frames = 0U;
 
@@ -425,7 +425,7 @@ bool CFileConvert::convertPCMtoDV()
 
 bool CFileConvert::convertDVtoPCM()
 {
-	CDVFileReader reader(m_inFile, fileSignature(m_inMode));
+	CDVFileReader reader(m_inFile, getFileSignature(m_inMode));
 	bool ret = reader.open();
 	if (!ret)
 		return false;
@@ -437,7 +437,7 @@ bool CFileConvert::convertDVtoPCM()
 		return false;
 	}
 
-	unsigned int dvLength = blockLength(m_inMode);
+	unsigned int dvLength = getBlockLength(m_inMode);
 	const uint8_t* header = getDataHeader(m_inMode);
 
 	unsigned int frames = 0U;
@@ -495,20 +495,20 @@ bool CFileConvert::convertDVtoPCM()
 
 bool CFileConvert::convertDVtoDV()
 {
-	CDVFileReader reader(m_inFile, fileSignature(m_inMode));
+	CDVFileReader reader(m_inFile, getFileSignature(m_inMode));
 	bool ret = reader.open();
 	if (!ret)
 		return false;
 
-	CDVFileWriter writer(m_outFile, fileSignature(m_outMode));
+	CDVFileWriter writer(m_outFile, getFileSignature(m_outMode));
 	ret = writer.open();
 	if (!ret) {
 		reader.close();
 		return false;
 	}
 
-	unsigned int inLength  = blockLength(m_inMode);
-	unsigned int outLength = blockLength(m_outMode);
+	unsigned int inLength  = getBlockLength(m_inMode);
+	unsigned int outLength = getBlockLength(m_outMode);
 	const uint8_t* header  = getDataHeader(m_inMode);
 
 	unsigned int frames = 0U;
@@ -558,4 +558,54 @@ bool CFileConvert::convertDVtoDV()
 	::fprintf(stdout, "Converted %u frames (%.1fs)", frames, float(frames * BLOCK_TIME) / 1000.0F);
 
 	return true;
+}
+
+unsigned int CFileConvert::getBlockLength(uint8_t mode) const
+{
+	switch (mode) {
+	case MODE_DSTAR:
+		return DSTAR_DATA_LENGTH;
+	case MODE_DMR_NXDN:
+		return DMR_NXDN_DATA_LENGTH;
+	case MODE_YSFDN:
+		return YSFDN_DATA_LENGTH;
+	case MODE_IMBE:
+		return IMBE_DATA_LENGTH;
+	case MODE_IMBE_FEC:
+		return IMBE_FEC_DATA_LENGTH;
+	case MODE_CODEC2_3200:
+		return CODEC2_3200_DATA_LENGTH;
+	default:
+		return PCM_DATA_LENGTH;
+	}
+}
+
+const uint8_t* CFileConvert::getDataHeader(uint8_t mode) const
+{
+	switch (mode) {
+	case MODE_DSTAR:
+		return DSTAR_DATA_HEADER;
+	case MODE_DMR_NXDN:
+		return DMR_NXDN_DATA_HEADER;
+	case MODE_YSFDN:
+		return YSFDN_DATA_HEADER;
+	case MODE_IMBE:
+		return IMBE_DATA_HEADER;
+	case MODE_IMBE_FEC:
+		return IMBE_FEC_DATA_HEADER;
+	case MODE_CODEC2_3200:
+		return CODEC2_3200_DATA_HEADER;
+	default:
+		return PCM_DATA_HEADER;
+	}
+}
+
+std::string CFileConvert::getFileSignature(uint8_t mode) const
+{
+	switch (mode) {
+	case MODE_DSTAR:
+		return "AMBE";
+	default:
+		return "";
+	}
 }
