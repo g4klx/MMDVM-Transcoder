@@ -36,9 +36,10 @@ private:
 	std::string     m_inFile;
 	uint8_t         m_outMode;
 	std::string     m_outFile;
-	bool            m_hasAMBE;
+	uint8_t         m_hasAMBE;
 
 	bool open();
+	bool validateOptions() const;
 	uint16_t read(uint8_t* buffer, uint16_t timeout);
 	std::string getFileSignature(uint8_t mode) const;
 	unsigned int getBlockLength(uint8_t mode) const;

@@ -98,8 +98,9 @@ const uint8_t  PROTOCOL_VERSION = 1U;
 
 // Get Capabilities layout and data
 const uint16_t GET_CAPABILITIES_AMBE_TYPE_POS = 4U;
-const uint8_t  NO_AMBE_CHIP  = 0U;
-const uint8_t  HAS_AMBE_CHIP = 1U;
+const uint8_t  NO_AMBE_CHIP    = 0U;
+const uint8_t  HAS_1AMBE_CHIP  = 1U;
+const uint8_t  HAS_2AMBE_CHIPS = 2U;
 
 // Set Mode layout
 const uint16_t INPUT_MODE_POS  = 4U;

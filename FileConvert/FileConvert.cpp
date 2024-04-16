@@ -98,7 +98,7 @@ m_inMode(inMode),
 m_inFile(inFile),
 m_outMode(outMode),
 m_outFile(outFile),
-m_hasAMBE(false)
+m_hasAMBE(NO_AMBE_CHIP)
 {
 	assert(!port.empty());
 	assert(!inFile.empty());
@@ -112,6 +112,10 @@ CFileConvert::~CFileConvert()
 int CFileConvert::run()
 {
 	bool ret = open();
+	if (!ret)
+		return 1;
+
+	ret = validateOptions();
 	if (!ret)
 		return 1;
 
@@ -193,14 +197,25 @@ bool CFileConvert::open()
 		return false;
 
 	case TYPE_GET_CAPABILITIES:
-		m_hasAMBE = buffer[GET_CAPABILITIES_AMBE_TYPE_POS] == HAS_AMBE_CHIP;
-		::fprintf(stdout, "Transcoder has AMBE - %s\n", m_hasAMBE ? "yes" : "no");
 		break;
 
 	default:
 		::fprintf(stderr, "Unknown response from the transcoder to get capabilities - 0x%02X\n", buffer[TYPE_POS]);
 		m_serial.close();
 		return false;
+	}
+
+	m_hasAMBE = buffer[GET_CAPABILITIES_AMBE_TYPE_POS];
+	switch (m_hasAMBE) {
+	case HAS_1AMBE_CHIP:
+		::fprintf(stdout, "Transcoder has 1 AMBE chip\n");
+		break;
+	case HAS_2AMBE_CHIPS:
+		::fprintf(stdout, "Transcoder has 2 AMBE chips\n");
+		break;
+	default:
+		::fprintf(stdout, "Transcoder has no AMBE chips\n");
+		break;
 	}
 
 	uint8_t command[10U];
@@ -668,3 +683,56 @@ void CFileConvert::dump(const char* text, const uint8_t* buffer, size_t length) 
 	}
 }
 
+bool CFileConvert::validateOptions() const
+{
+	switch (m_hasAMBE) {
+	case HAS_1AMBE_CHIP:
+		if ((m_inMode == MODE_DSTAR) && (m_outMode == MODE_DMR_NXDN)) {
+			::fprintf(stderr, "Transcoding isn't possible without an AMBE chip\n");
+			return false;
+		}
+		if ((m_inMode == MODE_DMR_NXDN) && (m_outMode == MODE_DSTAR)) {
+			::fprintf(stderr, "Transcoding isn't possible without an AMBE chip\n");
+			return false;
+		}
+		if ((m_inMode == MODE_DSTAR) && (m_outMode == MODE_YSFDN)) {
+			::fprintf(stderr, "Transcoding isn't possible without an AMBE chip\n");
+			return false;
+		}
+		if ((m_inMode == MODE_YSFDN) && (m_outMode == MODE_DSTAR)) {
+			::fprintf(stderr, "Transcoding isn't possible without an AMBE chip\n");
+			return false;
+		}
+		break;
+
+	case HAS_2AMBE_CHIPS:
+		return true;
+
+	default:
+		if ((m_inMode == MODE_DSTAR) && (m_outMode != MODE_DSTAR)) {
+			::fprintf(stderr, "Transcoding isn't possible without an AMBE chip\n");
+			return false;
+		}
+		if ((m_inMode != MODE_DSTAR) && (m_outMode == MODE_DSTAR)) {
+			::fprintf(stderr, "Transcoding isn't possible without an AMBE chip\n");
+			return false;
+		}
+		if ((m_inMode == MODE_DMR_NXDN) && ((m_outMode != MODE_DMR_NXDN) && (m_outMode != MODE_YSFDN))) {
+			::fprintf(stderr, "Transcoding isn't possinle without an AMBE chip\n");
+			return false;
+		}
+		if ((m_outMode == MODE_DMR_NXDN) && ((m_inMode != MODE_DMR_NXDN) && (m_inMode != MODE_YSFDN))) {
+			::fprintf(stderr, "Transcoding isn't possinle without an AMBE chip\n");
+			return false;
+		}
+		if ((m_inMode == MODE_YSFDN) && ((m_outMode != MODE_DMR_NXDN) && (m_outMode != MODE_YSFDN))) {
+			::fprintf(stderr, "Transcoding isn't possinle without an AMBE chip\n");
+			return false;
+		}
+		if ((m_outMode == MODE_YSFDN) && ((m_inMode != MODE_DMR_NXDN) && (m_inMode != MODE_YSFDN))) {
+			::fprintf(stderr, "Transcoding isn't possinle without an AMBE chip\n");
+			return false;
+		}
+		return true;
+	}
+}
