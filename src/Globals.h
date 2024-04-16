@@ -30,6 +30,8 @@
 #include "PCMCodec23200.h"
 #include "YSFDNDMRNXDN.h"
 #include "DMRNXDNYSFDN.h"
+#include "DVSIDriver1.h"
+#include "DVSIDriver2.h"
 #include "IMBEIMBEFEC.h"
 #include "IMBEFECIMBE.h"
 #include "DMRNXDNFEC.h"
@@ -37,7 +39,6 @@
 #include "PCMDMRNXDN.h"
 #include "IMBEFECPCM.h"
 #include "PCMIMBEFEC.h"
-#include "DVSIDriver.h"
 #include "SerialPort.h"
 #include "LEDDriver.h"
 #include "PCMYSFDN.h"
@@ -60,16 +61,22 @@ extern CDMRNXDNFEC     dmrnxdnfec;
 extern CYSFDNFEC       ysfdnfec;
 extern CIMBEFEC        imbefec;
 
+#if AMBE_TYPE > 0
 extern CYSFDNPCM       ysfdnpcm;
 extern CDStarPCM       dstarpcm;
 extern CDMRNXDNPCM     dmrnxdnpcm;
+#endif
+
 extern CIMBEPCM        imbepcm;
 extern CIMBEFECPCM     imbefecpcm;
 extern CCodec23200PCM  codec23200pcm;
 
+#if AMBE_TYPE > 0
 extern CPCMYSFDN       pcmysfdn;
 extern CPCMDStar       pcmdstar;
 extern CPCMDMRNXDN     pcmdmrnxdn;
+#endif
+
 extern CPCMIMBE        pcmimbe;
 extern CPCMIMBEFEC     pcmimbefec;
 extern CPCMCodec23200  pcmcodec23200;
@@ -84,8 +91,13 @@ extern imbe_vocoder    imbe;
 extern CCodec2         codec23200;
 
 #if AMBE_TYPE > 0
-extern CDVSIDriver     dvsi;
-extern CAMBE3000Driver ambe3000;
+extern CDVSIDriver1    dvsi1;
+extern CAMBE3000Driver ambe30001;
+#endif
+
+#if AMBE_TYPE > 1
+extern CDVSIDriver2    dvsi2;
+extern CAMBE3000Driver ambe30002;
 #endif
 
 #if defined(HAS_LEDS)

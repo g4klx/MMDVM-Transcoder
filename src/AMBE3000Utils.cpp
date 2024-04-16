@@ -29,11 +29,8 @@ const uint8_t DVSI_TYPE_CONTROL = 0x00U;
 const uint8_t DVSI_TYPE_AMBE    = 0x01U;
 const uint8_t DVSI_TYPE_AUDIO   = 0x02U;
 
-const uint8_t DVSI_PKT_RATET        = 0x09U;
-const uint8_t DVSI_PKT_RATEP        = 0x0AU;
-const uint8_t DVSI_PKT_CHANNEL0     = 0x40U;
-const uint8_t DVSI_PKT_CHANNEL1     = 0x41U;
-const uint8_t DVSI_PKT_CHANNEL2     = 0x42U;
+const uint8_t DVSI_PKT_RATET    = 0x09U;
+const uint8_t DVSI_PKT_RATEP    = 0x0AU;
 
 const uint8_t DVSI_PKT_DSTAR_FEC[]         = {DVSI_PKT_RATEP, 0x01U, 0x30U, 0x07U, 0x63U, 0x40U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x48U};
 const uint16_t DVSI_PKT_DSTAR_FEC_LEN      = 13U;
@@ -66,35 +63,14 @@ m_bitsLen(0U)
 {
 }
 
-uint16_t CAMBE3000Utils::createModeChange(uint8_t n, AMBE_MODE mode, uint8_t* buffer)
+uint16_t CAMBE3000Utils::createModeChange(AMBE_MODE mode, uint8_t* buffer)
 {
-#if AMBE_TYPE == 1
-  n = 0U;
-#endif
-
   uint16_t length = 0U;
 
   buffer[length++] = DVSI_START_BYTE;
   buffer[length++] = 0x00U;
   buffer[length++] = 0x00U;
   buffer[length++] = DVSI_TYPE_CONTROL;
-
-#if AMBE_TYPE > 1
-  switch (n) {
-    case 0U:
-      buffer[length++] = DVSI_PKT_CHANNEL0;
-      break;
-    case 1U:
-      buffer[length++] = DVSI_PKT_CHANNEL1;
-      break;
-    case 2U:
-      buffer[length++] = DVSI_PKT_CHANNEL2;
-      break;
-    default:
-      DEBUG2("Unknown value of n received ", n);
-      return;
-  }
-#endif
 
   switch (mode) {
     case DSTAR_TO_PCM:
@@ -129,35 +105,14 @@ uint16_t CAMBE3000Utils::createModeChange(uint8_t n, AMBE_MODE mode, uint8_t* bu
   return length;
 }
 
-uint16_t CAMBE3000Utils::createAMBEFrame(uint8_t n, const uint8_t* buffer, uint8_t* out) const
+uint16_t CAMBE3000Utils::createAMBEFrame(const uint8_t* buffer, uint8_t* out) const
 {
-#if AMBE_TYPE == 1
-  n = 0U;
-#endif
-
   uint16_t pos = 0U;
 
   out[pos++] = DVSI_START_BYTE;
   out[pos++] = 0x00U;
   out[pos++] = 0x00U;
   out[pos++] = DVSI_TYPE_AMBE;
-
-#if AMBE_TYPE > 1
-  switch (n) {
-    case 0U:
-      out[pos++] = DVSI_PKT_CHANNEL0;
-      break;
-    case 1U:
-      out[pos++] = DVSI_PKT_CHANNEL1;
-      break;
-    case 2U:
-      out[pos++] = DVSI_PKT_CHANNEL2;
-      break;
-    default:
-      DEBUG2("Unknown value of n received ", n);
-      return;
-  }
-#endif
 
   out[pos++] = 0x01U;
   out[pos++] = m_bitsLen;
@@ -171,35 +126,14 @@ uint16_t CAMBE3000Utils::createAMBEFrame(uint8_t n, const uint8_t* buffer, uint8
   return pos;
 }
 
-uint16_t CAMBE3000Utils::createPCMFrame(uint8_t n, const uint8_t* buffer, uint8_t* out) const
+uint16_t CAMBE3000Utils::createPCMFrame(const uint8_t* buffer, uint8_t* out) const
 {
-#if AMBE_TYPE == 1
-  n = 0U;
-#endif
-
   uint16_t pos = 0U;
 
   out[pos++] = DVSI_START_BYTE;
   out[pos++] = 0x00U;
   out[pos++] = 0x00U;
   out[pos++] = DVSI_TYPE_AUDIO;
-
-#if AMBE_TYPE > 1
-  switch (n) {
-    case 0U:
-      out[pos++] = DVSI_PKT_CHANNEL0;
-      break;
-    case 1U:
-      out[pos++] = DVSI_PKT_CHANNEL1;
-      break;
-    case 2U:
-      out[pos++] = DVSI_PKT_CHANNEL2;
-      break;
-    default:
-      DEBUG2("Unknown value of n received ", n);
-      return;
-  }
-#endif
 
   out[pos++] = 0x00U;
   out[pos++] = DVSI_PCM_SAMPLES;
@@ -215,26 +149,14 @@ uint16_t CAMBE3000Utils::createPCMFrame(uint8_t n, const uint8_t* buffer, uint8_
 
 uint16_t CAMBE3000Utils::extractAMBEFrame(const uint8_t* frame, uint8_t* data) const
 {
-#if AMBE_TYPE > 1
-  uint16_t pos = 6U;
-#else
-  uint16_t pos = 5U;
-#endif
-
-  ::memcpy(data, frame + pos + 1U, m_bytesLen);
+  ::memcpy(data, frame + 5U + 1U, m_bytesLen);
 
   return m_bytesLen;
 }
 
 uint16_t CAMBE3000Utils::extractPCMFrame(const uint8_t* frame, uint8_t* data) const
 {
-#if AMBE_TYPE > 1
-  uint16_t pos = 6U;
-#else
-  uint16_t pos = 5U;
-#endif
-
-  swapBytes(data, frame + pos + 1U, DVSI_PCM_BYTES);
+  swapBytes(data, frame + 5U + 1U, DVSI_PCM_BYTES);
 
   return DVSI_PCM_BYTES;
 }

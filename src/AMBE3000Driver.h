@@ -24,6 +24,7 @@
 #if AMBE_TYPE > 0
 
 #include "AMBE3000Utils.h"
+#include "DVSIDriver.h"
 
 #include <cstdint>
 
@@ -35,34 +36,29 @@ enum AD_STATE {
 
 class CAMBE3000Driver {
   public:
-    CAMBE3000Driver();
+    CAMBE3000Driver(IDVSIDriver& dvsi);
 
     void startup();
 
-    void init(uint8_t n, AMBE_MODE mode);
+    void init(AMBE_MODE mode);
 
     void process();
 
-    uint8_t writeAMBE(uint8_t n, const uint8_t* buffer);
+    uint8_t writeAMBE(const uint8_t* buffer);
 
-    uint8_t writePCM(uint8_t n, const uint8_t* buffer);
+    uint8_t writePCM(const uint8_t* buffer);
 
-    AD_STATE readAMBE(uint8_t n, uint8_t* buffer);
+    AD_STATE readAMBE(uint8_t* buffer);
 
-    AD_STATE readPCM(uint8_t n, uint8_t* buffer);
+    AD_STATE readPCM(uint8_t* buffer);
 
-    void drain(uint8_t n);
+    void drain();
 
   private:
-#if AMBE_TYPE > 1
-    uint8_t*       m_buffer[3U];
-    uint16_t       m_length[3U];
-    CAMBE3000Utils m_utils[3U];
-#else
-    uint8_t*       m_buffer[1U];
-    uint16_t       m_length[1U];
-    CAMBE3000Utils m_utils[1U];
-#endif
+    IDVSIDriver&   m_dvsi;
+    uint8_t        m_buffer[400U];
+    uint16_t       m_length;
+    CAMBE3000Utils m_utils;
 };
 
 #endif

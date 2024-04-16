@@ -231,7 +231,7 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
 #if AMBE_TYPE > 0
   if ((buffer[0U] == MODE_PASS_THROUGH) && (buffer[1U] == MODE_PASS_THROUGH)) {
     opmode = OPMODE_PASSTHROUGH;
-    dvsi.reset();
+    dvsi1.reset();
     return 0x00U;
   }
 #endif
@@ -270,14 +270,16 @@ uint8_t CSerialPort::sendData(const uint8_t* buffer, uint16_t length)
       DEBUG1("Received data in None mode");
       return 0x03U;
 
+#if AMBE_TYPE > 0
     case OPMODE_PASSTHROUGH:
       // If the RTS pin is high, then the chip does not expect any more data to be sent through
-      if (!dvsi.ready()) {
+      if (!dvsi1.ready()) {
         DEBUG1("The AMBE3000 chip is not ready to receive any more data");
         return 0x05U;
       }
-      dvsi.write(buffer, length);
+      dvsi1.write(buffer, length);
       return 0x00U;
+#endif
 
     case OPMODE_TRANSCODING:
     default:
@@ -321,11 +323,13 @@ void CSerialPort::processData()
 
     if (length > 0)
       writeData(buffer, length);
+#if AMBE_TYPE > 0
   } else if (opmode == OPMODE_PASSTHROUGH) {
-    length = dvsi.read(buffer);
+    length = dvsi1.read(buffer);
 
     if (length > 0)
       writeData(buffer, length);
+#endif
   }
 }
 

@@ -18,11 +18,13 @@
 
 #include "DMRNXDNPCM.h"
 
+#if AMBE_TYPE > 0
+
 #include "ModeDefines.h"
 #include "Debug.h"
 
 CDMRNXDNPCM::CDMRNXDNPCM() :
-m_n(0U)
+m_ambe(nullptr)
 {
 }
 
@@ -32,9 +34,22 @@ CDMRNXDNPCM::~CDMRNXDNPCM()
 
 uint8_t CDMRNXDNPCM::init(uint8_t n)
 {
-  m_n = n;
-  
-  ambe3000.init(n, DMR_NXDN_TO_PCM);
+#if AMBE_TYPE > 1
+  switch (n) {
+    case 0U:
+      m_ambe = &ambe30001;
+      break;
+    case 1U:
+      m_ambe = &ambe30002;
+      break;
+    default:
+      return 0x04U;
+  }
+#else
+  m_ambe = &ambe30001;
+#endif
+
+  m_ambe->init(DMR_NXDN_TO_PCM);
 
   return 0x00U;
 }
@@ -46,12 +61,12 @@ uint8_t CDMRNXDNPCM::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-  return ambe3000.writeAMBE(m_n, buffer);
+  return m_ambe->writeAMBE(buffer);
 }
 
 int16_t CDMRNXDNPCM::output(uint8_t* buffer)
 {
-  AD_STATE ret = ambe3000.readPCM(m_n, buffer);
+  AD_STATE ret = m_ambe->readPCM(buffer);
   switch (ret) {
       case ADS_NO_DATA:
         return 0;
@@ -64,3 +79,5 @@ int16_t CDMRNXDNPCM::output(uint8_t* buffer)
         return -0x06;
   }
 }
+
+#endif

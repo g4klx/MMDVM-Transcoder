@@ -19,7 +19,13 @@
 #ifndef	DStarPCM_H
 #define	DStarPCM_H
 
+#include "Config.h"
+
+#if AMBE_TYPE > 0
+
 #include "Processor.h"
+
+#include "AMBE3000Driver.h"
 
 class CDStarPCM : public IProcessor {
   public:
@@ -33,7 +39,9 @@ class CDStarPCM : public IProcessor {
     virtual int16_t output(uint8_t* buffer) override;
 
   private:
-    uint8_t m_n;
+    CAMBE3000Driver* m_ambe;
 };
+
+#endif
 
 #endif

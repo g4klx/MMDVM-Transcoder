@@ -39,9 +39,9 @@ class CAMBE3000Utils {
   public:
     CAMBE3000Utils();
 
-    uint16_t createModeChange(uint8_t n, AMBE_MODE mode, uint8_t* buffer);
-    uint16_t createAMBEFrame(uint8_t n, const uint8_t* buffer, uint8_t* out) const;
-    uint16_t createPCMFrame(uint8_t n, const uint8_t* buffer, uint8_t* out) const;
+    uint16_t createModeChange(AMBE_MODE mode, uint8_t* buffer);
+    uint16_t createAMBEFrame(const uint8_t* buffer, uint8_t* out) const;
+    uint16_t createPCMFrame(const uint8_t* buffer, uint8_t* out) const;
 
     uint16_t extractAMBEFrame(const uint8_t* buffer, uint8_t* data) const;
     uint16_t extractPCMFrame(const uint8_t* buffer, uint8_t* data) const;

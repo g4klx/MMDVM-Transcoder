@@ -19,7 +19,13 @@
 #ifndef	PCMYSFDN_H
 #define	PCMYSFDN_H
 
+#include "Config.h"
+
+#if AMBE_TYPE > 0
+
 #include "Processor.h"
+
+#include "AMBE3000Driver.h"
 
 class CPCMYSFDN : public IProcessor {
   public:
@@ -33,7 +39,9 @@ class CPCMYSFDN : public IProcessor {
     virtual int16_t output(uint8_t* buffer) override;
 
   private:
-    uint8_t m_n;
+    CAMBE3000Driver* m_ambe;
 };
+
+#endif
 
 #endif

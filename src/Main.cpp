@@ -26,16 +26,22 @@ CDMRNXDNFEC     dmrnxdnfec;
 CYSFDNFEC       ysfdnfec;
 CIMBEFEC        imbefec;
 
+#if AMBE_TYPE > 0
 CYSFDNPCM       ysfdnpcm;
 CDStarPCM       dstarpcm;
 CDMRNXDNPCM     dmrnxdnpcm;
+#endif
+
 CIMBEPCM        imbepcm;
 CIMBEFECPCM     imbefecpcm;
 CCodec23200PCM  codec23200pcm;
 
+#if AMBE_TYPE > 0
 CPCMYSFDN       pcmysfdn;
 CPCMDStar       pcmdstar;
 CPCMDMRNXDN     pcmdmrnxdn;
+#endif
+
 CPCMIMBE        pcmimbe;
 CPCMIMBEFEC     pcmimbefec;
 CPCMCodec23200  pcmcodec23200;
@@ -50,8 +56,13 @@ imbe_vocoder    imbe;
 CCodec2         codec23200(true);
 
 #if AMBE_TYPE > 0
-CDVSIDriver     dvsi;
-CAMBE3000Driver ambe3000;
+CDVSIDriver1    dvsi1;
+CAMBE3000Driver ambe30001(dvsi1);
+#endif
+
+#if AMBE_TYPE > 1
+CDVSIDriver2    dvsi2;
+CAMBE3000Driver ambe30002(dvsi2);
 #endif
 
 #if defined(HAS_LEDS)
@@ -75,8 +86,13 @@ extern "C" {
 #endif
 
 #if AMBE_TYPE > 0
-    dvsi.startup();
-    ambe3000.startup();
+    dvsi1.startup();
+    ambe30001.startup();
+#endif
+
+#if AMBE_TYPE > 1
+    dvsi2.startup();
+    ambe30002.startup();
 #endif
 
 #if defined(HAS_LEDS)
@@ -91,7 +107,12 @@ extern "C" {
 
 #if AMBE_TYPE > 0
     if (opmode == OPMODE_TRANSCODING)
-      ambe3000.process();
+      ambe30001.process();
+#endif
+
+#if AMBE_TYPE > 1
+    if (opmode == OPMODE_TRANSCODING)
+      ambe30002.process();
 #endif
 
 #if defined(HAS_LEDS)

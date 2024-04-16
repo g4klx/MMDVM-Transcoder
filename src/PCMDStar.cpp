@@ -18,12 +18,13 @@
 
 #include "PCMDStar.h"
 
+#if AMBE_TYPE > 0
+
 #include "ModeDefines.h"
-#include "Config.h"
 #include "Debug.h"
 
 CPCMDStar::CPCMDStar() :
-m_n(0U)
+m_ambe(nullptr)
 {
 }
 
@@ -33,9 +34,22 @@ CPCMDStar::~CPCMDStar()
 
 uint8_t CPCMDStar::init(uint8_t n)
 {
-  m_n = n;
+#if AMBE_TYPE > 1
+  switch (n) {
+    case 0U:
+      m_ambe = &ambe30001;
+      break;
+    case 1U:
+      m_ambe = &ambe30002;
+      break;
+    default:
+      return 0x04U;
+  }
+#else
+  m_ambe = &ambe30001;
+#endif
 
-  ambe3000.init(n, PCM_TO_DSTAR);
+  m_ambe->init(PCM_TO_DSTAR);
 
   return 0x00U;
 }
@@ -47,12 +61,12 @@ uint8_t CPCMDStar::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-  return ambe3000.writePCM(m_n, buffer);
+  return m_ambe->writePCM(buffer);
 }
 
 int16_t CPCMDStar::output(uint8_t* buffer)
 {
-  AD_STATE ret = ambe3000.readAMBE(m_n, buffer);
+  AD_STATE ret = m_ambe->readAMBE(buffer);
   switch (ret) {
       case ADS_NO_DATA:
         return 0;
@@ -65,3 +79,5 @@ int16_t CPCMDStar::output(uint8_t* buffer)
         return -0x06;
   }
 }
+
+#endif

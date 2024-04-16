@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,30 +16,39 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	YSFDNPCM_H
-#define	YSFDNPCM_H
+#ifndef	DVSIDriver2_H
+#define	DVSIDriver2_H
 
 #include "Config.h"
 
-#if AMBE_TYPE > 0
+#if AMBE_TYPE > 1
 
-#include "Processor.h"
+#include "DVSIDriver.h"
 
-#include "AMBE3000Driver.h"
+#include <Arduino.h>
 
-class CYSFDNPCM : public IProcessor {
+#include <cstdint>
+
+class CDVSIDriver2 : public IDVSIDriver {
   public:
-    CYSFDNPCM();
-    virtual ~CYSFDNPCM();
+    CDVSIDriver2();
+    virtual ~CDVSIDriver2();
 
-    virtual uint8_t init(uint8_t n) override;
+    virtual void     startup();
 
-    virtual uint8_t input(const uint8_t* buffer, uint16_t length) override;
+    virtual void     reset();
 
-    virtual int16_t output(uint8_t* buffer) override;
+    virtual bool     ready() const;
+
+    virtual void     write(const uint8_t* buffer, uint16_t length);
+
+    virtual uint16_t read(uint8_t* buffer);
 
   private:
-    CAMBE3000Driver* m_ambe;
+    HardwareSerial m_serial;
+    uint8_t        m_buffer[512U];
+    uint16_t       m_len;
+    uint16_t       m_ptr;
 };
 
 #endif

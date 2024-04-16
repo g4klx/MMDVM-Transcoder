@@ -18,12 +18,14 @@
 
 #include "PCMYSFDN.h"
 
+#if AMBE_TYPE > 0
+
 #include "ModeDefines.h"
 #include "YSFDNUtils.h"
 #include "Debug.h"
 
 CPCMYSFDN::CPCMYSFDN() :
-m_n(0U)
+m_ambe(nullptr)
 {
 }
 
@@ -33,9 +35,22 @@ CPCMYSFDN::~CPCMYSFDN()
 
 uint8_t CPCMYSFDN::init(uint8_t n)
 {
-  m_n = n;
-  
-  ambe3000.init(n, PCM_TO_YSFDN);
+#if AMBE_TYPE > 1
+  switch (n) {
+    case 0U:
+      m_ambe = &ambe30001;
+      break;
+    case 1U:
+      m_ambe = &ambe30002;
+      break;
+    default:
+      return 0x04U;
+  }
+#else
+  m_ambe = &ambe30001;
+#endif
+
+  m_ambe->init(PCM_TO_YSFDN);
 
   return 0x00U;
 }
@@ -47,13 +62,13 @@ uint8_t CPCMYSFDN::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-  return ambe3000.writePCM(m_n, buffer);
+  return m_ambe->writePCM(buffer);
 }
 
 int16_t CPCMYSFDN::output(uint8_t* buffer)
 {
   uint8_t ambe[10U];
-  AD_STATE ret = ambe3000.readAMBE(m_n, ambe);
+  AD_STATE ret = m_ambe->readAMBE(ambe);
   switch (ret) {
       case ADS_NO_DATA:
         return 0;
@@ -67,3 +82,5 @@ int16_t CPCMYSFDN::output(uint8_t* buffer)
         return YSFDN_DATA_LENGTH;
   }
 }
+
+#endif
