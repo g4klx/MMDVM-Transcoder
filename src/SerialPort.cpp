@@ -31,12 +31,9 @@ const struct {
 } PROCESSOR_TABLE[] = {
   {MODE_DSTAR,        MODE_DSTAR,         &dstarfec,       nullptr},
 #if AMBE_TYPE > 0
-#if AMBE_TYPE == 2
+#if AMBE_TYPE > 1
   {MODE_DSTAR,        MODE_DMR_NXDN,      &dstarpcm,       &pcmdmrnxdn},
   {MODE_DSTAR,        MODE_YSFDN,         &dstarpcm,       &pcmysfdn},
-#else
-  {MODE_DSTAR,        MODE_DMR_NXDN,      &dstardmrnxdn,   nullptr},
-  {MODE_DSTAR,        MODE_YSFDN,         &dstarysfdn,     nullptr},
 #endif
   {MODE_DSTAR,        MODE_IMBE,          &dstarpcm,       &pcmimbe},
   {MODE_DSTAR,        MODE_IMBE_FEC,      &dstarpcm,       &pcmimbefec},
@@ -45,10 +42,8 @@ const struct {
 #endif
 
 #if AMBE_TYPE > 0
-#if AMBE_TYPE == 2
+#if AMBE_TYPE > 1
   {MODE_DMR_NXDN,     MODE_DSTAR,         &dmrnxdnpcm,     &pcmdstar},
-#else
-  {MODE_DMR_NXDN,     MODE_DSTAR,         &dmrnxdndstar,   nullptr},
 #endif
   {MODE_DMR_NXDN,     MODE_DMR_NXDN,      &dmrnxdnfec,     nullptr},
   {MODE_DMR_NXDN,     MODE_YSFDN,         &dmrnxdnfec,     &dmrnxdnysfdn},
@@ -59,10 +54,8 @@ const struct {
 #endif
 
 #if AMBE_TYPE > 0
-#if AMBE_TYPE == 2
+#if AMBE_TYPE > 1
   {MODE_YSFDN,        MODE_DSTAR,         &ysfdnpcm,       &pcmdstar},
-#else
-  {MODE_YSFDN,        MODE_DSTAR,         &ysfdndstar,     nullptr},
 #endif
   {MODE_YSFDN,        MODE_DMR_NXDN,      &ysfdnfec,       &ysfdndmrnxdn},
   {MODE_YSFDN,        MODE_YSFDN,         &ysfdnfec,       nullptr},
@@ -287,7 +280,7 @@ uint8_t CSerialPort::sendData(const uint8_t* buffer, uint16_t length)
     case OPMODE_PASSTHROUGH:
       // If the RTS pin is high, then the chip does not expect any more data to be sent through
       if (!dvsi.ready()) {
-        DEBUG1("The AMBE3003/3000 chip is not ready to receive any more data");
+        DEBUG1("The AMBE3000 chip is not ready to receive any more data");
         return 0x05U;
       }
       dvsi.write(buffer, length);

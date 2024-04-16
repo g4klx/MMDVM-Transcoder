@@ -79,7 +79,7 @@ uint16_t CAMBE3000Utils::createModeChange(uint8_t n, AMBE_MODE mode, uint8_t* bu
   buffer[length++] = 0x00U;
   buffer[length++] = DVSI_TYPE_CONTROL;
 
-#if AMBE_TYPE == 2
+#if AMBE_TYPE > 1
   switch (n) {
     case 0U:
       buffer[length++] = DVSI_PKT_CHANNEL0;
@@ -142,7 +142,7 @@ uint16_t CAMBE3000Utils::createAMBEFrame(uint8_t n, const uint8_t* buffer, uint8
   out[pos++] = 0x00U;
   out[pos++] = DVSI_TYPE_AMBE;
 
-#if AMBE_TYPE == 2
+#if AMBE_TYPE > 1
   switch (n) {
     case 0U:
       out[pos++] = DVSI_PKT_CHANNEL0;
@@ -184,7 +184,7 @@ uint16_t CAMBE3000Utils::createPCMFrame(uint8_t n, const uint8_t* buffer, uint8_
   out[pos++] = 0x00U;
   out[pos++] = DVSI_TYPE_AUDIO;
 
-#if AMBE_TYPE == 2
+#if AMBE_TYPE > 1
   switch (n) {
     case 0U:
       out[pos++] = DVSI_PKT_CHANNEL0;
@@ -215,7 +215,7 @@ uint16_t CAMBE3000Utils::createPCMFrame(uint8_t n, const uint8_t* buffer, uint8_
 
 uint16_t CAMBE3000Utils::extractAMBEFrame(const uint8_t* frame, uint8_t* data) const
 {
-#if AMBE_TYPE == 2
+#if AMBE_TYPE > 1
   uint16_t pos = 6U;
 #else
   uint16_t pos = 5U;
@@ -228,7 +228,7 @@ uint16_t CAMBE3000Utils::extractAMBEFrame(const uint8_t* frame, uint8_t* data) c
 
 uint16_t CAMBE3000Utils::extractPCMFrame(const uint8_t* frame, uint8_t* data) const
 {
-#if AMBE_TYPE == 2
+#if AMBE_TYPE > 1
   uint16_t pos = 6U;
 #else
   uint16_t pos = 5U;

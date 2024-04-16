@@ -54,7 +54,7 @@ class CAMBE3000Driver {
     void drain(uint8_t n);
 
   private:
-#if AMBE_TYPE == 2
+#if AMBE_TYPE > 1
     uint8_t*       m_buffer[3U];
     uint16_t       m_length[3U];
     CAMBE3000Utils m_utils[3U];

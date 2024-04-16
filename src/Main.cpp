@@ -26,11 +26,6 @@ CDMRNXDNFEC     dmrnxdnfec;
 CYSFDNFEC       ysfdnfec;
 CIMBEFEC        imbefec;
 
-CDStarDMRNXDN   dstardmrnxdn;
-CDMRNXDNDStar   dmrnxdndstar;
-CDStarYSFDN     dstarysfdn;
-CYSFDNDStar     ysfdndstar;
-
 CYSFDNPCM       ysfdnpcm;
 CDStarPCM       dstarpcm;
 CDMRNXDNPCM     dmrnxdnpcm;

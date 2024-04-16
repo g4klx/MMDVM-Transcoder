@@ -28,14 +28,10 @@
 #include "AMBE3000Driver.h"
 #include "Codec23200PCM.h"
 #include "PCMCodec23200.h"
-#include "DStarDMRNXDN.h"
-#include "DMRNXDNDStar.h"
 #include "YSFDNDMRNXDN.h"
 #include "DMRNXDNYSFDN.h"
 #include "IMBEIMBEFEC.h"
 #include "IMBEFECIMBE.h"
-#include "DStarYSFDN.h"
-#include "YSFDNDStar.h"
 #include "DMRNXDNFEC.h"
 #include "DMRNXDNPCM.h"
 #include "PCMDMRNXDN.h"
@@ -63,11 +59,6 @@ extern CDStarFEC       dstarfec;
 extern CDMRNXDNFEC     dmrnxdnfec;
 extern CYSFDNFEC       ysfdnfec;
 extern CIMBEFEC        imbefec;
-
-extern CDStarDMRNXDN   dstardmrnxdn;
-extern CDMRNXDNDStar   dmrnxdndstar;
-extern CDStarYSFDN     dstarysfdn;
-extern CYSFDNDStar     ysfdndstar;
 
 extern CYSFDNPCM       ysfdnpcm;
 extern CDStarPCM       dstarpcm;
