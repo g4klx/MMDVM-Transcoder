@@ -26,12 +26,3 @@ uint8_t IProcessor::init(uint8_t n)
 {
   return 0x00U;
 }
-
-uint8_t IProcessor::process()
-{
-  return 0x00U;
-}
-
-void IProcessor::finish()
-{
-}

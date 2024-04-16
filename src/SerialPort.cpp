@@ -223,15 +223,8 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
     return 0x02U;
   }
 
-  if (m_step1 != nullptr) {
-    m_step1->finish();
-    m_step1 = nullptr;
-  }
-
-  if (m_step2 != nullptr) {
-    m_step2->finish();
-    m_step2 = nullptr;
-  }
+  m_step1 = nullptr;
+  m_step2 = nullptr;
 
   opmode = OPMODE_NONE;
 
@@ -306,12 +299,6 @@ void CSerialPort::processData()
 
   if (opmode == OPMODE_TRANSCODING) {
     if (m_step1 != nullptr) {
-      uint8_t err = m_step1->process();
-      if (err != 0x00U) {
-        sendNAK(err);
-        return;
-      }
-
       length = m_step1->output(buffer);
       if (length < 0) {
         sendNAK(-length);
@@ -325,12 +312,6 @@ void CSerialPort::processData()
     }
 
     if (m_step2 != nullptr) {
-      uint8_t err = m_step2->process();
-      if (err != 0x00U) {
-        sendNAK(err);
-        return;
-      }
-
       length = m_step2->output(buffer);
       if (length < 0) {
         sendNAK(-length);

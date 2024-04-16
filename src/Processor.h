@@ -29,11 +29,7 @@ class IProcessor {
 
     virtual uint8_t input(const uint8_t* buffer, uint16_t length) = 0;
 
-    virtual uint8_t process();
-
     virtual int16_t output(uint8_t* buffer) = 0;
-
-    virtual void    finish();
 
   private:
 };

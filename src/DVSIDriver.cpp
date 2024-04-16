@@ -46,9 +46,7 @@ HardwareSerial SerialAMBE(USART6_RX, USART6_TX);
 CDVSIDriver::CDVSIDriver() :
 m_buffer(),
 m_len(0U),
-m_ptr(0U),
-m_frame(),
-m_length(0U)
+m_ptr(0U)
 {
 }
 
@@ -85,14 +83,9 @@ bool CDVSIDriver::ready() const
   return digitalRead(AMBE3000_RTS) == LOW;
 }
 
-void CDVSIDriver::write(const uint8_t* buffer, uint16_t length, const uint8_t* frame, uint16_t len)
+void CDVSIDriver::write(const uint8_t* buffer, uint16_t length)
 {
   SerialAMBE.write(buffer, length);
-
-  if (len > 0U) {
-    ::memcpy(m_frame, frame, len);
-    m_length = len;
-  }
 }
 
 uint16_t CDVSIDriver::read(uint8_t* buffer)
@@ -106,11 +99,6 @@ uint16_t CDVSIDriver::read(uint8_t* buffer)
         m_buffer[0U] = c;
         m_ptr = 1U;
         m_len = 0U;
-
-        if (m_length > 0U) {
-          write(m_frame, m_length);
-          m_length = 0U;
-        }
       } else {
         m_ptr = 0U;
         m_len = 0U;

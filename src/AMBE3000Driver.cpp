@@ -145,7 +145,7 @@ void CAMBE3000Driver::process()
   }
 }
 
-uint8_t CAMBE3000Driver::writeAMBE(uint8_t n, const uint8_t* buffer, const uint8_t* frame, uint16_t len)
+uint8_t CAMBE3000Driver::writeAMBE(uint8_t n, const uint8_t* buffer)
 {
 #if AMBE_TYPE == 1
   n = 0U;
@@ -164,12 +164,12 @@ uint8_t CAMBE3000Driver::writeAMBE(uint8_t n, const uint8_t* buffer, const uint8
   leds.setLED1(true);
 #endif
 
-  dvsi.write(out, pos, frame, len);
+  dvsi.write(out, pos);
 
   return 0x00U;
 }
 
-uint8_t CAMBE3000Driver::writePCM(uint8_t n, const uint8_t* buffer, const uint8_t* frame, uint16_t len)
+uint8_t CAMBE3000Driver::writePCM(uint8_t n, const uint8_t* buffer)
 {
 #if AMBE_TYPE == 1
   n = 0U;
@@ -188,7 +188,7 @@ uint8_t CAMBE3000Driver::writePCM(uint8_t n, const uint8_t* buffer, const uint8_
   leds.setLED1(true);
 #endif
 
-  dvsi.write(out, pos, frame, len);
+  dvsi.write(out, pos);
 
   return 0x00U;
 }
