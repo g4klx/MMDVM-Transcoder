@@ -4,10 +4,10 @@ This is the source code of the MMDVM-Transcoder firmware that supports transcodi
 - YSF (DN and VW mode)
 - P25 phase 1 (with or without FEC)
 - NXDN
-- M17
+- M17 (3200 mode only)
 - PCM
 
-The available conversions depends on the hardware available. With no AMBE DSP chip then very limited transcoding is possible, but with a DVSI AMBE3000 all conversions are possible.
+The available conversions depends on the hardware available. With no AMBE DSP chip then very limited transcoding is possible, with one DVSI AMBE3000 many more are possible, most of the restrictions involve going from to and from D-Star. With two DVSI AMBE3000s all conversions are possible.
 
 It runs on the the ST-Micro or STM32F722 or STM32H723 processor and a custom AMBE board. The design of this board will be made available once it's design has been finalised.
 
