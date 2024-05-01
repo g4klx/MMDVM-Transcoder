@@ -9,4 +9,5 @@ Debug
 Release
 .vs
 *.user
+*.wav
 
