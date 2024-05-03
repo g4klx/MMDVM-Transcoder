@@ -272,13 +272,32 @@ uint8_t CSerialPort::sendData(const uint8_t* buffer, uint16_t length)
 
 #if AMBE_TYPE > 0
     case OPMODE_PASSTHROUGH:
-      // If the RTS pin is high, then the chip does not expect any more data to be sent through
-      if (!dvsi1.ready()) {
-        DEBUG1("The AMBE3000 chip is not ready to receive any more data");
-        return 0x05U;
+      // The first byte is the AMBE chip number, 0x00 or 0x01, then the DVSI data
+      switch (buffer[0U]) {
+        case 0x00U:
+          // If the RTS pin is high, then the chip does not expect any more data to be sent through
+          if (!dvsi1.ready()) {
+            DEBUG1("The AMBE3000 chip is not ready to receive any more data");
+            return 0x05U;
+          }
+          dvsi1.write(buffer + 1U, length - 1U);
+          return 0x00U;
+
+#if AMBE_TYPE > 1
+        case 0x01U:
+          // If the RTS pin is high, then the chip does not expect any more data to be sent through
+          if (!dvsi2.ready()) {
+            DEBUG1("The AMBE3000 chip is not ready to receive any more data");
+            return 0x05U;
+          }
+          dvsi2.write(buffer + 1U, length - 1U);
+          return 0x00U;
+#endif
+
+        default:
+          return 0x04U;
       }
-      dvsi1.write(buffer, length);
-      return 0x00U;
+      break;
 #endif
 
     case OPMODE_TRANSCODING:
@@ -325,10 +344,17 @@ void CSerialPort::processData()
       writeData(buffer, length);
 #if AMBE_TYPE > 0
   } else if (opmode == OPMODE_PASSTHROUGH) {
-    length = dvsi1.read(buffer);
-
+    length = dvsi1.read(buffer + 1U);
+    buffer[0U] = 0x00U;
     if (length > 0)
-      writeData(buffer, length);
+      writeData(buffer, length + 1U);
+
+#if AMBE_TYPE > 1
+    length = dvsi2.read(buffer + 1U);
+    buffer[0U] = 0x01U;
+    if (length > 0)
+      writeData(buffer, length + 1U);
+#endif
 #endif
   }
 }
