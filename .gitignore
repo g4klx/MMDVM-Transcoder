@@ -9,4 +9,7 @@ Debug
 Release
 .vs
 *.user
+*.o
+FileConvert/FileConvert
+Tester/Tester
 

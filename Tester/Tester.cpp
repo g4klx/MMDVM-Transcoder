@@ -18,6 +18,7 @@
 
 #include "Tester.h"
 
+#include <cstring>
 #include <cassert>
 
 const uint8_t MARKER = 0xE1U;
