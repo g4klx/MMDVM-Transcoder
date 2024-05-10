@@ -46,7 +46,7 @@ uint8_t CCodec23200PCM::input(const uint8_t* buffer, uint16_t length)
   codec23200.codec2_decode(audio, (unsigned char*)buffer);
 
   for (uint16_t i = 0U; i < (PCM_DATA_LENGTH / sizeof(short)); i++)
-    audio[i] /= 2;
+    audio[i] /= 4;
 
   ::memcpy(m_buffer, audio, PCM_DATA_LENGTH);
 
