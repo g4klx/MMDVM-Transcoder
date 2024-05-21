@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020,2021,2022,2023,2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,9 +16,25 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(VERSION_H)
-#define  VERSION_H
+#ifndef	MULAWPCM_H
+#define	MULAWPCM_H
 
-#define VERSION "20240521"
+#include "Processor.h"
+
+#include "ModeDefines.h"
+
+class CMuLawPCM : public IProcessor {
+  public:
+    CMuLawPCM();
+    virtual ~CMuLawPCM();
+
+    virtual uint8_t input(const uint8_t* buffer, uint16_t length) override;
+
+    virtual int16_t output(uint8_t* buffer) override;
+
+  private:
+    uint8_t m_buffer[PCM_DATA_LENGTH];
+    bool    m_inUse;
+};
 
 #endif

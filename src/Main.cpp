@@ -51,6 +51,11 @@ CDMRNXDNYSFDN   dmrnxdnysfdn;
 CIMBEIMBEFEC    imbeimbefec;
 CIMBEFECIMBE    imbefecimbe;
 
+CALawPCM        alawpcm;
+CPCMALaw        pcmalaw;
+CMuLawPCM       mulawpcm;
+CPCMMuLaw       pcmmulaw;
+
 imbe_vocoder    imbe;
 CCodec2         codec23200(true);
 

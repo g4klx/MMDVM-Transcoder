@@ -41,6 +41,8 @@ const struct {
   {MODE_DSTAR,        MODE_IMBE,          &dstarpcm,       &pcmimbe},
   {MODE_DSTAR,        MODE_IMBE_FEC,      &dstarpcm,       &pcmimbefec},
   {MODE_DSTAR,        MODE_CODEC2_3200,   &dstarpcm,       &pcmcodec23200},
+  {MODE_DSTAR,        MODE_ALAW,          &dstarpcm,       &pcmalaw},
+  {MODE_DSTAR,        MODE_MULAW,         &dstarpcm,       &pcmmulaw},
   {MODE_DSTAR,        MODE_PCM,           &dstarpcm,       nullptr},
 #endif
 
@@ -55,6 +57,8 @@ const struct {
   {MODE_DMR_NXDN,     MODE_IMBE,          &dmrnxdnpcm,     &pcmimbe},
   {MODE_DMR_NXDN,     MODE_IMBE_FEC,      &dmrnxdnpcm,     &pcmimbefec},
   {MODE_DMR_NXDN,     MODE_CODEC2_3200,   &dmrnxdnpcm,     &pcmcodec23200},
+  {MODE_DMR_NXDN,     MODE_ALAW,          &dmrnxdnpcm,     &pcmalaw},
+  {MODE_DMR_NXDN,     MODE_MULAW,         &dmrnxdnpcm,     &pcmmulaw},
   {MODE_DMR_NXDN,     MODE_PCM,           &dmrnxdnpcm,     nullptr},
 #endif
 
@@ -69,6 +73,8 @@ const struct {
   {MODE_YSFDN,        MODE_IMBE,          &ysfdnpcm,       &pcmimbe},
   {MODE_YSFDN,        MODE_IMBE_FEC,      &ysfdnpcm,       &pcmimbefec},
   {MODE_YSFDN,        MODE_CODEC2_3200,   &ysfdnpcm,       &pcmcodec23200},
+  {MODE_YSFDN,        MODE_ALAW,          &ysfdnpcm,       &pcmalaw},
+  {MODE_YSFDN,        MODE_MULAW,         &ysfdnpcm,       &pcmmulaw},
   {MODE_YSFDN,        MODE_PCM,           &ysfdnpcm,       nullptr},
 #endif
 
@@ -80,6 +86,8 @@ const struct {
   {MODE_IMBE,         MODE_IMBE,          nullptr,         nullptr},
   {MODE_IMBE,         MODE_IMBE_FEC,      &imbeimbefec,    nullptr},
   {MODE_IMBE,         MODE_CODEC2_3200,   &imbepcm,        &pcmcodec23200},
+  {MODE_IMBE,         MODE_ALAW,          &imbepcm,        &pcmalaw},
+  {MODE_IMBE,         MODE_MULAW,         &imbepcm,        &pcmmulaw},
   {MODE_IMBE,         MODE_PCM,           &imbepcm,        nullptr},
 
 #if AMBE_TYPE > 0
@@ -90,6 +98,8 @@ const struct {
   {MODE_IMBE_FEC,     MODE_IMBE,          &imbefecimbe,    nullptr},
   {MODE_IMBE_FEC,     MODE_IMBE_FEC,      &imbefec,        nullptr},
   {MODE_IMBE_FEC,     MODE_CODEC2_3200,   &imbefecpcm,     &pcmcodec23200},
+  {MODE_IMBE_FEC,     MODE_ALAW,          &imbefecpcm,     &pcmalaw},
+  {MODE_IMBE_FEC,     MODE_MULAW,         &imbefecpcm,     &pcmmulaw},
   {MODE_IMBE_FEC,     MODE_PCM,           &imbefecpcm,     nullptr},
 
 #if AMBE_TYPE > 0
@@ -100,7 +110,33 @@ const struct {
   {MODE_CODEC2_3200,  MODE_IMBE,          &codec23200pcm,  &pcmimbe},
   {MODE_CODEC2_3200,  MODE_IMBE_FEC,      &codec23200pcm,  &pcmimbefec},
   {MODE_CODEC2_3200,  MODE_CODEC2_3200,   nullptr,         nullptr},
+  {MODE_CODEC2_3200,  MODE_ALAW,          &codec23200pcm,  &pcmalaw},
+  {MODE_CODEC2_3200,  MODE_MULAW,         &codec23200pcm,  &pcmmulaw},
   {MODE_CODEC2_3200,  MODE_PCM,           &codec23200pcm,  nullptr},
+
+#if AMBE_TYPE > 0
+  {MODE_ALAW,         MODE_DSTAR,         &alawpcm,        &pcmdstar},
+  {MODE_ALAW,         MODE_DMR_NXDN,      &alawpcm,        &pcmdmrnxdn},
+  {MODE_ALAW,         MODE_YSFDN,         &alawpcm,        &pcmysfdn},
+#endif
+  {MODE_ALAW,         MODE_IMBE,          &alawpcm,        &pcmimbe},
+  {MODE_ALAW,         MODE_IMBE_FEC,      &alawpcm,        &pcmimbefec},
+  {MODE_ALAW,         MODE_CODEC2_3200,   &alawpcm,        &pcmcodec23200},
+  {MODE_ALAW,         MODE_MULAW,         &alawpcm,        &pcmmulaw},
+  {MODE_ALAW,         MODE_PCM,           &alawpcm,        nullptr},
+  {MODE_ALAW,         MODE_ALAW,          nullptr,         nullptr},
+
+#if AMBE_TYPE > 0
+  {MODE_MULAW,        MODE_DSTAR,         &mulawpcm,       &pcmdstar},
+  {MODE_MULAW,        MODE_DMR_NXDN,      &mulawpcm,       &pcmdmrnxdn},
+  {MODE_MULAW,        MODE_YSFDN,         &mulawpcm,       &pcmysfdn},
+#endif
+  {MODE_MULAW,        MODE_IMBE,          &mulawpcm,       &pcmimbe},
+  {MODE_MULAW,        MODE_IMBE_FEC,      &mulawpcm,       &pcmimbefec},
+  {MODE_MULAW,        MODE_CODEC2_3200,   &mulawpcm,       &pcmcodec23200},
+  {MODE_MULAW,        MODE_ALAW,          &mulawpcm,       &pcmalaw},
+  {MODE_MULAW,        MODE_PCM,           &mulawpcm,       nullptr},
+  {MODE_MULAW,        MODE_MULAW,         nullptr,         nullptr},
 
 #if AMBE_TYPE > 0
   {MODE_PCM,          MODE_DSTAR,         &pcmdstar,       nullptr},
@@ -110,6 +146,8 @@ const struct {
   {MODE_PCM,          MODE_IMBE,          &pcmimbe,        nullptr},
   {MODE_PCM,          MODE_IMBE_FEC,      &pcmimbefec,     nullptr},
   {MODE_PCM,          MODE_CODEC2_3200,   &pcmcodec23200,  nullptr},
+  {MODE_PCM,          MODE_ALAW,          &pcmalaw,        nullptr},
+  {MODE_PCM,          MODE_MULAW,         &pcmmulaw,       nullptr},
   {MODE_PCM,          MODE_PCM,           nullptr,         nullptr}
 };
 
