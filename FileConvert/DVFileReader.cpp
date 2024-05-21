@@ -41,8 +41,8 @@ bool CDVFileReader::open()
 
 	if (!m_signature.empty()) {
 		char buffer[25U];
-		::fread(buffer, sizeof(uint8_t), m_signature.size(), m_fp);
-		if (m_signature != std::string(buffer, m_signature.size())) {
+		size_t n = ::fread(buffer, sizeof(uint8_t), m_signature.size(), m_fp);
+		if ((n != m_signature.size()) || (m_signature != std::string(buffer, m_signature.size()))) {
 			::fprintf(stderr, "FileConvert: the file signature didn't match the one specified\n");
 			close();
 			return false;

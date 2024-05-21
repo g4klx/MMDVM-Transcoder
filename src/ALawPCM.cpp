@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,38 +16,50 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "Codec23200PCM.h"
+#include "ALawPCM.h"
 
 #include "Debug.h"
 
-CCodec23200PCM::CCodec23200PCM() :
+CALawPCM::CALawPCM() :
 m_buffer(),
 m_inUse(false)
 {
 }
 
-CCodec23200PCM::~CCodec23200PCM()
+CALawPCM::~CALawPCM()
 {
 }
 
-uint8_t CCodec23200PCM::input(const uint8_t* buffer, uint16_t length)
+uint8_t CALawPCM::input(const uint8_t* buffer, uint16_t length)
 {
   if (m_inUse) {
     DEBUG1("PCM frame is being overwritten");
     return 0x05U;
   }
 
-  if (length != CODEC2_3200_DATA_LENGTH) {
-    DEBUG2("Codec2 3200 frame length is invalid", length);
+  if (length != ALAW_DATA_LENGTH) {
+    DEBUG2("A-Law frame length is invalid", length);
     return 0x04U;
   }
 
   short audio[PCM_DATA_LENGTH / sizeof(short)];
-  codec23200.codec2_decode(audio, (unsigned char*)buffer);
 
-  for (uint16_t i = 0U; i < (PCM_DATA_LENGTH / sizeof(short)); i++)
-    audio[i] /= 6;
+  for (unsigned int i = 0U; i < ALAW_DATA_LENGTH; i++) {
+    uint8_t alaw = buffer[i] ^ 0xD5U;
 
+    bool sign = (alaw & 0x80U) == 0x80U;
+
+    uint8_t eee = (alaw & 0x70U) >> 4;
+
+    short pcm = (alaw & 0x0FU) << 4 | 8;
+
+    pcm += (eee > 0U) ? 0x100 : 0x000;
+
+    pcm <<= (eee > 1U) ? (eee - 1U) : 0U;
+
+    audio[i] = sign ? -pcm : pcm;
+  }
+    
   ::memcpy(m_buffer, audio, PCM_DATA_LENGTH);
 
   m_inUse = true;
@@ -55,7 +67,7 @@ uint8_t CCodec23200PCM::input(const uint8_t* buffer, uint16_t length)
   return 0x00U;
 }
 
-int16_t CCodec23200PCM::output(uint8_t* buffer)
+int16_t CALawPCM::output(uint8_t* buffer)
 {
   if (!m_inUse)
     return 0;

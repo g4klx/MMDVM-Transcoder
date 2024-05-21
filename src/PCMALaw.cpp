@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,24 +16,24 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "PCMCodec23200.h"
+#include "PCMALaw.h"
 
 #include "Debug.h"
 
-CPCMCodec23200::CPCMCodec23200() :
+CPCMALaw::CPCMALaw() :
 m_buffer(),
 m_inUse(false)
 {
 }
 
-CPCMCodec23200::~CPCMCodec23200()
+CPCMALaw::~CPCMALaw()
 {
 }
 
-uint8_t CPCMCodec23200::input(const uint8_t* buffer, uint16_t length)
+uint8_t CPCMALaw::input(const uint8_t* buffer, uint16_t length)
 {
   if (m_inUse) {
-    DEBUG1("Codec2 3200 frame is being overwritten");
+    DEBUG1("A-Law frame is being overwritten");
     return 0x05U;
   }
 
@@ -42,26 +42,43 @@ uint8_t CPCMCodec23200::input(const uint8_t* buffer, uint16_t length)
     return 0x04U;
   }
 
-  short audio[PCM_DATA_LENGTH / sizeof(short)];
+  int16_t audio[PCM_DATA_LENGTH / sizeof(short)];
   ::memcpy(audio, buffer, PCM_DATA_LENGTH);
 
-  for (uint16_t i = 0U; i < (PCM_DATA_LENGTH / sizeof(short)); i++)
-    audio[i] *= 8;
+  for (unsigned int i = 0U; i < (PCM_DATA_LENGTH / sizeof(short)); i++) {
+    short pcm = audio[i];
+ 
+    uint8_t eee  = 7U;
+    int32_t mask = 0x4000;
 
-  codec23200.codec2_encode((unsigned char*)m_buffer, audio);
+    int32_t sign = (pcm & 0x8000) >> 8;
+
+    pcm = sign ? (-pcm - 1) : pcm;
+
+    while (((pcm & mask) == 0) && (eee > 0U)) {
+      eee--;
+      mask >>= 1;
+    }
+
+    uint8_t abcd = (pcm >> (eee ? (eee + 3U) : 4U)) & 0x0FU;
+
+    eee <<= 4;
+
+    m_buffer[i] = (sign | eee | abcd) ^ 0xD5U;
+  }
 
   m_inUse = true;
 
   return 0x00U;
 }
 
-int16_t CPCMCodec23200::output(uint8_t* buffer)
+int16_t CPCMALaw::output(uint8_t* buffer)
 {
   if (!m_inUse)
     return 0;
 
-  ::memcpy(buffer, m_buffer, CODEC2_3200_DATA_LENGTH);
+  ::memcpy(buffer, m_buffer, ALAW_DATA_LENGTH);
   m_inUse = false;
 
-  return CODEC2_3200_DATA_LENGTH;
+  return ALAW_DATA_LENGTH;
 }

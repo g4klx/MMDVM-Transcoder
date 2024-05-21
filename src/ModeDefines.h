@@ -29,7 +29,10 @@ const uint8_t MODE_YSFDN       = 0x03U;
 const uint8_t MODE_IMBE        = 0x04U;
 const uint8_t MODE_IMBE_FEC    = 0x05U;
 const uint8_t MODE_CODEC2_3200 = 0x06U;
+const uint8_t MODE_ACELP       = 0x07U;
 
+const uint8_t MODE_ALAW        = 0xFDU;
+const uint8_t MODE_MULAW       = 0xFEU;
 const uint8_t MODE_PCM         = 0xFFU;
 
 const uint16_t DSTAR_DATA_LENGTH       = 9U;
@@ -39,6 +42,8 @@ const uint16_t IMBE_DATA_LENGTH        = 11U;
 const uint16_t IMBE_FEC_DATA_LENGTH    = 18U;
 const uint16_t CODEC2_3200_DATA_LENGTH = 8U;
 
+const uint16_t ALAW_DATA_LENGTH        = 160U;
+const uint16_t MULAW_DATA_LENGTH       = 160U;
 const uint16_t PCM_DATA_LENGTH         = 320U;
 
 #endif

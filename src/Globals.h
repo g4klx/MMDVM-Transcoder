@@ -48,6 +48,10 @@
 #include "DStarPCM.h"
 #include "PCMDStar.h"
 #include "YSFDNPCM.h"
+#include "MuLawPCM.h"
+#include "PCMMuLaw.h"
+#include "ALawPCM.h"
+#include "PCMALaw.h"
 #include "IMBEFEC.h"
 #include "IMBEPCM.h"
 #include "PCMIMBE.h"
@@ -86,6 +90,11 @@ extern CDMRNXDNYSFDN   dmrnxdnysfdn;
 
 extern CIMBEIMBEFEC    imbeimbefec;
 extern CIMBEFECIMBE    imbefecimbe;
+
+extern CALawPCM        alawpcm;
+extern CPCMALaw        pcmalaw;
+extern CMuLawPCM       mulawpcm;
+extern CPCMMuLaw       pcmmulaw;
 
 extern imbe_vocoder    imbe;
 extern CCodec2         codec23200;

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,37 +16,51 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "Codec23200PCM.h"
+#include "MuLawPCM.h"
 
 #include "Debug.h"
 
-CCodec23200PCM::CCodec23200PCM() :
+CMuLawPCM::CMuLawPCM() :
 m_buffer(),
 m_inUse(false)
 {
 }
 
-CCodec23200PCM::~CCodec23200PCM()
+CMuLawPCM::~CMuLawPCM()
 {
 }
 
-uint8_t CCodec23200PCM::input(const uint8_t* buffer, uint16_t length)
+uint8_t CMuLawPCM::input(const uint8_t* buffer, uint16_t length)
 {
   if (m_inUse) {
     DEBUG1("PCM frame is being overwritten");
     return 0x05U;
   }
 
-  if (length != CODEC2_3200_DATA_LENGTH) {
-    DEBUG2("Codec2 3200 frame length is invalid", length);
+  if (length != MULAW_DATA_LENGTH) {
+    DEBUG2("Mu-Law frame length is invalid", length);
     return 0x04U;
   }
 
   short audio[PCM_DATA_LENGTH / sizeof(short)];
-  codec23200.codec2_decode(audio, (unsigned char*)buffer);
 
-  for (uint16_t i = 0U; i < (PCM_DATA_LENGTH / sizeof(short)); i++)
-    audio[i] /= 6;
+  const unsigned short MULAW_BIAS = 33U;
+
+  for (unsigned int i = 0U; i < MULAW_DATA_LENGTH; i++) {
+    bool sign = true;
+
+    unsigned char number = ~buffer[i];
+    if (number & 0x80U) {
+      number &= 0x7FU;
+      sign = false;
+    }
+
+    unsigned char position = ((number & 0xF0U) >> 4) + 5U;
+
+    short decoded = ((1 << position) | ((number & 0x0FU) << (position - 4U)) | (1 << (position - 5U))) - MULAW_BIAS;
+
+    audio[i] = sign ? decoded : -decoded;
+  }
 
   ::memcpy(m_buffer, audio, PCM_DATA_LENGTH);
 
@@ -55,7 +69,7 @@ uint8_t CCodec23200PCM::input(const uint8_t* buffer, uint16_t length)
   return 0x00U;
 }
 
-int16_t CCodec23200PCM::output(uint8_t* buffer)
+int16_t CMuLawPCM::output(uint8_t* buffer)
 {
   if (!m_inUse)
     return 0;
