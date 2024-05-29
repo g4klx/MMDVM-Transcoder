@@ -36,7 +36,7 @@ enum AD_STATE {
 
 class CAMBE3000Driver {
   public:
-    CAMBE3000Driver(IDVSIDriver& dvsi);
+    CAMBE3000Driver(uint8_t n, IDVSIDriver& dvsi);
 
     void startup();
 
@@ -55,6 +55,7 @@ class CAMBE3000Driver {
     void drain();
 
   private:
+    uint8_t        m_n;
     IDVSIDriver&   m_dvsi;
     uint8_t        m_buffer[400U];
     uint16_t       m_length;

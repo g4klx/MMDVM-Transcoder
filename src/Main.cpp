@@ -62,12 +62,12 @@ CCodec2         codec23200(true);
 
 #if AMBE_TYPE > 0
 CDVSIDriver1    dvsi1;
-CAMBE3000Driver ambe30001(dvsi1);
+CAMBE3000Driver ambe30001(0U, dvsi1);
 #endif
 
 #if AMBE_TYPE > 1
 CDVSIDriver2    dvsi2;
-CAMBE3000Driver ambe30002(dvsi2);
+CAMBE3000Driver ambe30002(1U, dvsi2);
 #endif
 
 #if defined(HAS_LEDS)
@@ -102,6 +102,9 @@ extern "C" {
 
 #if defined(HAS_LEDS)
     leds.setLED2(on);
+#if AMBE_TYPE == 2
+    leds.setLED4(!on);
+#endif
     start = millis();
 #endif
   }
@@ -125,6 +128,9 @@ extern "C" {
     if ((end - start) > 500UL) {
       on = !on;
       leds.setLED2(on);
+#if AMBE_TYPE == 2
+      leds.setLED4(!on);
+#endif
       start = end;
     }
 #endif

@@ -38,7 +38,8 @@ const uint8_t DVSI_PKT_CHANNEL2 = 0x42U;
 const uint16_t DVSI_PCM_SAMPLES = 160U;
 const uint16_t DVSI_PCM_BYTES   = DVSI_PCM_SAMPLES * sizeof(int16_t);
 
-CAMBE3000Driver::CAMBE3000Driver(IDVSIDriver& dvsi) :
+CAMBE3000Driver::CAMBE3000Driver(uint8_t n, IDVSIDriver& dvsi) :
+m_n(n),
 m_dvsi(dvsi),
 m_buffer(),
 m_length(0U),
@@ -57,7 +58,14 @@ void CAMBE3000Driver::init(AMBE_MODE mode)
   uint16_t length = m_utils.createModeChange(mode, buffer);
 
 #if defined(HAS_LEDS)
+#if AMBE_TYPE == 2
+  if (m_n == 0U)
+    leds.setLED1(true);
+  else
+    leds.setLED3(true);
+#else
   leds.setLED1(true);
+#endif
 #endif
 
   m_dvsi.write(buffer, length);
@@ -71,7 +79,14 @@ void CAMBE3000Driver::process()
     return;
 
 #if defined(HAS_LEDS)
+#if AMBE_TYPE == 2
+  if (m_n == 0U)
+    leds.setLED1(false);
+  else
+    leds.setLED3(false);
+#else
   leds.setLED1(false);
+#endif
 #endif
 
   uint16_t pos = 0U;
@@ -124,7 +139,14 @@ uint8_t CAMBE3000Driver::writeAMBE(const uint8_t* buffer)
   uint16_t pos = m_utils.createAMBEFrame(buffer, out);
 
 #if defined(HAS_LEDS)
+#if AMBE_TYPE == 2
+  if (m_n == 0U)
+    leds.setLED1(true);
+  else
+    leds.setLED3(true);
+#else
   leds.setLED1(true);
+#endif
 #endif
 
   m_dvsi.write(out, pos);
@@ -144,7 +166,14 @@ uint8_t CAMBE3000Driver::writePCM(const uint8_t* buffer)
   uint16_t pos = m_utils.createPCMFrame(buffer, out);
 
 #if defined(HAS_LEDS)
+#if AMBE_TYPE == 2
+  if (m_n == 0U)
+    leds.setLED1(true);
+  else
+    leds.setLED3(true);
+#else
   leds.setLED1(true);
+#endif
 #endif
 
   m_dvsi.write(out, pos);

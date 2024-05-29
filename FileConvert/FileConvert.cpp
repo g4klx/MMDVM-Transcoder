@@ -703,7 +703,7 @@ bool CFileConvert::validateOptions() const
 			::fprintf(stderr, "Transcoding isn't possible without an AMBE chip\n");
 			return false;
 		}
-		break;
+		return true;
 
 	case HAS_2AMBE_CHIPS:
 		return true;
@@ -718,19 +718,19 @@ bool CFileConvert::validateOptions() const
 			return false;
 		}
 		if ((m_inMode == MODE_DMR_NXDN) && ((m_outMode != MODE_DMR_NXDN) && (m_outMode != MODE_YSFDN))) {
-			::fprintf(stderr, "Transcoding isn't possinle without an AMBE chip\n");
+			::fprintf(stderr, "Transcoding isn't possible without an AMBE chip\n");
 			return false;
 		}
 		if ((m_outMode == MODE_DMR_NXDN) && ((m_inMode != MODE_DMR_NXDN) && (m_inMode != MODE_YSFDN))) {
-			::fprintf(stderr, "Transcoding isn't possinle without an AMBE chip\n");
+			::fprintf(stderr, "Transcoding isn't possible without an AMBE chip\n");
 			return false;
 		}
 		if ((m_inMode == MODE_YSFDN) && ((m_outMode != MODE_DMR_NXDN) && (m_outMode != MODE_YSFDN))) {
-			::fprintf(stderr, "Transcoding isn't possinle without an AMBE chip\n");
+			::fprintf(stderr, "Transcoding isn't possible without an AMBE chip\n");
 			return false;
 		}
 		if ((m_outMode == MODE_YSFDN) && ((m_inMode != MODE_DMR_NXDN) && (m_inMode != MODE_YSFDN))) {
-			::fprintf(stderr, "Transcoding isn't possinle without an AMBE chip\n");
+			::fprintf(stderr, "Transcoding isn't possible without an AMBE chip\n");
 			return false;
 		}
 		return true;

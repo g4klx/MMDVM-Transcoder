@@ -22,19 +22,18 @@
 #include "Globals.h"
 
 #if defined(NUCLEO_STM32F722ZE)
-#define USART6_TX       PG14    // Arduino D1
-#define USART6_RX       PG9     // Arduino D0
-#define AMBE3000_RESET  PF13    // Arduino D7
-#define AMBE3000_RTS    PA3     // Arduino A0
+#define USART_TX        PG14     // Arduino D1
+#define USART_RX        PG9      // Arduino D0
+#define AMBE3000_RESET  PF13     // Arduino D7
+#define AMBE3000_RTS    PA3      // Arduino A0
 #elif defined(NUCLEO_STM32H723ZG)
-#define USART6_TX       PB6     // Arduino D1
-#define USART6_RX       PB7     // Arduino D0
-#define AMBE3000_RESET  PG12    // Arduino D7
-#define AMBE3000_RTS    PA3     // Arduino A0
+#define USART_TX        PB6      // Arduino D1
+#define USART_RX        PB7      // Arduino D0
+#define AMBE3000_RESET  PG12     // Arduino D7
+#define AMBE3000_RTS    PA3      // Arduino A0
 #else
 #error "Unknown hardware"
 #endif
-
 
 const uint8_t DVSI_START_BYTE = 0x61U;
 
@@ -42,7 +41,7 @@ const uint8_t  GET_VERSION_ID[]   = { DVSI_START_BYTE, 0x00U, 0x01U, 0x00U, 0x30
 const uint16_t GET_VERSION_ID_LEN = 5U;
 
 CDVSIDriver1::CDVSIDriver1() :
-m_serial(USART6_RX, USART6_TX),
+m_serial(USART_RX, USART_TX),
 m_buffer(),
 m_len(0U),
 m_ptr(0U)
