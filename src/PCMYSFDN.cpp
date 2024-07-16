@@ -18,8 +18,6 @@
 
 #include "PCMYSFDN.h"
 
-#if AMBE_TYPE > 0
-
 #include "ModeDefines.h"
 #include "YSFDNUtils.h"
 #include "Debug.h"
@@ -82,5 +80,3 @@ int16_t CPCMYSFDN::output(uint8_t* buffer)
         return YSFDN_DATA_LENGTH;
   }
 }
-
-#endif

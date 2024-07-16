@@ -16,44 +16,48 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	AMBE3000Utils_H
-#define	AMBE3000Utils_H
+#ifndef	AMBE3003Driver_H
+#define	AMBE3003Driver_H
 
 #include "Config.h"
 
-#if AMBE_TYPE > 0
+#include "AMBE3003Utils.h"
+#include "DVSIDriver.h"
 
 #include <cstdint>
 
-enum AMBE_MODE {
-  MODE_NONE,
-  DSTAR_TO_PCM,
-  YSFDN_TO_PCM,
-  DMR_NXDN_TO_PCM,
-  PCM_TO_DSTAR,
-  PCM_TO_YSFDN,
-  PCM_TO_DMR_NXDN
+enum AD_STATE {
+  ADS_NO_DATA,
+  ADS_WRONG_TYPE,
+  ADS_DATA
 };
 
-class CAMBE3000Utils {
+class CAMBE3003Driver {
   public:
-    CAMBE3000Utils();
+    CAMBE3003Driver(uint8_t n, IDVSIDriver& dvsi);
 
-    uint16_t createModeChange(AMBE_MODE mode, uint8_t* buffer);
-    uint16_t createAMBEFrame(const uint8_t* buffer, uint8_t* out) const;
-    uint16_t createPCMFrame(const uint8_t* buffer, uint8_t* out) const;
+    void startup();
 
-    uint16_t extractAMBEFrame(const uint8_t* buffer, uint8_t* data) const;
-    uint16_t extractPCMFrame(const uint8_t* buffer, uint8_t* data) const;
+    void init(AMBE_MODE mode);
+
+    void process();
+
+    uint8_t writeAMBE(const uint8_t* buffer);
+
+    uint8_t writePCM(const uint8_t* buffer);
+
+    AD_STATE readAMBE(uint8_t* buffer);
+
+    AD_STATE readPCM(uint8_t* buffer);
+
+    void drain();
 
   private:
-    AMBE_MODE m_mode;
-    uint8_t   m_bytesLen;
-    uint8_t   m_bitsLen;
-
-    void swapBytes(uint8_t* out, const uint8_t* in, uint16_t length) const;
+    uint8_t        m_n;
+    IDVSIDriver&   m_dvsi;
+    uint8_t        m_buffer[400U];
+    uint16_t       m_length;
+    CAMBE3003Utils m_utils;
 };
-
-#endif
 
 #endif

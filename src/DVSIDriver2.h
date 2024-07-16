@@ -21,8 +21,6 @@
 
 #include "Config.h"
 
-#if AMBE_TYPE > 1
-
 #include "DVSIDriver.h"
 
 #include <Arduino.h>
@@ -50,7 +48,5 @@ class CDVSIDriver2 : public IDVSIDriver {
     uint16_t       m_len;
     uint16_t       m_ptr;
 };
-
-#endif
 
 #endif

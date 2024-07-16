@@ -16,9 +16,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "AMBE3000Driver.h"
-
-#if AMBE_TYPE > 0
+#include "AMBE3003Driver.h"
 
 #include "Globals.h"
 #include "Debug.h"
@@ -38,7 +36,7 @@ const uint8_t DVSI_PKT_CHANNEL2 = 0x42U;
 const uint16_t DVSI_PCM_SAMPLES = 160U;
 const uint16_t DVSI_PCM_BYTES   = DVSI_PCM_SAMPLES * sizeof(int16_t);
 
-CAMBE3000Driver::CAMBE3000Driver(uint8_t n, IDVSIDriver& dvsi) :
+CAMBE3003Driver::CAMBE3003Driver(uint8_t n, IDVSIDriver& dvsi) :
 m_n(n),
 m_dvsi(dvsi),
 m_buffer(),
@@ -47,12 +45,12 @@ m_utils()
 {
 }
 
-void CAMBE3000Driver::startup()
+void CAMBE3003Driver::startup()
 {
   m_dvsi.reset();
 }
 
-void CAMBE3000Driver::init(AMBE_MODE mode)
+void CAMBE3003Driver::init(AMBE_MODE mode)
 {
   uint8_t buffer[100U];
   uint16_t length = m_utils.createModeChange(mode, buffer);
@@ -71,7 +69,7 @@ void CAMBE3000Driver::init(AMBE_MODE mode)
   m_dvsi.write(buffer, length);
 }
 
-void CAMBE3000Driver::process()
+void CAMBE3003Driver::process()
 {
   uint8_t buffer[500U];
   uint16_t length = m_dvsi.read(buffer);
@@ -127,7 +125,7 @@ void CAMBE3000Driver::process()
   }
 }
 
-uint8_t CAMBE3000Driver::writeAMBE(const uint8_t* buffer)
+uint8_t CAMBE3003Driver::writeAMBE(const uint8_t* buffer)
 {
   // If the RTS pin is high, then the chip does not expect any more data to be sent through
   if (!m_dvsi.ready()) {
@@ -154,7 +152,7 @@ uint8_t CAMBE3000Driver::writeAMBE(const uint8_t* buffer)
   return 0x00U;
 }
 
-uint8_t CAMBE3000Driver::writePCM(const uint8_t* buffer)
+uint8_t CAMBE3003Driver::writePCM(const uint8_t* buffer)
 {
   // If the RTS pin is high, then the chip does not expect any more data to be sent through
   if (!m_dvsi.ready()) {
@@ -181,7 +179,7 @@ uint8_t CAMBE3000Driver::writePCM(const uint8_t* buffer)
   return 0x00U;
 }
 
-AD_STATE CAMBE3000Driver::readAMBE(uint8_t* buffer)
+AD_STATE CAMBE3003Driver::readAMBE(uint8_t* buffer)
 {
   switch (m_length) {
     case 0U:
@@ -198,7 +196,7 @@ AD_STATE CAMBE3000Driver::readAMBE(uint8_t* buffer)
   }
 }
 
-AD_STATE CAMBE3000Driver::readPCM(uint8_t* buffer)
+AD_STATE CAMBE3003Driver::readPCM(uint8_t* buffer)
 {
   switch (m_length) {
     case 0U:
@@ -215,9 +213,7 @@ AD_STATE CAMBE3000Driver::readPCM(uint8_t* buffer)
   }
 }
 
-void CAMBE3000Driver::drain()
+void CAMBE3003Driver::drain()
 {
   m_length = 0U;
 }
-
-#endif

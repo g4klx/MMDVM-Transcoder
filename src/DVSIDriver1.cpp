@@ -17,8 +17,6 @@
  */
 #include "DVSIDriver1.h"
 
-#if AMBE_TYPE > 0
-
 #include "Globals.h"
 
 #if defined(NUCLEO_STM32F722ZE)
@@ -136,5 +134,3 @@ uint16_t CDVSIDriver1::read(uint8_t* buffer)
 
   return 0U;
 }
-
-#endif

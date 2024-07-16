@@ -26,21 +26,17 @@ CDMRNXDNFEC     dmrnxdnfec;
 CYSFDNFEC       ysfdnfec;
 CIMBEFEC        imbefec;
 
-#if AMBE_TYPE > 0
 CYSFDNPCM       ysfdnpcm;
 CDStarPCM       dstarpcm;
 CDMRNXDNPCM     dmrnxdnpcm;
-#endif
 
 CIMBEPCM        imbepcm;
 CIMBEFECPCM     imbefecpcm;
 CCodec23200PCM  codec23200pcm;
 
-#if AMBE_TYPE > 0
 CPCMYSFDN       pcmysfdn;
 CPCMDStar       pcmdstar;
 CPCMDMRNXDN     pcmdmrnxdn;
-#endif
 
 CPCMIMBE        pcmimbe;
 CPCMIMBEFEC     pcmimbefec;
@@ -60,15 +56,11 @@ CPCMMuLaw       pcmmulaw;
 imbe_vocoder    imbe;
 CCodec2         codec23200(true);
 
-#if AMBE_TYPE > 0
 CDVSIDriver1    dvsi1;
-CAMBE3000Driver ambe30001(0U, dvsi1);
-#endif
+CAMBE3003Driver ambe30001(0U, dvsi1);
 
-#if AMBE_TYPE > 1
 CDVSIDriver2    dvsi2;
-CAMBE3000Driver ambe30002(1U, dvsi2);
-#endif
+CAMBE3003Driver ambe30002(1U, dvsi2);
 
 #if defined(HAS_LEDS)
 CLEDDriver      leds;
@@ -135,4 +127,4 @@ extern "C" {
     }
 #endif
   }
-};
+}

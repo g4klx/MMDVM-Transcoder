@@ -16,9 +16,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "AMBE3000Utils.h"
-
-#if AMBE_TYPE > 0
+#include "AMBE3003Utils.h"
 
 #include "Globals.h"
 #include "Debug.h"
@@ -56,14 +54,14 @@ const uint16_t DVSI_AMBE_HEADER_LEN  = 6U;
 const uint16_t DVSI_PCM_SAMPLES = 160U;
 const uint16_t DVSI_PCM_BYTES   = DVSI_PCM_SAMPLES * sizeof(int16_t);
 
-CAMBE3000Utils::CAMBE3000Utils() :
+CAMBE3003Utils::CAMBE3003Utils() :
 m_mode(MODE_NONE),
 m_bytesLen(0U),
 m_bitsLen(0U)
 {
 }
 
-uint16_t CAMBE3000Utils::createModeChange(AMBE_MODE mode, uint8_t* buffer)
+uint16_t CAMBE3003Utils::createModeChange(AMBE_MODE mode, uint8_t* buffer)
 {
   uint16_t length = 0U;
 
@@ -105,7 +103,7 @@ uint16_t CAMBE3000Utils::createModeChange(AMBE_MODE mode, uint8_t* buffer)
   return length;
 }
 
-uint16_t CAMBE3000Utils::createAMBEFrame(const uint8_t* buffer, uint8_t* out) const
+uint16_t CAMBE3003Utils::createAMBEFrame(const uint8_t* buffer, uint8_t* out) const
 {
   uint16_t pos = 0U;
 
@@ -126,7 +124,7 @@ uint16_t CAMBE3000Utils::createAMBEFrame(const uint8_t* buffer, uint8_t* out) co
   return pos;
 }
 
-uint16_t CAMBE3000Utils::createPCMFrame(const uint8_t* buffer, uint8_t* out) const
+uint16_t CAMBE3003Utils::createPCMFrame(const uint8_t* buffer, uint8_t* out) const
 {
   uint16_t pos = 0U;
 
@@ -147,26 +145,24 @@ uint16_t CAMBE3000Utils::createPCMFrame(const uint8_t* buffer, uint8_t* out) con
   return pos;
 }
 
-uint16_t CAMBE3000Utils::extractAMBEFrame(const uint8_t* frame, uint8_t* data) const
+uint16_t CAMBE3003Utils::extractAMBEFrame(const uint8_t* frame, uint8_t* data) const
 {
   ::memcpy(data, frame + 5U + 1U, m_bytesLen);
 
   return m_bytesLen;
 }
 
-uint16_t CAMBE3000Utils::extractPCMFrame(const uint8_t* frame, uint8_t* data) const
+uint16_t CAMBE3003Utils::extractPCMFrame(const uint8_t* frame, uint8_t* data) const
 {
   swapBytes(data, frame + 5U + 1U, DVSI_PCM_BYTES);
 
   return DVSI_PCM_BYTES;
 }
 
-void CAMBE3000Utils::swapBytes(uint8_t* out, const uint8_t* in, uint16_t length) const
+void CAMBE3003Utils::swapBytes(uint8_t* out, const uint8_t* in, uint16_t length) const
 {
   for (uint16_t i = 0U; i < length; i += 2U) {
     out[i + 0U] = in[i + 1U];
     out[i + 1U] = in[i + 0U];
   }
 }
-
-#endif

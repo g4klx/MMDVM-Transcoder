@@ -26,13 +26,7 @@
 // #define	DEBUGGING
 
 // Baud rate for the DVSI AMBE3000 chip(s)
-#define DVSI_SPEED  460800
-
-// Number of DVSI AMBE chip(s)
-// 0=None
-// 1=One AMBE3000
-// 2=Two AMBE3000s
-#define	AMBE_TYPE	2
+#define DVSI_SPEED  921600
 
 // Are LEDs available for status information?
 #define HAS_LEDS

@@ -21,11 +21,9 @@
 
 #include "Config.h"
 
-#if AMBE_TYPE > 0
-
 #include "Processor.h"
 
-#include "AMBE3000Driver.h"
+#include "AMBE3003Driver.h"
 
 class CYSFDNPCM : public IProcessor {
   public:
@@ -39,9 +37,7 @@ class CYSFDNPCM : public IProcessor {
     virtual int16_t output(uint8_t* buffer) override;
 
   private:
-    CAMBE3000Driver* m_ambe;
+    CAMBE3003Driver* m_ambe;
 };
-
-#endif
 
 #endif

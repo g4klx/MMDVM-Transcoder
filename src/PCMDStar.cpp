@@ -18,8 +18,6 @@
 
 #include "PCMDStar.h"
 
-#if AMBE_TYPE > 0
-
 #include "ModeDefines.h"
 #include "Debug.h"
 
@@ -79,5 +77,3 @@ int16_t CPCMDStar::output(uint8_t* buffer)
         return -0x06;
   }
 }
-
-#endif
