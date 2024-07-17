@@ -23,8 +23,6 @@
 
 #include "Processor.h"
 
-#include "AMBE3003Driver.h"
-
 class CPCMDMRNXDN : public IProcessor {
   public:
     CPCMDMRNXDN();
@@ -37,7 +35,7 @@ class CPCMDMRNXDN : public IProcessor {
     virtual int16_t output(uint8_t* buffer) override;
 
   private:
-    CAMBE3003Driver* m_ambe;
+    uint8_t m_n;
 };
 
 #endif

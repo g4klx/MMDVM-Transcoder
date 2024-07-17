@@ -27,6 +27,8 @@ const uint8_t DVSI_TYPE_CONTROL = 0x00U;
 const uint8_t DVSI_TYPE_AMBE    = 0x01U;
 const uint8_t DVSI_TYPE_AUDIO   = 0x02U;
 
+const uint8_t DVSI_CHANNEL_BASE = 0x40U;
+
 const uint8_t DVSI_PKT_RATET    = 0x09U;
 const uint8_t DVSI_PKT_RATEP    = 0x0AU;
 
@@ -61,7 +63,7 @@ m_bitsLen(0U)
 {
 }
 
-uint16_t CAMBE3003Utils::createModeChange(AMBE_MODE mode, uint8_t* buffer)
+uint16_t CAMBE3003Utils::createModeChange(uint8_t n, AMBE_MODE mode, uint8_t* buffer)
 {
   uint16_t length = 0U;
 
@@ -69,6 +71,8 @@ uint16_t CAMBE3003Utils::createModeChange(AMBE_MODE mode, uint8_t* buffer)
   buffer[length++] = 0x00U;
   buffer[length++] = 0x00U;
   buffer[length++] = DVSI_TYPE_CONTROL;
+
+  buffer[length++] = DVSI_CHANNEL_BASE + n;
 
   switch (mode) {
     case DSTAR_TO_PCM:
@@ -103,7 +107,7 @@ uint16_t CAMBE3003Utils::createModeChange(AMBE_MODE mode, uint8_t* buffer)
   return length;
 }
 
-uint16_t CAMBE3003Utils::createAMBEFrame(const uint8_t* buffer, uint8_t* out) const
+uint16_t CAMBE3003Utils::createAMBEFrame(uint8_t n, const uint8_t* buffer, uint8_t* out) const
 {
   uint16_t pos = 0U;
 
@@ -111,6 +115,8 @@ uint16_t CAMBE3003Utils::createAMBEFrame(const uint8_t* buffer, uint8_t* out) co
   out[pos++] = 0x00U;
   out[pos++] = 0x00U;
   out[pos++] = DVSI_TYPE_AMBE;
+
+  out[pos++] = DVSI_CHANNEL_BASE + n;
 
   out[pos++] = 0x01U;
   out[pos++] = m_bitsLen;
@@ -124,7 +130,7 @@ uint16_t CAMBE3003Utils::createAMBEFrame(const uint8_t* buffer, uint8_t* out) co
   return pos;
 }
 
-uint16_t CAMBE3003Utils::createPCMFrame(const uint8_t* buffer, uint8_t* out) const
+uint16_t CAMBE3003Utils::createPCMFrame(uint8_t n, const uint8_t* buffer, uint8_t* out) const
 {
   uint16_t pos = 0U;
 
@@ -132,6 +138,8 @@ uint16_t CAMBE3003Utils::createPCMFrame(const uint8_t* buffer, uint8_t* out) con
   out[pos++] = 0x00U;
   out[pos++] = 0x00U;
   out[pos++] = DVSI_TYPE_AUDIO;
+
+  out[pos++] = DVSI_CHANNEL_BASE + n;
 
   out[pos++] = 0x00U;
   out[pos++] = DVSI_PCM_SAMPLES;
@@ -147,14 +155,14 @@ uint16_t CAMBE3003Utils::createPCMFrame(const uint8_t* buffer, uint8_t* out) con
 
 uint16_t CAMBE3003Utils::extractAMBEFrame(const uint8_t* frame, uint8_t* data) const
 {
-  ::memcpy(data, frame + 5U + 1U, m_bytesLen);
+  ::memcpy(data, frame + 5U + 2U + 1U, m_bytesLen);
 
   return m_bytesLen;
 }
 
 uint16_t CAMBE3003Utils::extractPCMFrame(const uint8_t* frame, uint8_t* data) const
 {
-  swapBytes(data, frame + 5U + 1U, DVSI_PCM_BYTES);
+  swapBytes(data, frame + 5U + 2U + 1U, DVSI_PCM_BYTES);
 
   return DVSI_PCM_BYTES;
 }

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,23 +19,31 @@
 #ifndef	DVSIDriver_H
 #define	DVSIDriver_H
 
+#include "Config.h"
+
+#include <Arduino.h>
+
 #include <cstdint>
 
-class IDVSIDriver {
+class CDVSIDriver {
   public:
-    virtual ~IDVSIDriver() = 0;
+    CDVSIDriver();
 
-    virtual void     startup() = 0;
+    void     startup();
 
-    virtual void     reset() = 0;
+    void     reset();
 
-    virtual bool     ready() const = 0;
+    bool     ready() const;
 
-    virtual void     write(const uint8_t* buffer, uint16_t length) = 0;
+    void     write(const uint8_t* buffer, uint16_t length);
 
-    virtual uint16_t read(uint8_t* buffer) = 0;
+    uint16_t read(uint8_t* buffer);
 
   private:
+    HardwareSerial m_serial;
+    uint8_t        m_buffer[512U];
+    uint16_t       m_len;
+    uint16_t       m_ptr;
 };
 
 #endif

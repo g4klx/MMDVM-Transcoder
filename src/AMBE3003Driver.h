@@ -34,29 +34,31 @@ enum AD_STATE {
 
 class CAMBE3003Driver {
   public:
-    CAMBE3003Driver(uint8_t n, IDVSIDriver& dvsi);
+    CAMBE3003Driver();
 
     void startup();
 
-    void init(AMBE_MODE mode);
+    void init(uint8_t n, AMBE_MODE mode);
 
     void process();
 
-    uint8_t writeAMBE(const uint8_t* buffer);
+    uint8_t writeAMBE(uint8_t n, const uint8_t* buffer);
 
-    uint8_t writePCM(const uint8_t* buffer);
+    uint8_t writePCM(uint8_t n, const uint8_t* buffer);
 
-    AD_STATE readAMBE(uint8_t* buffer);
+    AD_STATE readAMBE(uint8_t n, uint8_t* buffer);
 
-    AD_STATE readPCM(uint8_t* buffer);
+    AD_STATE readPCM(uint8_t n, uint8_t* buffer);
 
-    void drain();
+    void drain(uint8_t n);
 
   private:
-    uint8_t        m_n;
-    IDVSIDriver&   m_dvsi;
-    uint8_t        m_buffer[400U];
-    uint16_t       m_length;
+    uint8_t        m_buffer0[400U];
+    uint8_t        m_buffer1[400U];
+    uint8_t        m_buffer2[400U];
+    uint16_t       m_length0;
+    uint16_t       m_length1;
+    uint16_t       m_length2;
     CAMBE3003Utils m_utils;
 };
 

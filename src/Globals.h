@@ -30,10 +30,9 @@
 #include "PCMCodec23200.h"
 #include "YSFDNDMRNXDN.h"
 #include "DMRNXDNYSFDN.h"
-#include "DVSIDriver1.h"
-#include "DVSIDriver2.h"
 #include "IMBEIMBEFEC.h"
 #include "IMBEFECIMBE.h"
+#include "DVSIDriver.h"
 #include "DMRNXDNFEC.h"
 #include "DMRNXDNPCM.h"
 #include "PCMDMRNXDN.h"
@@ -95,11 +94,8 @@ extern CPCMMuLaw       pcmmulaw;
 extern imbe_vocoder    imbe;
 extern CCodec2         codec23200;
 
-extern CDVSIDriver1    dvsi1;
-extern CAMBE3003Driver ambe30001;
-
-extern CDVSIDriver2    dvsi2;
-extern CAMBE3003Driver ambe30002;
+extern CDVSIDriver     dvsi;
+extern CAMBE3003Driver ambe;
 
 #if defined(HAS_LEDS)
 extern CLEDDriver      leds;
