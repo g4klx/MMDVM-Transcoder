@@ -51,7 +51,7 @@ const uint16_t GET_VERSION_REP_LEN = 9U;
 
 const uint8_t  GET_CAPABILITIES_REQ[]   = { MARKER, 0x04U, 0x00U, 0x01U };
 const uint16_t GET_CAPABILITIES_REQ_LEN = 4U;
-const uint8_t  GET_CAPABILITIES_REP[]   = { MARKER, 0x05U, 0x00U, 0x01U, 0x02U };
+const uint8_t  GET_CAPABILITIES_REP[]   = { MARKER, 0x05U, 0x00U, 0x01U, 0x03U };
 const uint16_t GET_CAPABILITIES_REP_LEN = 5U;
 
 const uint8_t  PCM_DATA[] = { 0xE1U, 0x44U, 0x01U, 0x05U, 0x44U, 0xE3U, 0x1EU, 0xE3U, 0x1EU, 0xE5U, 0x97U, 0xF1U, 0x61U, 0x11U,
