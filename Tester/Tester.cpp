@@ -321,18 +321,18 @@ const uint16_t SET_MODE9G_REQ_LEN = 6U;
 const uint8_t  SET_MODEPA_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x00U, 0x00U };
 const uint16_t SET_MODEPA_REQ_LEN = 6U;
 
-// Get the AMBE3003 Product Id for AMBE3003
-const uint8_t  MODEPB_DATA_REQ[]   = { MARKER, 0x0AU, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x30U };
+// Get the AMBE3003 Product Id
+const uint8_t  MODEPB_DATA_REQ[]   = { MARKER, 0x09U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x30U };
 const uint16_t MODEPB_DATA_REQ_LEN = 9U;
 
-const uint8_t  MODEPB_DATA_REP[]   = { MARKER, 0x14U, 0x00U, 0x05U, 0x61U, 0x00U, 0x0BU, 0x00U, 0x30U };
+const uint8_t  MODEPB_DATA_REP[]   = { MARKER, 0x13U, 0x00U, 0x05U, 0x61U, 0x00U, 0x0BU, 0x00U, 0x30U };
 const uint16_t MODEPB_DATA_REP_LEN = 9U;
 
-// Get the AMBE3003 Version for AMBE3003
-const uint8_t  MODEPC_DATA_REQ[]   = { MARKER, 0x0AU, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x31U };
+// Get the AMBE3003 Version
+const uint8_t  MODEPC_DATA_REQ[]   = { MARKER, 0x09U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x31U };
 const uint16_t MODEPC_DATA_REQ_LEN = 9U;
 
-const uint8_t  MODEPC_DATA_REP[]   = { MARKER, 0x3AU, 0x00U, 0x05U, 0x61U, 0x00U, 0x31U, 0x00U, 0x31U };
+const uint8_t  MODEPC_DATA_REP[]   = { MARKER, 0x39U, 0x00U, 0x05U, 0x61U, 0x00U, 0x31U, 0x00U, 0x31U };
 const uint16_t MODEPC_DATA_REP_LEN = 9U;
 
 /* Error Cases */
