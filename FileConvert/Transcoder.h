@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024,2025 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -103,9 +103,10 @@ const uint8_t  PROTOCOL_VERSION = 1U;
 
 // Get Capabilities layout and data
 const uint16_t GET_CAPABILITIES_AMBE_TYPE_POS = 4U;
-const uint8_t  NO_AMBE_CHIP    = 0U;
-const uint8_t  HAS_1AMBE_CHIP  = 1U;
-const uint8_t  HAS_2AMBE_CHIPS = 2U;
+const uint8_t  NO_AMBE_CHIP        = 0U;
+const uint8_t  HAS_1AMBE3000_CHIP  = 1U;
+const uint8_t  HAS_2AMBE3000_CHIPS = 2U;
+const uint8_t  HAS_1AMBE3003_CHIP  = 3U;
 
 // Set Mode layout
 const uint16_t INPUT_MODE_POS  = 4U;

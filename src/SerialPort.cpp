@@ -240,17 +240,17 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
   m_step1 = nullptr;
   m_step2 = nullptr;
 
-  opmode = OPMODE_NONE;
+  opmode = OPMODE::NONE;
 
   if ((buffer[0U] == MODE_PASS_THROUGH) && (buffer[1U] == MODE_PASS_THROUGH)) {
-    opmode = OPMODE_PASSTHROUGH;
+    opmode = OPMODE::PASSTHROUGH;
     dvsi.reset();
     return 0x00U;
   }
 
   for (uint8_t i = 0U; i < PROCESSOR_LENGTH; i++) {
     if ((PROCESSOR_TABLE[i].m_input == buffer[0U]) && (PROCESSOR_TABLE[i].m_output == buffer[1U])) {
-      opmode  = OPMODE_TRANSCODING;
+      opmode  = OPMODE::TRANSCODING;
       m_step1 = PROCESSOR_TABLE[i].m_step1;
       m_step2 = PROCESSOR_TABLE[i].m_step2;
 
@@ -278,11 +278,11 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
 uint8_t CSerialPort::sendData(const uint8_t* buffer, uint16_t length)
 {
   switch (opmode) {
-    case OPMODE_NONE:
+    case OPMODE::NONE:
       DEBUG1("Received data in None mode");
       return 0x03U;
 
-    case OPMODE_PASSTHROUGH:
+    case OPMODE::PASSTHROUGH:
       // If the RTS pin is high, then the chip does not expect any more data to be sent through
       if (!dvsi.ready()) {
         DEBUG1("The AMBE3003 chip is not ready to receive any more data");
@@ -293,7 +293,7 @@ uint8_t CSerialPort::sendData(const uint8_t* buffer, uint16_t length)
       return 0x00U;
       break;
 
-    case OPMODE_TRANSCODING:
+    case OPMODE::TRANSCODING:
     default:
       if (m_step1 != nullptr) {
         // Start the pipeline
@@ -311,7 +311,7 @@ void CSerialPort::processData()
   uint8_t buffer[500U];
   int16_t length = 0;
 
-  if (opmode == OPMODE_TRANSCODING) {
+  if (opmode == OPMODE::TRANSCODING) {
     if (m_step1 != nullptr) {
       length = m_step1->output(buffer);
       if (length < 0) {
@@ -445,7 +445,7 @@ void CSerialPort::processMessage(uint8_t type, const uint8_t* buffer, uint16_t l
 
 void CSerialPort::writeData(const uint8_t* data, uint16_t length)
 {
-  if (opmode == OPMODE_NONE)
+  if (opmode == OPMODE::NONE)
     return;
 
   uint8_t reply[500U];

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2024,2025 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -207,11 +207,14 @@ bool CFileConvert::open()
 
 	m_hasAMBE = buffer[GET_CAPABILITIES_AMBE_TYPE_POS];
 	switch (m_hasAMBE) {
-	case HAS_1AMBE_CHIP:
-		::fprintf(stdout, "Transcoder has 1 AMBE chip\n");
+	case HAS_1AMBE3000_CHIP:
+		::fprintf(stdout, "Transcoder has 1 AMBE3000 chip\n");
 		break;
-	case HAS_2AMBE_CHIPS:
-		::fprintf(stdout, "Transcoder has 2 AMBE chips\n");
+	case HAS_2AMBE3000_CHIPS:
+		::fprintf(stdout, "Transcoder has 2 AMBE3000 chips\n");
+		break;
+	case HAS_1AMBE3003_CHIP:
+		::fprintf(stdout, "Transcoder has 1 AMBE3003 chip\n");
 		break;
 	default:
 		::fprintf(stdout, "Transcoder has no AMBE chips\n");
@@ -686,7 +689,7 @@ void CFileConvert::dump(const char* text, const uint8_t* buffer, size_t length) 
 bool CFileConvert::validateOptions() const
 {
 	switch (m_hasAMBE) {
-	case HAS_1AMBE_CHIP:
+	case HAS_1AMBE3000_CHIP:
 		if ((m_inMode == MODE_DSTAR) && (m_outMode == MODE_DMR_NXDN)) {
 			::fprintf(stderr, "Transcoding isn't possible without an AMBE chip\n");
 			return false;
@@ -705,7 +708,8 @@ bool CFileConvert::validateOptions() const
 		}
 		return true;
 
-	case HAS_2AMBE_CHIPS:
+	case HAS_2AMBE3000_CHIPS:
+	case HAS_1AMBE3003_CHIP:
 		return true;
 
 	default:

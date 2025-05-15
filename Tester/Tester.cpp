@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2024,2025 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -321,33 +321,19 @@ const uint16_t SET_MODE9G_REQ_LEN = 6U;
 const uint8_t  SET_MODEPA_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x00U, 0x00U };
 const uint16_t SET_MODEPA_REQ_LEN = 6U;
 
-// Get the AMBE3000 Product Id for AMBE3000 1
-const uint8_t  MODEPB_DATA_REQ[]   = { MARKER, 0x0AU, 0x00U, 0x05U, 0x00U, 0x61U, 0x00U, 0x01U, 0x00U, 0x30U };
-const uint16_t MODEPB_DATA_REQ_LEN = 10U;
+// Get the AMBE3003 Product Id for AMBE3003
+const uint8_t  MODEPB_DATA_REQ[]   = { MARKER, 0x0AU, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x30U };
+const uint16_t MODEPB_DATA_REQ_LEN = 9U;
 
-const uint8_t  MODEPB_DATA_REP[]   = { MARKER, 0x14U, 0x00U, 0x05U, 0x00U, 0x61U, 0x00U, 0x0BU, 0x00U, 0x30U };
-const uint16_t MODEPB_DATA_REP_LEN = 10U;
+const uint8_t  MODEPB_DATA_REP[]   = { MARKER, 0x14U, 0x00U, 0x05U, 0x61U, 0x00U, 0x0BU, 0x00U, 0x30U };
+const uint16_t MODEPB_DATA_REP_LEN = 9U;
 
-// Get the AMBE3000 Version for AMBE3000 1
-const uint8_t  MODEPC_DATA_REQ[]   = { MARKER, 0x0AU, 0x00U, 0x05U, 0x00U, 0x61U, 0x00U, 0x01U, 0x00U, 0x31U };
-const uint16_t MODEPC_DATA_REQ_LEN = 10U;
+// Get the AMBE3003 Version for AMBE3003
+const uint8_t  MODEPC_DATA_REQ[]   = { MARKER, 0x0AU, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x31U };
+const uint16_t MODEPC_DATA_REQ_LEN = 9U;
 
-const uint8_t  MODEPC_DATA_REP[]   = { MARKER, 0x3AU, 0x00U, 0x05U, 0x00U, 0x61U, 0x00U, 0x31U, 0x00U, 0x31U };
-const uint16_t MODEPC_DATA_REP_LEN = 10U;
-
-// Get the AMBE3000 Product Id for AMBE3000 2
-const uint8_t  MODEPD_DATA_REQ[]   = { MARKER, 0x0AU, 0x00U, 0x05U, 0x01U, 0x61U, 0x00U, 0x01U, 0x00U, 0x30U };
-const uint16_t MODEPD_DATA_REQ_LEN = 10U;
-
-const uint8_t  MODEPD_DATA_REP[]   = { MARKER, 0x14U, 0x00U, 0x05U, 0x01U, 0x61U, 0x00U, 0x0BU, 0x00U, 0x30U };
-const uint16_t MODEPD_DATA_REP_LEN = 10U;
-
-// Get the AMBE3000 Version for AMBE3000 2
-const uint8_t  MODEPE_DATA_REQ[]   = { MARKER, 0x0AU, 0x00U, 0x05U, 0x01U, 0x61U, 0x00U, 0x01U, 0x00U, 0x31U };
-const uint16_t MODEPE_DATA_REQ_LEN = 10U;
-
-const uint8_t  MODEPE_DATA_REP[]   = { MARKER, 0x3AU, 0x00U, 0x05U, 0x01U, 0x61U, 0x00U, 0x31U, 0x00U, 0x31U };
-const uint16_t MODEPE_DATA_REP_LEN = 10U;
+const uint8_t  MODEPC_DATA_REP[]   = { MARKER, 0x3AU, 0x00U, 0x05U, 0x61U, 0x00U, 0x31U, 0x00U, 0x31U };
+const uint16_t MODEPC_DATA_REP_LEN = 9U;
 
 /* Error Cases */
 
@@ -825,19 +811,11 @@ int CTester::run()
     if (!ret)
         return 1;
 
-    ret = test("Get AMBE3000 1 Product Id", MODEPB_DATA_REQ, MODEPB_DATA_REQ_LEN, MODEPB_DATA_REP, MODEPB_DATA_REP_LEN);
+    ret = test("Get AMBE3003 Product Id", MODEPB_DATA_REQ, MODEPB_DATA_REQ_LEN, MODEPB_DATA_REP, MODEPB_DATA_REP_LEN);
     if (!ret)
         return 1;
 
-    ret = test("Get AMBE3000 1 Version", MODEPC_DATA_REQ, MODEPC_DATA_REQ_LEN, MODEPC_DATA_REP, MODEPC_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Get AMBE3000 2 Product Id", MODEPD_DATA_REQ, MODEPD_DATA_REQ_LEN, MODEPD_DATA_REP, MODEPD_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Get AMBE3000 2 Version", MODEPE_DATA_REQ, MODEPE_DATA_REQ_LEN, MODEPE_DATA_REP, MODEPE_DATA_REP_LEN);
+    ret = test("Get AMBE3003 Version", MODEPC_DATA_REQ, MODEPC_DATA_REQ_LEN, MODEPC_DATA_REP, MODEPC_DATA_REP_LEN);
     if (!ret)
         return 1;
 
@@ -886,7 +864,7 @@ bool CTester::test(const char* title, const uint8_t* inData, uint16_t inLen, con
     uint8_t buffer[400U];
     uint16_t len = read(buffer, 200U);
     if (len == 0U) {
-        printf(", Timeout (200 me)\n");
+        printf(", Timeout (200 ms)\n");
         m_failed++;
         return true;
     }

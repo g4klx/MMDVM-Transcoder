@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015,2016,2017,2018,2020,2021,2023,2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2015,2016,2017,2018,2020,2021,2023,2024,2025 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -101,10 +101,10 @@ extern CAMBE3003Driver ambe;
 extern CLEDDriver      leds;
 #endif
 
-enum OPMODE {
-  OPMODE_NONE,
-  OPMODE_TRANSCODING,
-  OPMODE_PASSTHROUGH
+enum class OPMODE {
+  NONE,
+  TRANSCODING,
+  PASSTHROUGH
 };
 
 extern OPMODE opmode;
