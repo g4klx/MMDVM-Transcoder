@@ -46,7 +46,7 @@ const uint16_t NAK5_LEN = 5U;
 
 const uint8_t  GET_VERSION_REQ[]   = { MARKER, 0x04U, 0x00U, 0x00U};
 const uint16_t GET_VERSION_REQ_LEN = 4U;
-const uint8_t  GET_VERSION_REP[]   = { MARKER, 0x2BU, 0x00U, 0x00U, 0x01U, 0x32U, 0x30U, 0x32U, 0x34U };
+const uint8_t  GET_VERSION_REP[]   = { MARKER, 0x2BU, 0x00U, 0x00U, 0x01U, 0x32U, 0x30U, 0x32U, 0x35U };
 const uint16_t GET_VERSION_REP_LEN = 9U;
 
 const uint8_t  GET_CAPABILITIES_REQ[]   = { MARKER, 0x04U, 0x00U, 0x01U };
@@ -358,7 +358,7 @@ int main(int argc, char** argv)
     }
 
     std::string port = std::string(argv[1]);
-    unsigned int speed = 460800U;
+    unsigned int speed = 921600U;
 
     if (argc == 3)
         speed = (unsigned int)atoi(argv[2]);
