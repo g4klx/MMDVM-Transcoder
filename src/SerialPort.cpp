@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2013,2015-2021,2023,2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2013,2015-2021,2023,2024,2025 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -335,20 +335,10 @@ void CSerialPort::processData()
 
     if (length > 0)
       writeData(buffer, length);
-#if AMBE_TYPE > 0
-  } else if (opmode == OPMODE_PASSTHROUGH) {
-    length = dvsi1.read(buffer + 1U);
-    buffer[0U] = 0x00U;
+  } else if (opmode == OPMODE::PASSTHROUGH) {
+    length = dvsi.read(buffer);
     if (length > 0)
-      writeData(buffer, length + 1U);
-
-#if AMBE_TYPE > 1
-    length = dvsi2.read(buffer + 1U);
-    buffer[0U] = 0x01U;
-    if (length > 0)
-      writeData(buffer, length + 1U);
-#endif
-#endif
+      writeData(buffer, length);
   }
 }
 

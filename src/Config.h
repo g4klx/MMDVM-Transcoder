@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015,2016,2017,2018,2020,2023,2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2015,2016,2017,2018,2020,2023,2024,2025 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -25,8 +25,9 @@
 // Select use of debugging messages
 // #define	DEBUGGING
 
-// Baud rate for the DVSI AMBE3000 chip(s)
-#define DVSI_SPEED  921600
+// Baud rate for the DVSI AMBE3000/3003 chip(s)
+// #define DVSI_SPEED  921600
+#define DVSI_SPEED  460800
 
 // Are LEDs available for status information?
 #define HAS_LEDS

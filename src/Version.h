@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020,2021,2022,2023,2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2020,2021,2022,2023,2024,2025 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,6 +19,6 @@
 #if !defined(VERSION_H)
 #define  VERSION_H
 
-#define VERSION "20240717"
+#define VERSION "20250707"
 
 #endif
