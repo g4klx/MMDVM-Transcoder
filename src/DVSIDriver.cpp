@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024,2025 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -51,6 +51,8 @@ void CDVSIDriver::startup()
   m_serial.begin(DVSI_SPEED);
 
   pinMode(AMBE3003_RESET, OUTPUT);
+  digitalWrite(AMBE3003_RESET, HIGH);
+
   pinMode(AMBE3003_RTS, INPUT);
 }
 
@@ -59,15 +61,11 @@ void CDVSIDriver::reset()
   DEBUG1("Resetting the AMBE3003");
 
   digitalWrite(AMBE3003_RESET, LOW);
-
   delay(100U);
-
   digitalWrite(AMBE3003_RESET, HIGH);
-
   delay(10U);
 
   write(GET_VERSION_ID, GET_VERSION_ID_LEN);
-
   delay(10U);
 
   while (m_serial.available() > 0)

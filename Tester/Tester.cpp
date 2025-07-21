@@ -54,7 +54,7 @@ const uint16_t GET_CAPABILITIES_REQ_LEN = 4U;
 const uint8_t  GET_CAPABILITIES_REP[]   = { MARKER, 0x05U, 0x00U, 0x01U, 0x03U };
 const uint16_t GET_CAPABILITIES_REP_LEN = 5U;
 
-const uint8_t  PCM_DATA[] = { 0xE1U, 0x44U, 0x01U, 0x05U, 0x44U, 0xE3U, 0x1EU, 0xE3U, 0x1EU, 0xE5U, 0x97U, 0xF1U, 0x61U, 0x11U,
+const uint8_t  PCM_DATA[] = { MARKER, 0x44U, 0x01U, 0x05U, 0x44U, 0xE3U, 0x1EU, 0xE3U, 0x1EU, 0xE5U, 0x97U, 0xF1U, 0x61U, 0x11U,
                                 0xC7U, 0x38U, 0xFAU, 0x58U, 0x31U, 0x5CU, 0xC5U, 0x42U, 0x9AU, 0x18U, 0xCFU, 0xF6U, 0x69U, 0xEAU,
                                 0xC4U, 0xF3U, 0x20U, 0x03U, 0x51U, 0x0AU, 0x50U, 0x02U, 0x9CU, 0xF1U, 0x04U, 0xE2U, 0x96U, 0xDBU,
                                 0xADU, 0xDDU, 0xCEU, 0xE3U, 0xE1U, 0xE8U, 0xB0U, 0xECU, 0xADU, 0xF0U, 0xE5U, 0xF6U, 0xC3U, 0xFDU,
@@ -334,6 +334,27 @@ const uint16_t MODEPC_DATA_REQ_LEN = 9U;
 
 const uint8_t  MODEPC_DATA_REP[]   = { MARKER, 0x39U, 0x00U, 0x05U, 0x61U, 0x00U, 0x31U, 0x00U, 0x31U };
 const uint16_t MODEPC_DATA_REP_LEN = 9U;
+
+// Get the AMBE3003 Get CFG
+const uint8_t  MODEPD_DATA_REQ[] = { MARKER, 0x09U, 0x00U, 0x05U, 0x61U, 0x00U, 0x01U, 0x00U, 0x36U };
+const uint16_t MODEPD_DATA_REQ_LEN = 9U;
+
+const uint8_t  MODEPD_DATA_REP[] = { MARKER, 0x0CU, 0x00U, 0x05U, 0x61U, 0x00U, 0x04U, 0x00U, 0x36U, 0x05U, 0x00U, 0xECU };
+const uint16_t MODEPD_DATA_REP_LEN = 12U;
+
+// Set DMR/NXDN on channel 1
+const uint8_t  MODEPE_DATA_REQ[] = { MARKER, 0x0BU, 0x00U, 0x05U, 0x61U, 0x00U, 0x03U, 0x00U, 0x41U, 0x09U, 33U };
+const uint16_t MODEPE_DATA_REQ_LEN = 11U;
+
+const uint8_t  MODEPE_DATA_REP[] = { MARKER, 0x0CU, 0x00U, 0x05U, 0x61U, 0x00U, 0x04U, 0x00U, 0x41U, 0x00U, 0x09U, 0x00U };
+const uint16_t MODEPE_DATA_REP_LEN = 12U;
+
+// Convert DMR/NXDN on channel 1 to PCM
+const uint8_t  MODEPF_DATA_REQ[] = { MARKER, 0x14U, 0x00U, 0x05U, 0x61U, 0x00U, 0x0AU, 0x01U, 0x41U, 0x01U,   72U, 0xA6U, 0xCBU, 0x80U, 0x27U, 0x20U, 0x4FU, 0x9BU, 0xCBU, 0xF3U };
+const uint16_t MODEPF_DATA_REQ_LEN = 20U;
+
+const uint8_t  MODEPF_DATA_REP[] = { MARKER, 0x4BU, 0x01U, 0x05U, 0x61U, 0x01U, 0x43U, 0x02U, 0x41U, 0x00U, 0xA0U };
+const uint16_t MODEPF_DATA_REP_LEN = 11U;
 
 /* Error Cases */
 
@@ -819,6 +840,18 @@ int CTester::run()
     if (!ret)
         return 1;
 
+    ret = test("Get AMBE3003 Get CFG", MODEPD_DATA_REQ, MODEPD_DATA_REQ_LEN, MODEPD_DATA_REP, MODEPD_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Set AMBE3003 Channel 1 to DMR/NXDN", MODEPE_DATA_REQ, MODEPE_DATA_REQ_LEN, MODEPE_DATA_REP, MODEPE_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
+    ret = test("Convert AMBE3003 Channel 1 from DMR/NXDN to PCM", MODEPF_DATA_REQ, MODEPF_DATA_REQ_LEN, MODEPF_DATA_REP, MODEPF_DATA_REP_LEN);
+    if (!ret)
+        return 1;
+
     printf("\nError Cases\n");
 
     ret = test("Set Mode DMR to unknown", SET_MODEN_REQ, SET_MODEN_REQ_LEN, NAK2, NAK2_LEN);
@@ -871,7 +904,7 @@ bool CTester::test(const char* title, const uint8_t* inData, uint16_t inLen, con
 
     unsigned int elapsed = stopwatch.elapsed();
 
-    //  dump("Read", buffer, len);
+    // dump("Read", buffer, len);
 
     if (outData != NULL) {
         if (::memcmp(buffer, outData, outLen) == 0) {

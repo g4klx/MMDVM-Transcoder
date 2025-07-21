@@ -20,14 +20,13 @@
 #define  CONFIG_H
 
 // Baud rate for host communication.
-#define SERIAL_SPEED	460800
+#define SERIAL_SPEED	    921600
 
 // Select use of debugging messages
 // #define	DEBUGGING
 
 // Baud rate for the DVSI AMBE3000/3003 chip(s)
-// #define DVSI_SPEED  921600
-#define DVSI_SPEED  460800
+#define DVSI_SPEED          460800
 
 // Are LEDs available for status information?
 #define HAS_LEDS

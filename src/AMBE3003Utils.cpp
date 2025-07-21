@@ -155,14 +155,14 @@ uint16_t CAMBE3003Utils::createPCMFrame(uint8_t n, const uint8_t* buffer, uint8_
 
 uint16_t CAMBE3003Utils::extractAMBEFrame(const uint8_t* frame, uint8_t* data) const
 {
-  ::memcpy(data, frame + 5U + 2U + 1U, m_bytesLen);
+  ::memcpy(data, frame + 5U + 1U + 1U, m_bytesLen);
 
   return m_bytesLen;
 }
 
 uint16_t CAMBE3003Utils::extractPCMFrame(const uint8_t* frame, uint8_t* data) const
 {
-  swapBytes(data, frame + 5U + 2U + 1U, DVSI_PCM_BYTES);
+  swapBytes(data, frame + 5U + 1U + 1U, DVSI_PCM_BYTES);
 
   return DVSI_PCM_BYTES;
 }
