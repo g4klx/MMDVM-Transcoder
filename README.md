@@ -7,7 +7,7 @@ This is the source code of the MMDVM-Transcoder firmware that supports transcodi
 - M17 (3200 mode only)
 - PCM
 
-The supported hardware uses an STM32H723 MCU coupled with an AMBE3003 vocoder chip from DVSI.
+The supported hardware uses an STM32H723 MCU coupled with either an AMBE3003, a single AMBE3000, or two AMBE3000 chips from DVSI.
 
 The design of a suitable AMBE vocoder board to be used with a NUCLEO-H723ZG will be made available once it's design has been finalised.
 
