@@ -16,38 +16,20 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	DVSIDriver_H
-#define	DVSIDriver_H
+#ifndef	DVSIDriver3003_H
+#define	DVSIDriver3003_H
 
 #include "Config.h"
 
-#if AMBE_TYPE > 0
+#if AMBE_TYPE == 3
 
-#include <Arduino.h>
+#include "DVSIDriver.h"
 
-#include <cstdint>
-
-class CDVSIDriver {
+class CDVSIDriver3003 : public CDVSIDriver {
   public:
-    CDVSIDriver(int rxPin, int txPin, int resetPin, int rtsPin);
-
-    void     startup();
-
-    void     reset();
-
-    bool     ready() const;
-
-    void     write(const uint8_t* buffer, uint16_t length);
-
-    uint16_t read(uint8_t* buffer);
+    CDVSIDriver3003();
 
   private:
-    HardwareSerial m_serial;
-    int            m_resetPin;
-    int            m_rtsPin;
-    uint8_t        m_buffer[512U];
-    uint16_t       m_len;
-    uint16_t       m_ptr;
 };
 
 #endif

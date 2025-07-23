@@ -17,29 +17,19 @@
  */
 #include "DVSIDriver.h"
 
-#include "Globals.h"
+#if AMBE_TYPE > 0
 
-#if defined(NUCLEO_STM32F722ZE)
-#define USART_TX        PG14     // Arduino D1
-#define USART_RX        PG9      // Arduino D0
-#define AMBE3003_RESET  PF13     // Arduino D7
-#define AMBE3003_RTS    PA3      // Arduino A0
-#elif defined(NUCLEO_STM32H723ZG)
-#define USART_TX        PB6      // Arduino D1
-#define USART_RX        PB7      // Arduino D0
-#define AMBE3003_RESET  PG12     // Arduino D7
-#define AMBE3003_RTS    PA3      // Arduino A0
-#else
-#error "Unknown hardware"
-#endif
+#include "Globals.h"
 
 const uint8_t DVSI_START_BYTE = 0x61U;
 
 const uint8_t  GET_VERSION_ID[]   = { DVSI_START_BYTE, 0x00U, 0x01U, 0x00U, 0x30U };
 const uint16_t GET_VERSION_ID_LEN = 5U;
 
-CDVSIDriver::CDVSIDriver() :
-m_serial(USART_RX, USART_TX),
+CDVSIDriver::CDVSIDriver(int rxPin, int txPin, int resetPin, int rtsPin) :
+m_serial(rxPin, txPin),
+m_resetPin(resetPin),
+m_rtsPin(rtsPin),
 m_buffer(),
 m_len(0U),
 m_ptr(0U)
@@ -50,19 +40,19 @@ void CDVSIDriver::startup()
 {
   m_serial.begin(DVSI_SPEED);
 
-  pinMode(AMBE3003_RESET, OUTPUT);
-  digitalWrite(AMBE3003_RESET, HIGH);
+  pinMode(m_resetPin, OUTPUT);
+  digitalWrite(m_resetPin, HIGH);
 
-  pinMode(AMBE3003_RTS, INPUT);
+  pinMode(m_rtsPin, INPUT);
 }
 
 void CDVSIDriver::reset()
 {
-  DEBUG1("Resetting the AMBE3003");
+  DEBUG1("Resetting the AMBE chip");
 
-  digitalWrite(AMBE3003_RESET, LOW);
+  digitalWrite(m_resetPin, LOW);
   delay(100U);
-  digitalWrite(AMBE3003_RESET, HIGH);
+  digitalWrite(m_resetPin, HIGH);
   delay(10U);
 
   write(GET_VERSION_ID, GET_VERSION_ID_LEN);
@@ -74,7 +64,7 @@ void CDVSIDriver::reset()
 
 bool CDVSIDriver::ready() const
 {
-  return digitalRead(AMBE3003_RTS) == LOW;
+  return digitalRead(m_rtsPin) == LOW;
 }
 
 void CDVSIDriver::write(const uint8_t* buffer, uint16_t length)
@@ -128,3 +118,5 @@ uint16_t CDVSIDriver::read(uint8_t* buffer)
 
   return 0U;
 }
+
+#endif

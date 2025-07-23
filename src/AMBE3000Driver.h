@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023,2024,2025 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,38 +16,50 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	DVSIDriver_H
-#define	DVSIDriver_H
+#ifndef	AMBE3000Driver_H
+#define	AMBE3000Driver_H
 
 #include "Config.h"
 
-#if AMBE_TYPE > 0
+#if AMBE_TYPE == 1 || AMBE_TYPE == 2
 
-#include <Arduino.h>
+#include "AMBE3000Utils.h"
+#include "DVSIDriver.h"
 
 #include <cstdint>
 
-class CDVSIDriver {
+enum AD_STATE {
+  ADS_NO_DATA,
+  ADS_WRONG_TYPE,
+  ADS_DATA
+};
+
+class CAMBE3000Driver {
   public:
-    CDVSIDriver(int rxPin, int txPin, int resetPin, int rtsPin);
+    CAMBE3000Driver(uint8_t n, IDVSIDriver& dvsi);
 
-    void     startup();
+    void startup();
 
-    void     reset();
+    void init(AMBE_MODE mode);
 
-    bool     ready() const;
+    void process();
 
-    void     write(const uint8_t* buffer, uint16_t length);
+    uint8_t writeAMBE(const uint8_t* buffer);
 
-    uint16_t read(uint8_t* buffer);
+    uint8_t writePCM(const uint8_t* buffer);
+
+    AD_STATE readAMBE(uint8_t* buffer);
+
+    AD_STATE readPCM(uint8_t* buffer);
+
+    void drain();
 
   private:
-    HardwareSerial m_serial;
-    int            m_resetPin;
-    int            m_rtsPin;
-    uint8_t        m_buffer[512U];
-    uint16_t       m_len;
-    uint16_t       m_ptr;
+    uint8_t        m_n;
+    IDVSIDriver&   m_dvsi;
+    uint8_t        m_buffer[400U];
+    uint16_t       m_length;
+    CAMBE3000Utils m_utils;
 };
 
 #endif

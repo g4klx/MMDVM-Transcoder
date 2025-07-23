@@ -18,6 +18,8 @@
 
 #include "AMBE3003Driver.h"
 
+#if AMBE_TYPE == 3
+
 #include "Globals.h"
 #include "Debug.h"
 
@@ -294,3 +296,5 @@ void CAMBE3003Driver::drain(uint8_t n)
       break;
   }
 }
+
+#endif

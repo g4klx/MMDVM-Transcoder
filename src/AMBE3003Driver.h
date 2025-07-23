@@ -21,6 +21,8 @@
 
 #include "Config.h"
 
+#if AMBE_TYPE == 3
+
 #include "AMBE3003Utils.h"
 #include "DVSIDriver.h"
 
@@ -61,5 +63,7 @@ class CAMBE3003Driver {
     uint16_t       m_length2;
     CAMBE3003Utils m_utils;
 };
+
+#endif
 
 #endif

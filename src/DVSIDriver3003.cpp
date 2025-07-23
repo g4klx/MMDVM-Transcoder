@@ -15,41 +15,29 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#include "DVSIDriver3003.h"
 
-#ifndef	DVSIDriver_H
-#define	DVSIDriver_H
+#if AMBE_TYPE == 3
 
-#include "Config.h"
+#include "Globals.h"
 
-#if AMBE_TYPE > 0
-
-#include <Arduino.h>
-
-#include <cstdint>
-
-class CDVSIDriver {
-  public:
-    CDVSIDriver(int rxPin, int txPin, int resetPin, int rtsPin);
-
-    void     startup();
-
-    void     reset();
-
-    bool     ready() const;
-
-    void     write(const uint8_t* buffer, uint16_t length);
-
-    uint16_t read(uint8_t* buffer);
-
-  private:
-    HardwareSerial m_serial;
-    int            m_resetPin;
-    int            m_rtsPin;
-    uint8_t        m_buffer[512U];
-    uint16_t       m_len;
-    uint16_t       m_ptr;
-};
-
+#if defined(NUCLEO_STM32F722ZE)
+#define USART_TX        PG14     // Arduino D1
+#define USART_RX        PG9      // Arduino D0
+#define AMBE_RESET      PF13     // Arduino D7
+#define AMBE_RTS        PA3      // Arduino A0
+#elif defined(NUCLEO_STM32H723ZG)
+#define USART_TX        PB6      // Arduino D1
+#define USART_RX        PB7      // Arduino D0
+#define AMBE_RESET      PG12     // Arduino D7
+#define AMBE_RTS        PA3      // Arduino A0
+#else
+#error "Unknown hardware"
 #endif
+
+CDVSIDriver3003::CDVSIDriver3003() :
+CDVSIDriver(USART_RX, USART_TX, AMBE_RESET, AMBE_RTS)
+{
+}
 
 #endif

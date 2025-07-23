@@ -16,12 +16,12 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	AMBE3003Utils_H
-#define	AMBE3003Utils_H
+#ifndef	AMBE3000Utils_H
+#define	AMBE3000Utils_H
 
 #include "Config.h"
 
-#if AMBE_TYPE == 3
+#if AMBE_TYPE == 1 || AMBE_TYPE == 2
 
 #include <cstdint>
 
@@ -35,13 +35,13 @@ enum AMBE_MODE {
   PCM_TO_DMR_NXDN
 };
 
-class CAMBE3003Utils {
+class CAMBE3000Utils {
   public:
-    CAMBE3003Utils();
+    CAMBE3000Utils();
 
-    uint16_t createModeChange(uint8_t n, AMBE_MODE mode, uint8_t* buffer);
-    uint16_t createAMBEFrame(uint8_t n, const uint8_t* buffer, uint8_t* out) const;
-    uint16_t createPCMFrame(uint8_t n, const uint8_t* buffer, uint8_t* out) const;
+    uint16_t createModeChange(AMBE_MODE mode, uint8_t* buffer);
+    uint16_t createAMBEFrame(const uint8_t* buffer, uint8_t* out) const;
+    uint16_t createPCMFrame(const uint8_t* buffer, uint8_t* out) const;
 
     uint16_t extractAMBEFrame(const uint8_t* buffer, uint8_t* data) const;
     uint16_t extractPCMFrame(const uint8_t* buffer, uint8_t* data) const;

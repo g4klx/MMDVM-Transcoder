@@ -16,9 +16,9 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "AMBE3003Utils.h"
+#include "AMBE3000Utils.h"
 
-#if AMBE_TYPE == 3
+#if AMBE_TYPE == 1 || AMBE_TYPE == 2
 
 #include "Globals.h"
 #include "Debug.h"
@@ -28,8 +28,6 @@ const uint8_t DVSI_START_BYTE = 0x61U;
 const uint8_t DVSI_TYPE_CONTROL = 0x00U;
 const uint8_t DVSI_TYPE_AMBE    = 0x01U;
 const uint8_t DVSI_TYPE_AUDIO   = 0x02U;
-
-const uint8_t DVSI_CHANNEL_BASE = 0x40U;
 
 const uint8_t DVSI_PKT_RATET    = 0x09U;
 const uint8_t DVSI_PKT_RATEP    = 0x0AU;
@@ -58,14 +56,14 @@ const uint16_t DVSI_AMBE_HEADER_LEN  = 6U;
 const uint16_t DVSI_PCM_SAMPLES = 160U;
 const uint16_t DVSI_PCM_BYTES   = DVSI_PCM_SAMPLES * sizeof(int16_t);
 
-CAMBE3003Utils::CAMBE3003Utils() :
+CAMBE3000Utils::CAMBE3000Utils() :
 m_mode(MODE_NONE),
 m_bytesLen(0U),
 m_bitsLen(0U)
 {
 }
 
-uint16_t CAMBE3003Utils::createModeChange(uint8_t n, AMBE_MODE mode, uint8_t* buffer)
+uint16_t CAMBE3000Utils::createModeChange(AMBE_MODE mode, uint8_t* buffer)
 {
   uint16_t length = 0U;
 
@@ -73,8 +71,6 @@ uint16_t CAMBE3003Utils::createModeChange(uint8_t n, AMBE_MODE mode, uint8_t* bu
   buffer[length++] = 0x00U;
   buffer[length++] = 0x00U;
   buffer[length++] = DVSI_TYPE_CONTROL;
-
-  buffer[length++] = DVSI_CHANNEL_BASE + n;
 
   switch (mode) {
     case DSTAR_TO_PCM:
@@ -109,7 +105,7 @@ uint16_t CAMBE3003Utils::createModeChange(uint8_t n, AMBE_MODE mode, uint8_t* bu
   return length;
 }
 
-uint16_t CAMBE3003Utils::createAMBEFrame(uint8_t n, const uint8_t* buffer, uint8_t* out) const
+uint16_t CAMBE3000Utils::createAMBEFrame(const uint8_t* buffer, uint8_t* out) const
 {
   uint16_t pos = 0U;
 
@@ -117,8 +113,6 @@ uint16_t CAMBE3003Utils::createAMBEFrame(uint8_t n, const uint8_t* buffer, uint8
   out[pos++] = 0x00U;
   out[pos++] = 0x00U;
   out[pos++] = DVSI_TYPE_AMBE;
-
-  out[pos++] = DVSI_CHANNEL_BASE + n;
 
   out[pos++] = 0x01U;
   out[pos++] = m_bitsLen;
@@ -132,7 +126,7 @@ uint16_t CAMBE3003Utils::createAMBEFrame(uint8_t n, const uint8_t* buffer, uint8
   return pos;
 }
 
-uint16_t CAMBE3003Utils::createPCMFrame(uint8_t n, const uint8_t* buffer, uint8_t* out) const
+uint16_t CAMBE3000Utils::createPCMFrame(const uint8_t* buffer, uint8_t* out) const
 {
   uint16_t pos = 0U;
 
@@ -140,8 +134,6 @@ uint16_t CAMBE3003Utils::createPCMFrame(uint8_t n, const uint8_t* buffer, uint8_
   out[pos++] = 0x00U;
   out[pos++] = 0x00U;
   out[pos++] = DVSI_TYPE_AUDIO;
-
-  out[pos++] = DVSI_CHANNEL_BASE + n;
 
   out[pos++] = 0x00U;
   out[pos++] = DVSI_PCM_SAMPLES;
@@ -155,21 +147,21 @@ uint16_t CAMBE3003Utils::createPCMFrame(uint8_t n, const uint8_t* buffer, uint8_
   return pos;
 }
 
-uint16_t CAMBE3003Utils::extractAMBEFrame(const uint8_t* frame, uint8_t* data) const
+uint16_t CAMBE3000Utils::extractAMBEFrame(const uint8_t* frame, uint8_t* data) const
 {
-  ::memcpy(data, frame + 5U + 1U + 1U, m_bytesLen);
+  ::memcpy(data, frame + 5U + 1U, m_bytesLen);
 
   return m_bytesLen;
 }
 
-uint16_t CAMBE3003Utils::extractPCMFrame(const uint8_t* frame, uint8_t* data) const
+uint16_t CAMBE3000Utils::extractPCMFrame(const uint8_t* frame, uint8_t* data) const
 {
-  swapBytes(data, frame + 5U + 1U + 1U, DVSI_PCM_BYTES);
+  swapBytes(data, frame + 5U + 1U, DVSI_PCM_BYTES);
 
   return DVSI_PCM_BYTES;
 }
 
-void CAMBE3003Utils::swapBytes(uint8_t* out, const uint8_t* in, uint16_t length) const
+void CAMBE3000Utils::swapBytes(uint8_t* out, const uint8_t* in, uint16_t length) const
 {
   for (uint16_t i = 0U; i < length; i += 2U) {
     out[i + 0U] = in[i + 1U];
