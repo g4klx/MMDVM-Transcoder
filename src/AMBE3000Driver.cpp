@@ -74,7 +74,7 @@ void CAMBE3000Driver::init(uint8_t n, AMBE_MODE mode)
 #endif
   }
 #else
-  dvsi.write(buffer, length);
+  dvsi1.write(buffer, length);
 #if defined(HAS_LEDS)
   leds.setLED1(true);
 #endif

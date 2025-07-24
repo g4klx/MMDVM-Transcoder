@@ -26,17 +26,21 @@ CDMRNXDNFEC     dmrnxdnfec;
 CYSFDNFEC       ysfdnfec;
 CIMBEFEC        imbefec;
 
+#if AMBE_TYPE > 0
 CYSFDNPCM       ysfdnpcm;
 CDStarPCM       dstarpcm;
 CDMRNXDNPCM     dmrnxdnpcm;
+#endif
 
 CIMBEPCM        imbepcm;
 CIMBEFECPCM     imbefecpcm;
 CCodec23200PCM  codec23200pcm;
 
+#if AMBE_TYPE > 0
 CPCMYSFDN       pcmysfdn;
 CPCMDStar       pcmdstar;
 CPCMDMRNXDN     pcmdmrnxdn;
+#endif
 
 CPCMIMBE        pcmimbe;
 CPCMIMBEFEC     pcmimbefec;

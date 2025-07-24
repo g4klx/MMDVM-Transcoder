@@ -74,17 +74,21 @@ extern CDMRNXDNFEC     dmrnxdnfec;
 extern CYSFDNFEC       ysfdnfec;
 extern CIMBEFEC        imbefec;
 
+#if AMBE_TYPE > 0
 extern CYSFDNPCM       ysfdnpcm;
 extern CDStarPCM       dstarpcm;
 extern CDMRNXDNPCM     dmrnxdnpcm;
+#endif
 
 extern CIMBEPCM        imbepcm;
 extern CIMBEFECPCM     imbefecpcm;
 extern CCodec23200PCM  codec23200pcm;
 
+#if AMBE_TYPE > 0
 extern CPCMYSFDN       pcmysfdn;
 extern CPCMDStar       pcmdstar;
 extern CPCMDMRNXDN     pcmdmrnxdn;
+#endif
 
 extern CPCMIMBE        pcmimbe;
 extern CPCMIMBEFEC     pcmimbefec;

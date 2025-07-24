@@ -33,7 +33,7 @@
 // 1=One AMBE3000
 // 2=Two AMBE3000s
 // 3=One AMBE3003
-#define AMBE_TYPE       2
+#define AMBE_TYPE       3
 
 // Are LEDs available for status information?
 #define HAS_LEDS
