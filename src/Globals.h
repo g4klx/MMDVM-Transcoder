@@ -25,14 +25,24 @@
 
 #include "Codec2/codec2.h"
 
+#if AMBE_TYPE == 3
 #include "AMBE3003Driver.h"
+#include "DVSIDriver3003.h"
+#endif
+#if AMBE_TYPE == 2
+#include "DVSIDriver30002.h"
+#endif
+#if AMBE_TYPE == 1 || AMBE_TYPE == 2
+#include "AMBE3000Driver.h"
+#include "DVSIDriver30001.h"
+#endif
+
 #include "Codec23200PCM.h"
 #include "PCMCodec23200.h"
 #include "YSFDNDMRNXDN.h"
 #include "DMRNXDNYSFDN.h"
 #include "IMBEIMBEFEC.h"
 #include "IMBEFECIMBE.h"
-#include "DVSIDriver.h"
 #include "DMRNXDNFEC.h"
 #include "DMRNXDNPCM.h"
 #include "PCMDMRNXDN.h"
@@ -94,8 +104,17 @@ extern CPCMMuLaw       pcmmulaw;
 extern imbe_vocoder    imbe;
 extern CCodec2         codec23200;
 
-extern CDVSIDriver     dvsi;
+#if AMBE_TYPE == 3
+extern CDVSIDriver3003 dvsi;
 extern CAMBE3003Driver ambe;
+#endif
+#if AMBE_TYPE == 2
+extern CDVSIDriver30002 dvsi2;
+#endif
+#if AMBE_TYPE == 1 || AMBE_TYPE == 2
+extern CDVSIDriver30001 dvsi1;
+extern CAMBE3000Driver  ambe;
+#endif
 
 #if defined(HAS_LEDS)
 extern CLEDDriver      leds;

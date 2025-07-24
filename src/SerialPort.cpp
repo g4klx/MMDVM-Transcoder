@@ -29,39 +29,53 @@ const struct {
   IProcessor* m_step1;
   IProcessor* m_step2;
 } PROCESSOR_TABLE[] = {
-  {MODE_DSTAR,        MODE_DSTAR,         &dstarfec,       nullptr},
+#if AMBE_TYPE > 0
+#if AMBE_TYPE > 1
   {MODE_DSTAR,        MODE_DMR_NXDN,      &dstarpcm,       &pcmdmrnxdn},
   {MODE_DSTAR,        MODE_YSFDN,         &dstarpcm,       &pcmysfdn},
+#endif
   {MODE_DSTAR,        MODE_IMBE,          &dstarpcm,       &pcmimbe},
   {MODE_DSTAR,        MODE_IMBE_FEC,      &dstarpcm,       &pcmimbefec},
   {MODE_DSTAR,        MODE_CODEC2_3200,   &dstarpcm,       &pcmcodec23200},
   {MODE_DSTAR,        MODE_ALAW,          &dstarpcm,       &pcmalaw},
   {MODE_DSTAR,        MODE_MULAW,         &dstarpcm,       &pcmmulaw},
   {MODE_DSTAR,        MODE_PCM,           &dstarpcm,       nullptr},
+#endif
+  {MODE_DSTAR,        MODE_DSTAR,         &dstarfec,       nullptr},
 
+#if AMBE_TYPE > 0
+#if AMBE_TYPE > 1
   {MODE_DMR_NXDN,     MODE_DSTAR,         &dmrnxdnpcm,     &pcmdstar},
-  {MODE_DMR_NXDN,     MODE_DMR_NXDN,      &dmrnxdnfec,     nullptr},
-  {MODE_DMR_NXDN,     MODE_YSFDN,         &dmrnxdnfec,     &dmrnxdnysfdn},
+#endif
   {MODE_DMR_NXDN,     MODE_IMBE,          &dmrnxdnpcm,     &pcmimbe},
   {MODE_DMR_NXDN,     MODE_IMBE_FEC,      &dmrnxdnpcm,     &pcmimbefec},
   {MODE_DMR_NXDN,     MODE_CODEC2_3200,   &dmrnxdnpcm,     &pcmcodec23200},
   {MODE_DMR_NXDN,     MODE_ALAW,          &dmrnxdnpcm,     &pcmalaw},
   {MODE_DMR_NXDN,     MODE_MULAW,         &dmrnxdnpcm,     &pcmmulaw},
   {MODE_DMR_NXDN,     MODE_PCM,           &dmrnxdnpcm,     nullptr},
+#endif
+  {MODE_DMR_NXDN,     MODE_DMR_NXDN,      &dmrnxdnfec,     nullptr},
+  {MODE_DMR_NXDN,     MODE_YSFDN,         &dmrnxdnfec,     &dmrnxdnysfdn},
 
+#if AMBE_TYPE > 0
+#if AMBE_TYPE > 1
   {MODE_YSFDN,        MODE_DSTAR,         &ysfdnpcm,       &pcmdstar},
-  {MODE_YSFDN,        MODE_DMR_NXDN,      &ysfdnfec,       &ysfdndmrnxdn},
-  {MODE_YSFDN,        MODE_YSFDN,         &ysfdnfec,       nullptr},
+#endif
   {MODE_YSFDN,        MODE_IMBE,          &ysfdnpcm,       &pcmimbe},
   {MODE_YSFDN,        MODE_IMBE_FEC,      &ysfdnpcm,       &pcmimbefec},
   {MODE_YSFDN,        MODE_CODEC2_3200,   &ysfdnpcm,       &pcmcodec23200},
   {MODE_YSFDN,        MODE_ALAW,          &ysfdnpcm,       &pcmalaw},
   {MODE_YSFDN,        MODE_MULAW,         &ysfdnpcm,       &pcmmulaw},
   {MODE_YSFDN,        MODE_PCM,           &ysfdnpcm,       nullptr},
+#endif
+  {MODE_YSFDN,        MODE_DMR_NXDN,      &ysfdnfec,       &ysfdndmrnxdn},
+  {MODE_YSFDN,        MODE_YSFDN,         &ysfdnfec,       nullptr},
 
+#if AMBE_TYPE > 0
   {MODE_IMBE,         MODE_DSTAR,         &imbepcm,        &pcmdstar},
   {MODE_IMBE,         MODE_DMR_NXDN,      &imbepcm,        &pcmdmrnxdn},
   {MODE_IMBE,         MODE_YSFDN,         &imbepcm,        &pcmysfdn},
+#endif
   {MODE_IMBE,         MODE_IMBE,          nullptr,         nullptr},
   {MODE_IMBE,         MODE_IMBE_FEC,      &imbeimbefec,    nullptr},
   {MODE_IMBE,         MODE_CODEC2_3200,   &imbepcm,        &pcmcodec23200},
@@ -69,9 +83,11 @@ const struct {
   {MODE_IMBE,         MODE_MULAW,         &imbepcm,        &pcmmulaw},
   {MODE_IMBE,         MODE_PCM,           &imbepcm,        nullptr},
 
+#if AMBE_TYPE > 0
   {MODE_IMBE_FEC,     MODE_DSTAR,         &imbefecpcm,     &pcmdstar},
   {MODE_IMBE_FEC,     MODE_DMR_NXDN,      &imbefecpcm,     &pcmdmrnxdn},
   {MODE_IMBE_FEC,     MODE_YSFDN,         &imbefecpcm,     &pcmysfdn},
+#endif
   {MODE_IMBE_FEC,     MODE_IMBE,          &imbefecimbe,    nullptr},
   {MODE_IMBE_FEC,     MODE_IMBE_FEC,      &imbefec,        nullptr},
   {MODE_IMBE_FEC,     MODE_CODEC2_3200,   &imbefecpcm,     &pcmcodec23200},
@@ -79,9 +95,11 @@ const struct {
   {MODE_IMBE_FEC,     MODE_MULAW,         &imbefecpcm,     &pcmmulaw},
   {MODE_IMBE_FEC,     MODE_PCM,           &imbefecpcm,     nullptr},
 
+#if AMBE_TYPE > 0
   {MODE_CODEC2_3200,  MODE_DSTAR,         &codec23200pcm,  &pcmdstar},
   {MODE_CODEC2_3200,  MODE_DMR_NXDN,      &codec23200pcm,  &pcmdmrnxdn},
   {MODE_CODEC2_3200,  MODE_YSFDN,         &codec23200pcm,  &pcmysfdn},
+#endif
   {MODE_CODEC2_3200,  MODE_IMBE,          &codec23200pcm,  &pcmimbe},
   {MODE_CODEC2_3200,  MODE_IMBE_FEC,      &codec23200pcm,  &pcmimbefec},
   {MODE_CODEC2_3200,  MODE_CODEC2_3200,   nullptr,         nullptr},
@@ -89,9 +107,11 @@ const struct {
   {MODE_CODEC2_3200,  MODE_MULAW,         &codec23200pcm,  &pcmmulaw},
   {MODE_CODEC2_3200,  MODE_PCM,           &codec23200pcm,  nullptr},
 
+#if AMBE_TYPE > 0
   {MODE_ALAW,         MODE_DSTAR,         &alawpcm,        &pcmdstar},
   {MODE_ALAW,         MODE_DMR_NXDN,      &alawpcm,        &pcmdmrnxdn},
   {MODE_ALAW,         MODE_YSFDN,         &alawpcm,        &pcmysfdn},
+#endif
   {MODE_ALAW,         MODE_IMBE,          &alawpcm,        &pcmimbe},
   {MODE_ALAW,         MODE_IMBE_FEC,      &alawpcm,        &pcmimbefec},
   {MODE_ALAW,         MODE_CODEC2_3200,   &alawpcm,        &pcmcodec23200},
@@ -99,9 +119,11 @@ const struct {
   {MODE_ALAW,         MODE_PCM,           &alawpcm,        nullptr},
   {MODE_ALAW,         MODE_ALAW,          nullptr,         nullptr},
 
+#if AMBE_TYPE > 0
   {MODE_MULAW,        MODE_DSTAR,         &mulawpcm,       &pcmdstar},
   {MODE_MULAW,        MODE_DMR_NXDN,      &mulawpcm,       &pcmdmrnxdn},
   {MODE_MULAW,        MODE_YSFDN,         &mulawpcm,       &pcmysfdn},
+#endif
   {MODE_MULAW,        MODE_IMBE,          &mulawpcm,       &pcmimbe},
   {MODE_MULAW,        MODE_IMBE_FEC,      &mulawpcm,       &pcmimbefec},
   {MODE_MULAW,        MODE_CODEC2_3200,   &mulawpcm,       &pcmcodec23200},
@@ -109,9 +131,11 @@ const struct {
   {MODE_MULAW,        MODE_PCM,           &mulawpcm,       nullptr},
   {MODE_MULAW,        MODE_MULAW,         nullptr,         nullptr},
 
+#if AMBE_TYPE > 0
   {MODE_PCM,          MODE_DSTAR,         &pcmdstar,       nullptr},
   {MODE_PCM,          MODE_DMR_NXDN,      &pcmdmrnxdn,     nullptr},
   {MODE_PCM,          MODE_YSFDN,         &pcmysfdn,       nullptr},
+#endif
   {MODE_PCM,          MODE_IMBE,          &pcmimbe,        nullptr},
   {MODE_PCM,          MODE_IMBE_FEC,      &pcmimbefec,     nullptr},
   {MODE_PCM,          MODE_CODEC2_3200,   &pcmcodec23200,  nullptr},
@@ -244,7 +268,14 @@ uint8_t CSerialPort::setMode(const uint8_t* buffer, uint16_t length)
 
   if ((buffer[0U] == MODE_PASS_THROUGH) && (buffer[1U] == MODE_PASS_THROUGH)) {
     opmode = OPMODE::PASSTHROUGH;
+#if AMBE_TYPE == 3
     dvsi.reset();
+#elif AMBE_TYPE == 2
+    dvsi1.reset();
+    dvsi2.reset();
+#elif AMBE_TYPE == 1
+    dvsi1.reset();
+#endif
     return 0x00U;
   }
 
@@ -284,12 +315,23 @@ uint8_t CSerialPort::sendData(const uint8_t* buffer, uint16_t length)
 
     case OPMODE::PASSTHROUGH:
       // If the RTS pin is high, then the chip does not expect any more data to be sent through
+#if AMBE_TYPE == 3
       if (!dvsi.ready()) {
         DEBUG1("The AMBE3003 chip is not ready to receive any more data");
         return 0x05U;
       }
+#elif AMBE_TYPE > 0
+      if (!dvsi1.ready()) {
+        DEBUG1("The AMBE3000 chip is not ready to receive any more data");
+        return 0x05U;
+      }
+#endif
 
+#if AMBE_TYPE == 3
       dvsi.write(buffer, length);
+#elif AMBE_TYPE > 0
+      dvsi1.write(buffer, length);
+#endif
       return 0x00U;
       break;
 
@@ -336,9 +378,15 @@ void CSerialPort::processData()
     if (length > 0)
       writeData(buffer, length);
   } else if (opmode == OPMODE::PASSTHROUGH) {
+#if AMBE_TYPE > 0
+#if AMBE_TYPE == 3
     length = dvsi.read(buffer);
+#else
+    length = dvsi1.read(buffer);
+#endif
     if (length > 0)
       writeData(buffer, length);
+#endif
   }
 }
 

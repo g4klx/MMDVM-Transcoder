@@ -21,6 +21,8 @@
 
 #include "Config.h"
 
+#if AMBE_TYPE > 0
+
 #include "Processor.h"
 
 class CPCMYSFDN : public IProcessor {
@@ -37,5 +39,7 @@ class CPCMYSFDN : public IProcessor {
   private:
     uint8_t m_n;
 };
+
+#endif
 
 #endif

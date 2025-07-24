@@ -136,7 +136,7 @@ void CAMBE3003Driver::process()
   }
 }
 
-uint8_t CAMBE3003Driver::writeAMBE(uint8_t n, const uint8_t* buffer)
+uint8_t CAMBE3003Driver::writeAMBE(uint8_t n, const uint8_t* ambe)
 {
   // If the RTS pin is high, then the chip does not expect any more data to be sent through
   if (!dvsi.ready()) {
@@ -145,7 +145,7 @@ uint8_t CAMBE3003Driver::writeAMBE(uint8_t n, const uint8_t* buffer)
   }
 
   uint8_t out[50U];
-  uint16_t pos = m_utils.createAMBEFrame(n, buffer, out);
+  uint16_t pos = m_utils.createAMBEFrame(n, ambe, out);
 
 #if defined(HAS_LEDS)
   leds.setLED1(true);
@@ -156,7 +156,7 @@ uint8_t CAMBE3003Driver::writeAMBE(uint8_t n, const uint8_t* buffer)
   return 0x00U;
 }
 
-uint8_t CAMBE3003Driver::writePCM(uint8_t n, const uint8_t* buffer)
+uint8_t CAMBE3003Driver::writePCM(uint8_t n, const uint8_t* pcm)
 {
   // If the RTS pin is high, then the chip does not expect any more data to be sent through
   if (!dvsi.ready()) {
@@ -165,7 +165,7 @@ uint8_t CAMBE3003Driver::writePCM(uint8_t n, const uint8_t* buffer)
   }
 
   uint8_t out[400U];
-  uint16_t pos = m_utils.createPCMFrame(n, buffer, out);
+  uint16_t pos = m_utils.createPCMFrame(n, pcm, out);
 
 #if defined(HAS_LEDS)
   leds.setLED1(true);
@@ -176,7 +176,7 @@ uint8_t CAMBE3003Driver::writePCM(uint8_t n, const uint8_t* buffer)
   return 0x00U;
 }
 
-AD_STATE CAMBE3003Driver::readAMBE(uint8_t n, uint8_t* buffer)
+AD_STATE CAMBE3003Driver::readAMBE(uint8_t n, uint8_t* ambe)
 {
   switch (n) {
     case 0U:
@@ -189,7 +189,7 @@ AD_STATE CAMBE3003Driver::readAMBE(uint8_t n, uint8_t* buffer)
           return ADS_WRONG_TYPE;
 
         default:
-          ::memcpy(buffer, m_buffer0, m_length0);
+          ::memcpy(ambe, m_buffer0, m_length0);
           m_length0 = 0U;
           return ADS_DATA;
       }
@@ -205,7 +205,7 @@ AD_STATE CAMBE3003Driver::readAMBE(uint8_t n, uint8_t* buffer)
           return ADS_WRONG_TYPE;
 
         default:
-          ::memcpy(buffer, m_buffer1, m_length1);
+          ::memcpy(ambe, m_buffer1, m_length1);
           m_length1 = 0U;
           return ADS_DATA;
       }
@@ -221,7 +221,7 @@ AD_STATE CAMBE3003Driver::readAMBE(uint8_t n, uint8_t* buffer)
           return ADS_WRONG_TYPE;
 
         default:
-          ::memcpy(buffer, m_buffer2, m_length2);
+          ::memcpy(ambe, m_buffer2, m_length2);
           m_length2 = 0U;
           return ADS_DATA;
       }
@@ -229,7 +229,7 @@ AD_STATE CAMBE3003Driver::readAMBE(uint8_t n, uint8_t* buffer)
   }
 }
 
-AD_STATE CAMBE3003Driver::readPCM(uint8_t n, uint8_t* buffer)
+AD_STATE CAMBE3003Driver::readPCM(uint8_t n, uint8_t* pcm)
 {
   switch (n) {
     case 0U:
@@ -238,7 +238,7 @@ AD_STATE CAMBE3003Driver::readPCM(uint8_t n, uint8_t* buffer)
           return ADS_NO_DATA;
 
         case DVSI_PCM_BYTES:
-          ::memcpy(buffer, m_buffer0, DVSI_PCM_BYTES);
+          ::memcpy(pcm, m_buffer0, DVSI_PCM_BYTES);
           m_length0 = 0U;
           return ADS_DATA;
 
@@ -254,7 +254,7 @@ AD_STATE CAMBE3003Driver::readPCM(uint8_t n, uint8_t* buffer)
           return ADS_NO_DATA;
 
         case DVSI_PCM_BYTES:
-          ::memcpy(buffer, m_buffer1, DVSI_PCM_BYTES);
+          ::memcpy(pcm, m_buffer1, DVSI_PCM_BYTES);
           m_length1 = 0U;
           return ADS_DATA;
 
@@ -270,7 +270,7 @@ AD_STATE CAMBE3003Driver::readPCM(uint8_t n, uint8_t* buffer)
           return ADS_NO_DATA;
 
         case DVSI_PCM_BYTES:
-          ::memcpy(buffer, m_buffer2, DVSI_PCM_BYTES);
+          ::memcpy(pcm, m_buffer2, DVSI_PCM_BYTES);
           m_length2 = 0U;
           return ADS_DATA;
 

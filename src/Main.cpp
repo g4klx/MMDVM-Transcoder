@@ -56,8 +56,17 @@ CPCMMuLaw       pcmmulaw;
 imbe_vocoder    imbe;
 CCodec2         codec23200(true);
 
-CDVSIDriver     dvsi;
+#if AMBE_TYPE == 3
+CDVSIDriver3003 dvsi;
 CAMBE3003Driver ambe;
+#endif
+#if AMBE_TYPE == 2
+CDVSIDriver30002 dvsi2;
+#endif
+#if AMBE_TYPE == 1 || AMBE_TYPE == 2
+CDVSIDriver30001 dvsi1;
+CAMBE3000Driver  ambe;
+#endif
 
 #if defined(HAS_LEDS)
 CLEDDriver      leds;
@@ -79,8 +88,9 @@ extern "C" {
     leds.startup();
 #endif
 
-    dvsi.startup();
+#if AMBE_TYPE == 1 || AMBE_TYPE == 2 || AMBE_TYPE == 3
     ambe.startup();
+#endif
 
 #if defined(HAS_LEDS)
     leds.setLED2(on);
@@ -92,8 +102,10 @@ extern "C" {
   {
     serial.process();
 
+#if AMBE_TYPE == 1 || AMBE_TYPE == 2 || AMBE_TYPE == 3
     if (opmode == OPMODE::TRANSCODING)
       ambe.process();
+#endif
 
 #if defined(HAS_LEDS)
     unsigned long end = millis();

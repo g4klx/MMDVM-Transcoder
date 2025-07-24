@@ -33,7 +33,13 @@ class CLEDDriver {
 
     void setLED2(bool on);
 
-  private:
+#if AMBE_TYPE == 2
+    void setLED3(bool on);
+
+    void setLED4(bool on);
+#endif
+
+private:
 };
 
 #endif

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024,2025 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@
 #if AMBE_TYPE == 3
 
 #include "AMBE3003Utils.h"
-#include "DVSIDriver.h"
 
 #include <cstdint>
 
@@ -44,13 +43,13 @@ class CAMBE3003Driver {
 
     void process();
 
-    uint8_t writeAMBE(uint8_t n, const uint8_t* buffer);
+    uint8_t writeAMBE(uint8_t n, const uint8_t* ambe);
 
-    uint8_t writePCM(uint8_t n, const uint8_t* buffer);
+    uint8_t writePCM(uint8_t n, const uint8_t* pcm);
 
-    AD_STATE readAMBE(uint8_t n, uint8_t* buffer);
+    AD_STATE readAMBE(uint8_t n, uint8_t* ambe);
 
-    AD_STATE readPCM(uint8_t n, uint8_t* buffer);
+    AD_STATE readPCM(uint8_t n, uint8_t* pcm);
 
     void drain(uint8_t n);
 
