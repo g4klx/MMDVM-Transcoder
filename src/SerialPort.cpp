@@ -239,7 +239,7 @@ void CSerialPort::getCapabilities()
   reply[2U] = 0U;
   reply[3U] = MMDVM_RETURN_CAPABILITIES;
 
-  reply[4U] = 3U;     // Always reply with an AMBE3003
+  reply[4U] = AMBE_TYPE;
 
   SerialUSB.write(reply, 5);
 }
@@ -313,27 +313,26 @@ uint8_t CSerialPort::sendData(const uint8_t* buffer, uint16_t length)
       DEBUG1("Received data in None mode");
       return 0x03U;
 
+#if AMBE_TYPE > 0
     case OPMODE::PASSTHROUGH:
       // If the RTS pin is high, then the chip does not expect any more data to be sent through
 #if AMBE_TYPE == 3
       if (!dvsi.ready()) {
         DEBUG1("The AMBE3003 chip is not ready to receive any more data");
         return 0x05U;
+      } else {
+        dvsi.write(buffer, length);
       }
-#elif AMBE_TYPE > 0
+#else
       if (!dvsi1.ready()) {
         DEBUG1("The AMBE3000 chip is not ready to receive any more data");
         return 0x05U;
+      } else {
+        dvsi1.write(buffer, length);
       }
 #endif
-
-#if AMBE_TYPE == 3
-      dvsi.write(buffer, length);
-#elif AMBE_TYPE > 0
-      dvsi1.write(buffer, length);
-#endif
       return 0x00U;
-      break;
+#endif
 
     case OPMODE::TRANSCODING:
     default:
@@ -377,8 +376,8 @@ void CSerialPort::processData()
 
     if (length > 0)
       writeData(buffer, length);
-  } else if (opmode == OPMODE::PASSTHROUGH) {
 #if AMBE_TYPE > 0
+  } else if (opmode == OPMODE::PASSTHROUGH) {
 #if AMBE_TYPE == 3
     length = dvsi.read(buffer);
 #else
