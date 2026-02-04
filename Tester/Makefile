@@ -5,7 +5,7 @@ CFLAGS  = -g -O3 -Wall
 LIBS    = 
 LDFLAGS = -g
 
-OBJECTS = StopWatch.o Tester.o UARTController.o
+OBJECTS = Connection.o StopWatch.o Tester.o UARTController.o UDPSocket.o
 
 all:		Tester
 

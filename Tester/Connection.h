@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2024,2026 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2026 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,35 +16,22 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef Tester_H
-#define Tester_H
+#ifndef Connection_H
+#define Connection_H
 
-#include <string>
 #include <cstdint>
 
-#include "StopWatch.h"
-#include "Connection.h"
-
-class CTester {
+class IConnection {
 public:
-	CTester();
-	~CTester();
+	virtual ~IConnection() = 0;
 
-	void setUARTConnection(const std::string& device, unsigned int speed);
-	void setUDPConnection(const std::string& address, unsigned short port);
+	virtual bool open() = 0;
 
-	int run();
+	virtual int16_t read(uint8_t* buffer, uint16_t length) = 0;
 
-protected:
-	IConnection*  m_connection;
-	CStopWatch    m_stopwatch;
-	unsigned int  m_count;
-	unsigned int  m_ok;
-	unsigned int  m_failed;
+	virtual int16_t write(const uint8_t* buffer, uint16_t length) = 0;
 
-	bool     test(const char* title, const uint8_t* inData, uint16_t inLen, const uint8_t* outData, uint16_t outLen);
-	void     dump(const char* title, const uint8_t* buffer, uint16_t length) const;
-	uint16_t read(uint8_t* buffer, uint16_t timeout);
+	virtual void close() = 0;
 };
 
 #endif

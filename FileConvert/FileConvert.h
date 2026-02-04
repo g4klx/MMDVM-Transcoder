@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2024,2026 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,19 +19,20 @@
 #ifndef FileConvert_H
 #define FileConvert_H
 
-#include "UARTController.h"
+#include "Connection.h"
 
 #include <string>
 
 class CFileConvert {
 public:
 	CFileConvert(const std::string& port, uint8_t inMode, const std::string& inFile, uint8_t outMode, const std::string& outFile);
+	CFileConvert(const std::string& address, unsigned short port, uint8_t inMode, const std::string& inFile, uint8_t outMode, const std::string& outFile);
 	~CFileConvert();
 
 	int run();
 
 private:
-	CUARTController m_serial;
+	IConnection*    m_connection;
 	uint8_t         m_inMode;
 	std::string     m_inFile;
 	uint8_t         m_outMode;

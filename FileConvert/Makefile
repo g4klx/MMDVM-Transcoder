@@ -5,7 +5,7 @@ CFLAGS  = -g -O3 -Wall
 LIBS    = -lsndfile
 LDFLAGS = -g
 
-OBJECTS = DVFileReader.o DVFileWriter.o FileConvert.o StopWatch.o Thread.o UARTController.o WAVFileReader.o WAVFileWriter.o
+OBJECTS = Connecton.o DVFileReader.o DVFileWriter.o FileConvert.o StopWatch.o Thread.o UARTController.o UDPSoocket.o WAVFileReader.o WAVFileWriter.o
 
 all:		FileConvert
 

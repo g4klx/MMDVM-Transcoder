@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2002-2004,2007-2009,2011-2013,2015-2017,2020,2021,2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2002-2004,2007-2009,2011-2013,2015-2017,2020,2021,2024,2026 by Jonathan Naylor G4KLX
  *   Copyright (C) 1999-2001 by Thomas Sailor HB9JNX
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,8 @@
 #ifndef UARTController_H
 #define UARTController_H
 
+#include "Connection.h"
+
 #include <string>
 #include <cstdint>
 
@@ -27,18 +29,18 @@
 #include <windows.h>
 #endif
 
-class CUARTController {
+class CUARTController : public IConnection {
 public:
 	CUARTController(const std::string& device, unsigned int speed);
-	~CUARTController();
+	virtual ~CUARTController();
 
-	bool open();
+	virtual bool open();
 
-	int16_t read(uint8_t* buffer, uint16_t length);
+	virtual int16_t read(uint8_t* buffer, uint16_t length);
 
-	int16_t write(const uint8_t* buffer, uint16_t length);
+	virtual int16_t write(const uint8_t* buffer, uint16_t length);
 
-	void close();
+	virtual void close();
 
 #if defined(__APPLE__)
 	int setNonblock(bool nonblock);

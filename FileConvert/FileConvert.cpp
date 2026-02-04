@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2024,2025 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2024,2025,2026 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,11 +18,13 @@
 
 #include "FileConvert.h"
 
+#include "UARTController.h"
 #include "WAVFileReader.h"
 #include "WAVFileWriter.h"
 #include "DVFileReader.h"
 #include "DVFileWriter.h"
 #include "Transcoder.h"
+#include "UDPSocket.h"
 #include "StopWatch.h"
 #include "Thread.h"
 
@@ -58,8 +60,9 @@ uint8_t convertMode(const char* text)
 
 int main(int argc, char** argv)
 {
-	if (argc < 6) {
-		::fprintf(stderr, "Usage: FileConvert <port> <input mode> <input file> <output mode> <output file>\n");
+	if (argc < 7) {
+		::fprintf(stderr, "Usage: FileConvert uart <port> <input mode> <input file> <output mode> <output file>\n");
+		::fprintf(stderr, "       FileConvert udp <address> <port> <input mode> <input file> <output mode> <output file>\n");
 		::fprintf(stderr, "Modes are: dstar    - D-Star\n");
 		::fprintf(stderr, "           dmr      - DMR\n");
 		::fprintf(stderr, "           nxdn     - NXDN\n");
@@ -71,29 +74,58 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	std::string port = argv[1U];
+	std::string connection = std::string(argv[1]);
 
-	uint8_t inMode = convertMode(argv[2U]);
-	if (inMode == MODE_PASS_THROUGH) {
-		::fprintf(stderr, "FileConvert: unknown mode - %s\n", argv[2U]);
+	if (connection == "uart") {
+		std::string port = argv[2U];
+
+		uint8_t inMode = convertMode(argv[3U]);
+		if (inMode == MODE_PASS_THROUGH) {
+			::fprintf(stderr, "FileConvert: unknown mode - %s\n", argv[3U]);
+			return 1;
+		}
+		std::string inFile = argv[4U];
+
+		uint8_t outMode = convertMode(argv[5U]);
+		if (outMode == MODE_PASS_THROUGH) {
+			::fprintf(stderr, "FileConvert: unknown mode - %s\n", argv[5U]);
+			return 1;
+		}
+		std::string outFile = argv[6U];
+
+		CFileConvert file(port, inMode, inFile, outMode, outFile);
+
+		return file.run();
+	} else if (connection == "udp") {
+		std::string address = argv[2U];
+
+		unsigned short port = (unsigned short)::atoi(argv[3U]);
+
+		uint8_t inMode = convertMode(argv[4U]);
+		if (inMode == MODE_PASS_THROUGH) {
+			::fprintf(stderr, "FileConvert: unknown mode - %s\n", argv[4U]);
+			return 1;
+		}
+		std::string inFile = argv[5U];
+
+		uint8_t outMode = convertMode(argv[6U]);
+		if (outMode == MODE_PASS_THROUGH) {
+			::fprintf(stderr, "FileConvert: unknown mode - %s\n", argv[6U]);
+			return 1;
+		}
+		std::string outFile = argv[7U];
+
+		CFileConvert file(address, port, inMode, inFile, outMode, outFile);
+
+		return file.run();
+	} else {
+		::fprintf(stderr, "FileConvert: unknown connection mode of \"%s\"\n", argv[1]);
 		return 1;
 	}
-	std::string inFile = argv[3U];
-
-	uint8_t outMode = convertMode(argv[4U]);
-	if (outMode == MODE_PASS_THROUGH) {
-		::fprintf(stderr, "FileConvert: unknown mode - %s\n", argv[4U]);
-		return 1;
-	}
-	std::string outFile = argv[5U];
-
-	CFileConvert file(port, inMode, inFile, outMode, outFile);
-
-	return file.run();
 }
 
 CFileConvert::CFileConvert(const std::string& port, uint8_t inMode, const std::string& inFile, uint8_t outMode, const std::string& outFile) :
-m_serial(port, TRANSCODER_SPEED),
+m_connection(nullptr),
 m_inMode(inMode),
 m_inFile(inFile),
 m_outMode(outMode),
@@ -103,10 +135,35 @@ m_hasAMBE(NO_AMBE_CHIP)
 	assert(!port.empty());
 	assert(!inFile.empty());
 	assert(!outFile.empty());
+
+	m_connection = new CUARTController(port, TRANSCODER_SPEED);
+}
+
+CFileConvert::CFileConvert(const std::string& address, unsigned short port, uint8_t inMode, const std::string& inFile, uint8_t outMode, const std::string& outFile) :
+m_connection(nullptr),
+m_inMode(inMode),
+m_inFile(inFile),
+m_outMode(outMode),
+m_outFile(outFile),
+m_hasAMBE(NO_AMBE_CHIP)
+{
+	assert(!address.empty());
+	assert(port > 0U);
+	assert(!inFile.empty());
+	assert(!outFile.empty());
+
+	CUDPSocket::startup();
+
+	CUDPSocket* socket = new CUDPSocket;
+
+	socket->setDestination(address, port);
+
+	m_connection = socket;
 }
 
 CFileConvert::~CFileConvert()
 {
+	delete m_connection;
 }
 
 int CFileConvert::run()
@@ -128,20 +185,20 @@ int CFileConvert::run()
 	else
 		ret = convertDVtoDV();
 
-	m_serial.close();
+	m_connection->close();
 
 	return ret ? 0 : 1;
 }
 
 bool CFileConvert::open()
 {
-	bool ret1 = m_serial.open();
+	bool ret1 = m_connection->open();
 	if (!ret1) {
 		::fprintf(stderr, "FileConvert: cannot open the transcoder port\n");
 		return false;
 	}
 
-	int16_t ret2 = m_serial.write(GET_VERSION, GET_VERSION_LEN);
+	int16_t ret2 = m_connection->write(GET_VERSION, GET_VERSION_LEN);
 	if (ret2 <= 0) {
 		::fprintf(stderr, "Error writing the data to the transcoder\n");
 		return false;
@@ -151,20 +208,20 @@ bool CFileConvert::open()
 	uint16_t len = read(buffer, 200U);
 	if (len == 0U) {
 		::fprintf(stderr, "Transcoder version read timeout (200 me)\n");
-		m_serial.close();
+		m_connection->close();
 		return false;
 	}
 
 	switch (buffer[TYPE_POS]) {
 	case TYPE_NAK:
 		::fprintf(stderr, "NAK returned for get version - %u\n", buffer[NAK_ERROR_POS]);
-		m_serial.close();
+		m_connection->close();
 		return false;
 
 	case TYPE_GET_VERSION:
 		if (buffer[GET_VERSION_PROTOCOL_POS] != PROTOCOL_VERSION) {
 			::fprintf(stderr, "Unknown protocol version - %u\n", buffer[GET_VERSION_PROTOCOL_POS]);
-			m_serial.close();
+			m_connection->close();
 			return false;
 		}
 
@@ -173,11 +230,11 @@ bool CFileConvert::open()
 
 	default:
 		::fprintf(stderr, "Unknown response from the transcoder to get version - 0x%02X\n", buffer[TYPE_POS]);
-		m_serial.close();
+		m_connection->close();
 		return false;
 	}
 
-	ret2 = m_serial.write(GET_CAPABILITIES, GET_CAPABILITIES_LEN);
+	ret2 = m_connection->write(GET_CAPABILITIES, GET_CAPABILITIES_LEN);
 	if (ret2 <= 0) {
 		::fprintf(stderr, "Error writing data to the transcoder\n");
 		return false;
@@ -186,14 +243,14 @@ bool CFileConvert::open()
 	len = read(buffer, 200U);
 	if (len == 0U) {
 		::fprintf(stderr, "Transcoder capabilities read timeout (200 me)\n");
-		m_serial.close();
+		m_connection->close();
 		return false;
 	}
 
 	switch (buffer[TYPE_POS]) {
 	case TYPE_NAK:
 		::fprintf(stderr, "NAK returned for get capabilities - %u\n", buffer[NAK_ERROR_POS]);
-		m_serial.close();
+		m_connection->close();
 		return false;
 
 	case TYPE_GET_CAPABILITIES:
@@ -201,7 +258,7 @@ bool CFileConvert::open()
 
 	default:
 		::fprintf(stderr, "Unknown response from the transcoder to get capabilities - 0x%02X\n", buffer[TYPE_POS]);
-		m_serial.close();
+		m_connection->close();
 		return false;
 	}
 
@@ -226,7 +283,7 @@ bool CFileConvert::open()
 	command[INPUT_MODE_POS]  = m_inMode;
 	command[OUTPUT_MODE_POS] = m_outMode;
 
-	ret2 = m_serial.write(command, SET_MODE_LEN);
+	ret2 = m_connection->write(command, SET_MODE_LEN);
 	if (ret2 <= 0) {
 		::fprintf(stderr, "Error writing data to the transcoder\n");
 		return false;
@@ -235,14 +292,14 @@ bool CFileConvert::open()
 	len = read(buffer, 200U);
 	if (len == 0U) {
 		::fprintf(stderr, "Set mode read timeout (200 me)\n");
-		m_serial.close();
+		m_connection->close();
 		return false;
 	}
 
 	switch (buffer[TYPE_POS]) {
 	case TYPE_NAK:
 		::fprintf(stderr, "NAK returned for set mode - %u\n", buffer[NAK_ERROR_POS]);
-		m_serial.close();
+		m_connection->close();
 		return false;
 
 	case TYPE_ACK:
@@ -251,7 +308,7 @@ bool CFileConvert::open()
 
 	default:
 		::fprintf(stderr, "Unknown response from the transcoder to set mode - 0x%02X\n", buffer[TYPE_POS]);
-		m_serial.close();
+		m_connection->close();
 		return false;
 	}
 }
@@ -269,7 +326,7 @@ uint16_t CFileConvert::read(uint8_t* buffer, uint16_t timeout)
 
 	for (;;) {
 		uint8_t c = 0U;
-		if (m_serial.read(&c, 1U) == 1) {
+		if (m_connection->read(&c, 1U) == 1) {
 			if (ptr == MARKER_POS) {
 				if (c == MARKER) {
 					// Handle the frame start correctly
@@ -409,7 +466,7 @@ bool CFileConvert::convertPCMtoDV()
 		::memcpy(buffer3 + 0U, PCM_DATA_HEADER, DATA_HEADER_LEN);
 		::memcpy(buffer3 + DATA_START_POS, buffer2, PCM_DATA_LENGTH);
 
-		int16_t ret = m_serial.write(buffer3, PCM_DATA_LEN);
+		int16_t ret = m_connection->write(buffer3, PCM_DATA_LEN);
 		if (ret <= 0) {
 			::fprintf(stderr, "Error writing the data to the transcoder\n");
 			return false;
@@ -480,7 +537,7 @@ bool CFileConvert::convertDVtoPCM()
 		::memcpy(buffer2 + 0U, header, DATA_HEADER_LEN);
 		::memcpy(buffer2 + DATA_START_POS, buffer1, dvLength);
 
-		int16_t ret = m_serial.write(buffer2, dvLength + DATA_HEADER_LEN);
+		int16_t ret = m_connection->write(buffer2, dvLength + DATA_HEADER_LEN);
 		if (ret <= 0) {
 			::fprintf(stderr, "Error writing the data to the transcoder\n");
 			return false;
@@ -558,7 +615,7 @@ bool CFileConvert::convertDVtoDV()
 		::memcpy(buffer2 + 0U, header, DATA_HEADER_LEN);
 		::memcpy(buffer2 + DATA_START_POS, buffer1, inLength);
 
-		int16_t ret = m_serial.write(buffer2, inLength + DATA_HEADER_LEN);
+		int16_t ret = m_connection->write(buffer2, inLength + DATA_HEADER_LEN);
 		if (ret <= 0) {
 			::fprintf(stderr, "Error writing the data to the transcoder\n");
 			return false;

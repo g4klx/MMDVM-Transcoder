@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2024,2025 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2024,2025,2026 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,6 +17,9 @@
  */
 
 #include "Tester.h"
+
+#include "UARTController.h"
+#include "UDPSocket.h"
 
 #include <cstring>
 #include <cassert>
@@ -373,40 +376,77 @@ const uint16_t MALFORMED_REQ_LEN = 4U;
 
 int main(int argc, char** argv)
 {
-    if (argc == 1) {
-        ::fprintf(stderr, "Usage: Tester <port> [speed]\n");
+    if (argc < 2) {
+        ::fprintf(stderr, "Usage: Tester uart <port> [speed]\n");
+        ::fprintf(stderr, "       Tester udp <address> <port>\n");
         return 1;
     }
 
-    std::string port = std::string(argv[1]);
-    unsigned int speed = 921600U;
+    std::string connection = std::string(argv[1]);
 
-    if (argc == 3)
-        speed = (unsigned int)atoi(argv[2]);
+    if (connection == "uart") {
+        std::string port = std::string(argv[2]);
+        unsigned int speed = 921600U;
 
-    CTester handler(port, speed);
+        if (argc == 4)
+            speed = (unsigned int)atoi(argv[3]);
 
-    return handler.run();
+        CTester handler;
+
+        handler.setUARTConnection(port, speed);
+
+        return handler.run();
+    } else if (connection == "udp") {
+        std::string address = std::string(argv[2]);
+        unsigned short port = (unsigned short)atoi(argv[3]);
+
+        CTester handler;
+
+        handler.setUDPConnection(address, port);
+
+        return handler.run();
+    } else {
+        ::fprintf(stderr, "Tester: unknown connection mode of \"%s\"\n", argv[1]);
+        return 1;
+    }
 }
 
-CTester::CTester(const std::string& device, unsigned int speed) :
-m_serial(device, speed),
+CTester::CTester() :
+m_connection(nullptr),
 m_stopwatch(),
 m_count(0U),
 m_ok(0U),
 m_failed(0U)
 {
-	assert(!device.empty());
-	assert(speed > 0U);
 }
 
 CTester::~CTester()
 {
+    delete m_connection;
+}
+
+void CTester::setUARTConnection(const std::string& device, unsigned int speed)
+{
+    m_connection = new CUARTController(device, speed);
+}
+
+void CTester::setUDPConnection(const std::string& address, unsigned short port)
+{
+    assert(!address.empty());
+    assert(port > 0U);
+
+    CUDPSocket::startup();
+
+    CUDPSocket* socket = new CUDPSocket;
+
+    socket->setDestination(address, port);
+
+    m_connection = socket;
 }
 
 int CTester::run()
 {
-    bool ret = m_serial.open();
+    bool ret = m_connection->open();
     if (!ret)
         return 1;
 
@@ -887,7 +927,7 @@ bool CTester::test(const char* title, const uint8_t* inData, uint16_t inLen, con
 
     stopwatch.start();
 
-    int16_t ret = m_serial.write(inData, inLen);
+    int16_t ret = m_connection->write(inData, inLen);
     if (ret <= 0) {
         ::fprintf(stderr, "Error writing the data to the transcoder\n\n");
         m_failed++;
@@ -971,7 +1011,7 @@ uint16_t CTester::read(uint8_t* buffer, uint16_t timeout)
 
     for (;;) {
         uint8_t c = 0U;
-        if (m_serial.read(&c, 1U) == 1) {
+        if (m_connection->read(&c, 1U) == 1) {
             if (ptr == 0U) {
                 if (c == MARKER) {
                     // Handle the frame start correctly
