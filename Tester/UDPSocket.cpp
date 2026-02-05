@@ -232,71 +232,12 @@ int16_t CUDPSocket::read(uint8_t* buffer, uint16_t length)
 	assert(buffer != nullptr);
 	assert(length > 0U);
 
-#if defined(_WIN32) || defined(_WIN64)
-	if (m_fd == INVALID_SOCKET)
-		return 0;
-#else
-	if (m_fd == -1)
-		return 0;
-#endif
-
-	// Check that the readfrom() won't block
-	struct pollfd pfd;
-	pfd.fd = m_fd;
-	pfd.events = POLLIN;
-	pfd.revents = 0;
-
-	// Return immediately
-#if defined(_WIN32) || defined(_WIN64)
-	int ret = WSAPoll(&pfd, 1, 0);
-#else
-	int ret = ::poll(&pfd, 1, 0);
-#endif
-	if (ret < 0) {
-#if defined(_WIN32) || defined(_WIN64)
-		::fprintf(stderr, "Error returned from UDP poll, err: %lu\n", ::GetLastError());
-#else
-		::fprintf(stderr, "Error returned from UDP poll, err: %d\n", errno);
-#endif
-		return -1;
-	}
-
-	if ((pfd.revents & POLLIN) == 0)
-		return 0;
-
-#if defined(_WIN32) || defined(_WIN64)
-	int size = sizeof(sockaddr_storage);
-#else
-	socklen_t size = sizeof(sockaddr_storage);
-#endif
-
 	uint8_t packet[PACKET_LENGTH];
-	sockaddr_storage address;
-#if defined(_WIN32) || defined(_WIN64)
-	int len = ::recvfrom(m_fd, (char*)packet, PACKET_LENGTH, 0, (sockaddr*)&address, &size);
-#else
-	ssize_t len = ::recvfrom(m_fd, (char*)packet, PACKET_LENGTH, 0, (sockaddr*)&address, &size);
-#endif
-	if (len < 0) {
-#if defined(_WIN32) || defined(_WIN64)
-		::fprintf(stderr, "Error returned from recvfrom, err: %lu\n", ::GetLastError());
-#else
-		::fprintf(stderr, "Error returned from recvfrom, err: %d\n", errno);
-
-		if (len == -1 && errno == ENOTSOCK) {
-			::fprintf(stdout, "Re-opening UDP port on %hu\n", m_localPort);
-			close();
-			open();
-		}
-#endif
-		return -1;
-	}
-	else if (len > 0) {
-		// Does the address match?
-		bool ret = match(m_address, address);
-		if (ret)
-			m_buffer.addData(packet, len);
-	}
+	int16_t len = readInt(packet, PACKET_LENGTH);
+	if (len <= 0)
+		return len;
+	else
+		m_buffer.addData(packet, len);
 
 	unsigned int n = m_buffer.dataSize();
 	if (n < length)
@@ -347,4 +288,77 @@ void CUDPSocket::close()
 		m_fd = -1;
 	}
 #endif
+}
+
+int16_t CUDPSocket::readInt(uint8_t* buffer, uint16_t length)
+{
+	assert(buffer != nullptr);
+	assert(length > 0U);
+
+#if defined(_WIN32) || defined(_WIN64)
+	if (m_fd == INVALID_SOCKET)
+		return 0;
+#else
+	if (m_fd == -1)
+		return 0;
+#endif
+
+	// Check that the readfrom() won't block
+	struct pollfd pfd;
+	pfd.fd = m_fd;
+	pfd.events = POLLIN;
+	pfd.revents = 0;
+
+	// Return immediately
+#if defined(_WIN32) || defined(_WIN64)
+	int ret = WSAPoll(&pfd, 1, 0);
+#else
+	int ret = ::poll(&pfd, 1, 0);
+#endif
+	if (ret < 0) {
+#if defined(_WIN32) || defined(_WIN64)
+		::fprintf(stderr, "Error returned from UDP poll, err: %lu\n", ::GetLastError());
+#else
+		::fprintf(stderr, "Error returned from UDP poll, err: %d\n", errno);
+#endif
+		return -1;
+	}
+
+	if ((pfd.revents & POLLIN) == 0)
+		return 0;
+
+#if defined(_WIN32) || defined(_WIN64)
+	int size = sizeof(sockaddr_storage);
+#else
+	socklen_t size = sizeof(sockaddr_storage);
+#endif
+
+	sockaddr_storage address;
+#if defined(_WIN32) || defined(_WIN64)
+	int len = ::recvfrom(m_fd, (char*)buffer, length, 0, (sockaddr*)&address, &size);
+#else
+	ssize_t len = ::recvfrom(m_fd, (char*)buffer, length, 0, (sockaddr*)&address, &size);
+#endif
+	if (len < 0) {
+#if defined(_WIN32) || defined(_WIN64)
+		::fprintf(stderr, "Error returned from recvfrom, err: %lu\n", ::GetLastError());
+#else
+		::fprintf(stderr, "Error returned from recvfrom, err: %d\n", errno);
+
+		if (len == -1 && errno == ENOTSOCK) {
+			::fprintf(stdout, "Re-opening UDP port on %hu\n", m_localPort);
+			close();
+			open();
+		}
+#endif
+		return len;
+	}
+	else if (len > 0) {
+		// Does the address match?
+		bool ret = match(m_address, address);
+		if (ret)
+			return len;
+	}
+
+	return 0;
 }

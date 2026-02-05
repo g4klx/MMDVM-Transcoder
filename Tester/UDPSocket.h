@@ -80,6 +80,8 @@ private:
 #else
 	int                  m_fd;
 #endif
+
+	int16_t readInt(uint8_t* buffer, uint16_t length);
 };
 
 #endif
