@@ -25,6 +25,13 @@
 #include "StopWatch.h"
 #include "Connection.h"
 
+enum class RESULT {
+	PASS,
+	FAIL,
+	ERR,
+	TIMEOUT
+};
+
 class CTester {
 public:
 	CTester();
@@ -42,7 +49,7 @@ protected:
 	unsigned int  m_ok;
 	unsigned int  m_failed;
 
-	bool     test(const char* title, const uint8_t* inData, uint16_t inLen, const uint8_t* outData, uint16_t outLen);
+	RESULT   test(const char* title, const uint8_t* inData, uint16_t inLen, const uint8_t* outData, uint16_t outLen, uint8_t* result = nullptr, uint16_t* resultLen = nullptr);
 	void     dump(const char* title, const uint8_t* buffer, uint16_t length) const;
 	uint16_t read(uint8_t* buffer, uint16_t timeout);
 };

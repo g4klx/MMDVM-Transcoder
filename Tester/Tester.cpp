@@ -54,8 +54,8 @@ const uint16_t GET_VERSION_REP_LEN = 9U;
 
 const uint8_t  GET_CAPABILITIES_REQ[]   = { MARKER, 0x04U, 0x00U, 0x01U };
 const uint16_t GET_CAPABILITIES_REQ_LEN = 4U;
-const uint8_t  GET_CAPABILITIES_REP[]   = { MARKER, 0x05U, 0x00U, 0x01U, 0x03U };
-const uint16_t GET_CAPABILITIES_REP_LEN = 5U;
+const uint8_t  GET_CAPABILITIES_REP[]   = { MARKER, 0x05U, 0x00U, 0x01U };
+const uint16_t GET_CAPABILITIES_REP_LEN = 4U;
 
 const uint8_t  PCM_DATA[] = { MARKER, 0x44U, 0x01U, 0x05U, 0x44U, 0xE3U, 0x1EU, 0xE3U, 0x1EU, 0xE5U, 0x97U, 0xF1U, 0x61U, 0x11U,
                                 0xC7U, 0x38U, 0xFAU, 0x58U, 0x31U, 0x5CU, 0xC5U, 0x42U, 0x9AU, 0x18U, 0xCFU, 0xF6U, 0x69U, 0xEAU,
@@ -446,464 +446,514 @@ void CTester::setUDPConnection(const std::string& address, unsigned short port)
 
 int CTester::run()
 {
-    bool ret = m_connection->open();
-    if (!ret)
+    bool ret1 = m_connection->open();
+    if (!ret1)
         return 1;
+
+    uint8_t result[100U];
+    uint16_t resultLen = 0U;
 
     printf("Basic Functionality\n");
 
-    ret = test("Get Version", GET_VERSION_REQ, GET_VERSION_REQ_LEN, GET_VERSION_REP, GET_VERSION_REP_LEN);
-    if (!ret)
+    RESULT ret2 = test("Get Version", GET_VERSION_REQ, GET_VERSION_REQ_LEN, GET_VERSION_REP, GET_VERSION_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Get Capabilities", GET_CAPABILITIES_REQ, GET_CAPABILITIES_REQ_LEN, GET_CAPABILITIES_REP, GET_CAPABILITIES_REP_LEN);
-    if (!ret)
+    ret2 = test("Get Capabilities", GET_CAPABILITIES_REQ, GET_CAPABILITIES_REQ_LEN, GET_CAPABILITIES_REP, GET_CAPABILITIES_REP_LEN, result, &resultLen);
+    if (ret2 == RESULT::ERR)
         return 1;
+
+    uint8_t hardware = result[4U];
+    switch (hardware) {
+    case 0x00U:
+        printf("\nNo DVSI chips available\n");
+        break;
+    case 0x01U:
+        printf("\nOne DVSI AMBE3000 available\n");
+        break;
+    case 0x02U:
+        printf("\nTwo DVSI AMBE3000s available\n");
+        break;
+    case 0x03U:
+        printf("\nOne DVSI AMBE3003  available\n");
+        break;
+    default:
+        printf("\nUnknown hardware\n");
+        return 1;
+    }
 
     printf("\nD-Star\n");
 
-    ret = test("Set Mode D-Star to PCM", SET_MODE1A_REQ, SET_MODE1A_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    if (hardware >= 0x01U) {
+        ret2 = test("Set Mode D-Star to PCM", SET_MODE1A_REQ, SET_MODE1A_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Transcode D-Star to PCM", DSTAR_DATA, DSTAR_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+    }
+
+    ret2 = test("Set Mode D-Star to D-Star", SET_MODE1B_REQ, SET_MODE1B_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode D-Star to PCM", DSTAR_DATA, DSTAR_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode D-Star to D-Star", DSTAR_DATA, DSTAR_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Set Mode D-Star to D-Star", SET_MODE1B_REQ, SET_MODE1B_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
+    if (hardware >= 0x02U) {
+        ret2 = test("Set Mode D-Star to DMR/NXDN", SET_MODE1C_REQ, SET_MODE1C_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Transcode D-Star to D-Star", DSTAR_DATA, DSTAR_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Transcode D-Star to DMR/NXDN", DSTAR_DATA, DSTAR_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Set Mode D-Star to DMR/NXDN", SET_MODE1C_REQ, SET_MODE1C_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Set Mode D-Star to YSF DN", SET_MODE1D_REQ, SET_MODE1D_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Transcode D-Star to DMR/NXDN", DSTAR_DATA, DSTAR_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Transcode D-Star to YSF DN", DSTAR_DATA, DSTAR_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+    }
 
-    ret = test("Set Mode D-Star to YSF DN", SET_MODE1D_REQ, SET_MODE1D_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
+    if (hardware >= 0x01U) {
+        ret2 = test("Set Mode D-Star to IMBE", SET_MODE1E_REQ, SET_MODE1E_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Transcode D-Star to YSF DN", DSTAR_DATA, DSTAR_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Transcode D-Star to IMBE", DSTAR_DATA, DSTAR_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Set Mode D-Star to IMBE", SET_MODE1E_REQ, SET_MODE1E_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Set Mode D-Star to IMBE FEC", SET_MODE1F_REQ, SET_MODE1F_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Transcode D-Star to IMBE", DSTAR_DATA, DSTAR_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Transcode D-Star to IMBE FEC", DSTAR_DATA, DSTAR_DATA_REQ_LEN, IMBE_FEC_DATA, IMBE_FEC_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Set Mode D-Star to IMBE FEC", SET_MODE1F_REQ, SET_MODE1F_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Set Mode D-Star to Codec2 3200", SET_MODE1G_REQ, SET_MODE1G_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Transcode D-Star to IMBE FEC", DSTAR_DATA, DSTAR_DATA_REQ_LEN, IMBE_FEC_DATA, IMBE_FEC_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Set Mode D-Star to Codec2 3200", SET_MODE1G_REQ, SET_MODE1G_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Transcode D-Star to Codec2 3200", DSTAR_DATA, DSTAR_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Transcode D-Star to Codec2 3200", DSTAR_DATA, DSTAR_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+    }
 
     printf("\nDMR/NXDN\n");
 
-    ret = test("Set Mode DMR/NXDN to PCM", SET_MODE2A_REQ, SET_MODE2A_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    if (hardware >= 0x01U) {
+        ret2 = test("Set Mode DMR/NXDN to PCM", SET_MODE2A_REQ, SET_MODE2A_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Transcode DMR/NXDN to PCM", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+    }
+
+    ret2 = test("Set Mode DMR/NXDN to DMR/NXDN", SET_MODE2B_REQ, SET_MODE2B_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode DMR/NXDN to PCM", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode DMR/NXDN to DMR/NXDN", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Set Mode DMR/NXDN to DMR/NXDN", SET_MODE2B_REQ, SET_MODE2B_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    if (hardware >= 0x02U) {
+        ret2 = test("Set Mode DMR/NXDN to D-Star", SET_MODE2C_REQ, SET_MODE2C_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Transcode DMR/NXDN to D-Star", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+    }
+
+    ret2 = test("Set Mode DMR/NXDN to YSF DN", SET_MODE2D_REQ, SET_MODE2D_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode DMR/NXDN to DMR/NXDN", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode DMR/NXDN to YSF DN", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Set Mode DMR/NXDN to D-Star", SET_MODE2C_REQ, SET_MODE2C_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
+    if (hardware >= 0x01U) {
+        ret2 = test("Set Mode DMR/NXDN to IMBE", SET_MODE2E_REQ, SET_MODE2E_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Transcode DMR/NXDN to D-Star", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Transcode DMR/NXDN to IMBE", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Set Mode DMR/NXDN to YSF DN", SET_MODE2D_REQ, SET_MODE2D_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Set Mode DMR/NXDN to IMBE FEC", SET_MODE2F_REQ, SET_MODE2F_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Transcode DMR/NXDN to YSF DN", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Transcode DMR/NXDN to IMBE FEC", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, IMBE_FEC_DATA, IMBE_FEC_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Set Mode DMR/NXDN to IMBE", SET_MODE2E_REQ, SET_MODE2E_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Set Mode DMR/NXDN to Codec2 3200", SET_MODE2G_REQ, SET_MODE2G_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Transcode DMR/NXDN to IMBE", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Set Mode DMR/NXDN to IMBE FEC", SET_MODE2F_REQ, SET_MODE2F_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Transcode DMR/NXDN to IMBE FEC", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, IMBE_FEC_DATA, IMBE_FEC_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Set Mode DMR/NXDN to Codec2 3200", SET_MODE2G_REQ, SET_MODE2G_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Transcode DMR/NXDN to Codec2 3200", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Transcode DMR/NXDN to Codec2 3200", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+    }
 
     printf("\nYSF DN\n");
 
-    ret = test("Set Mode YSF DN to PCM", SET_MODE3A_REQ, SET_MODE3A_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    if (hardware >= 0x01U) {
+        ret2 = test("Set Mode YSF DN to PCM", SET_MODE3A_REQ, SET_MODE3A_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Transcode YSF DN to PCM", YSFDN_DATA, YSFDN_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+    }
+
+    ret2 = test("Set Mode YSF DN to YSF DN", SET_MODE3B_REQ, SET_MODE3B_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode YSF DN to PCM", YSFDN_DATA, YSFDN_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode YSF DN to YSF DN", YSFDN_DATA, YSFDN_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Set Mode YSF DN to YSF DN", SET_MODE3B_REQ, SET_MODE3B_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    if (hardware >= 0x02U) {
+        ret2 = test("Set Mode YSF DN to D-Star", SET_MODE3C_REQ, SET_MODE3C_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Transcode YSF DN to D-Star", YSFDN_DATA, YSFDN_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+    }
+
+    ret2 = test("Set Mode YSF DN to DMR/NXDN", SET_MODE3D_REQ, SET_MODE3D_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode YSF DN to YSF DN", YSFDN_DATA, YSFDN_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode YSF DN to DMR/NXDN", YSFDN_DATA, YSFDN_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Set Mode YSF DN to D-Star", SET_MODE3C_REQ, SET_MODE3C_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
+    if (hardware >= 0x01U) {
+        ret2 = test("Set Mode YSF DN to IMBE", SET_MODE3E_REQ, SET_MODE3E_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Transcode YSF DN to D-Star", YSFDN_DATA, YSFDN_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Transcode YSF DN to IMBE", YSFDN_DATA, YSFDN_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Set Mode YSF DN to DMR/NXDN", SET_MODE3D_REQ, SET_MODE3D_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Set Mode YSF DN to IMBE FEC", SET_MODE3F_REQ, SET_MODE3F_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Transcode YSF DN to DMR/NXDN", YSFDN_DATA, YSFDN_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Transcode YSF DN to IMBE FEC", YSFDN_DATA, YSFDN_DATA_REQ_LEN, IMBE_FEC_DATA, IMBE_FEC_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Set Mode YSF DN to IMBE", SET_MODE3E_REQ, SET_MODE3E_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Set Mode YSF DN to Codec2 3200", SET_MODE3G_REQ, SET_MODE3G_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Transcode YSF DN to IMBE", YSFDN_DATA, YSFDN_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Set Mode YSF DN to IMBE FEC", SET_MODE3F_REQ, SET_MODE3F_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Transcode YSF DN to IMBE FEC", YSFDN_DATA, YSFDN_DATA_REQ_LEN, IMBE_FEC_DATA, IMBE_FEC_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Set Mode YSF DN to Codec2 3200", SET_MODE3G_REQ, SET_MODE3G_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Transcode YSF DN to Codec2 3200", YSFDN_DATA, YSFDN_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Transcode YSF DN to Codec2 3200", YSFDN_DATA, YSFDN_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+    }
 
     printf("\nIMBE\n");
 
-    ret = test("Set Mode IMBE to PCM", SET_MODE6A_REQ, SET_MODE6A_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    ret2 = test("Set Mode IMBE to PCM", SET_MODE6A_REQ, SET_MODE6A_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode IMBE to PCM", IMBE_DATA, IMBE_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode IMBE to PCM", IMBE_DATA, IMBE_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Set Mode IMBE to IMBE", SET_MODE6B_REQ, SET_MODE6B_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    ret2 = test("Set Mode IMBE to IMBE", SET_MODE6B_REQ, SET_MODE6B_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode IMBE to IMBE", IMBE_DATA, IMBE_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode IMBE to IMBE", IMBE_DATA, IMBE_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Set Mode IMBE to IMBE FEC", SET_MODE6C_REQ, SET_MODE6C_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    ret2 = test("Set Mode IMBE to IMBE FEC", SET_MODE6C_REQ, SET_MODE6C_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode IMBE to IMBE FEC", IMBE_DATA, IMBE_DATA_REQ_LEN, IMBE_FEC_DATA, IMBE_FEC_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode IMBE to IMBE FEC", IMBE_DATA, IMBE_DATA_REQ_LEN, IMBE_FEC_DATA, IMBE_FEC_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Set Mode IMBE to D-Star", SET_MODE6D_REQ, SET_MODE6D_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    if (hardware >= 0x01U) {
+        ret2 = test("Set Mode IMBE to D-Star", SET_MODE6D_REQ, SET_MODE6D_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Transcode IMBE to D-Star", IMBE_DATA, IMBE_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Set Mode IMBE to DMR/NXDN", SET_MODE6E_REQ, SET_MODE6E_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Transcode IMBE to DMR/NXDN", IMBE_DATA, IMBE_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Set Mode IMBE to YSF DN", SET_MODE6F_REQ, SET_MODE6F_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Transcode IMBE to YSF DN", IMBE_DATA, IMBE_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+    }
+
+    ret2 = test("Set Mode IMBE to Codec2 3200", SET_MODE6G_REQ, SET_MODE6G_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode IMBE to D-Star", IMBE_DATA, IMBE_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Set Mode IMBE to DMR/NXDN", SET_MODE6E_REQ, SET_MODE6E_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Transcode IMBE to DMR/NXDN", IMBE_DATA, IMBE_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Set Mode IMBE to YSF DN", SET_MODE6F_REQ, SET_MODE6F_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Transcode IMBE to YSF DN", IMBE_DATA, IMBE_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Set Mode IMBE to Codec2 3200", SET_MODE6G_REQ, SET_MODE6G_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Transcode IMBE to Codec2 3200", IMBE_DATA, IMBE_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode IMBE to Codec2 3200", IMBE_DATA, IMBE_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
     printf("\nIMBE FEC\n");
 
-    ret = test("Set Mode IMBE FEC to PCM", SET_MODE4A_REQ, SET_MODE4A_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    ret2 = test("Set Mode IMBE FEC to PCM", SET_MODE4A_REQ, SET_MODE4A_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode IMBE FEC to PCM", IMBE_FEC_DATA, IMBE_FEC_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode IMBE FEC to PCM", IMBE_FEC_DATA, IMBE_FEC_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Set Mode IMBE FEC to IMBE FEC", SET_MODE4B_REQ, SET_MODE4B_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    ret2 = test("Set Mode IMBE FEC to IMBE FEC", SET_MODE4B_REQ, SET_MODE4B_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode IMBE FEC to IMBE FEC", IMBE_FEC_DATA, IMBE_FEC_DATA_REQ_LEN, IMBE_FEC_DATA, IMBE_FEC_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode IMBE FEC to IMBE FEC", IMBE_FEC_DATA, IMBE_FEC_DATA_REQ_LEN, IMBE_FEC_DATA, IMBE_FEC_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Set Mode IMBE FEC to IMBE", SET_MODE4C_REQ, SET_MODE4C_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    ret2 = test("Set Mode IMBE FEC to IMBE", SET_MODE4C_REQ, SET_MODE4C_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode IMBE FEC to IMBE", IMBE_FEC_DATA, IMBE_FEC_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode IMBE FEC to IMBE", IMBE_FEC_DATA, IMBE_FEC_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Set Mode IMBE FEC to D-Star", SET_MODE4D_REQ, SET_MODE4D_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    if (hardware >= 0x01U) {
+        ret2 = test("Set Mode IMBE FEC to D-Star", SET_MODE4D_REQ, SET_MODE4D_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Transcode IMBE FEC to D-Star", IMBE_FEC_DATA, IMBE_FEC_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Set Mode IMBE FEC to DMR/NXDN", SET_MODE4E_REQ, SET_MODE4E_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Transcode IMBE FEC to DMR/NXDN", IMBE_FEC_DATA, IMBE_FEC_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Set Mode IMBE FEC to YSF DN", SET_MODE4F_REQ, SET_MODE4F_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Transcode IMBE FEC to YSF DN", IMBE_FEC_DATA, IMBE_FEC_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+    }
+
+    ret2 = test("Set Mode IMBE FEC to Codec2 3200", SET_MODE4G_REQ, SET_MODE4G_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode IMBE FEC to D-Star", IMBE_FEC_DATA, IMBE_FEC_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Set Mode IMBE FEC to DMR/NXDN", SET_MODE4E_REQ, SET_MODE4E_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Transcode IMBE FEC to DMR/NXDN", IMBE_FEC_DATA, IMBE_FEC_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Set Mode IMBE FEC to YSF DN", SET_MODE4F_REQ, SET_MODE4F_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Transcode IMBE FEC to YSF DN", IMBE_FEC_DATA, IMBE_FEC_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Set Mode IMBE FEC to Codec2 3200", SET_MODE4G_REQ, SET_MODE4G_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Transcode IMBE FEC to Codec2 3200", IMBE_FEC_DATA, IMBE_FEC_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode IMBE FEC to Codec2 3200", IMBE_FEC_DATA, IMBE_FEC_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
     printf("\nCodec2 3200\n");
 
-    ret = test("Set Mode Codec2 3200 to PCM", SET_MODE5A_REQ, SET_MODE5A_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    ret2 = test("Set Mode Codec2 3200 to PCM", SET_MODE5A_REQ, SET_MODE5A_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode Codec2 3200 to PCM", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode Codec2 3200 to PCM", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Set Mode Codec2 3200 to Codec2 3200", SET_MODE5B_REQ, SET_MODE5B_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    ret2 = test("Set Mode Codec2 3200 to Codec2 3200", SET_MODE5B_REQ, SET_MODE5B_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode Codec2 3200 to Codec2 3200", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REQ_LEN);
-    if (!ret)
+    ret2 = test("Transcode Codec2 3200 to Codec2 3200", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REQ_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Set Mode Codec2 3200 to D-Star", SET_MODE5C_REQ, SET_MODE5C_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    if (hardware >= 0x01U) {
+        ret2 = test("Set Mode Codec2 3200 to D-Star", SET_MODE5C_REQ, SET_MODE5C_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Transcode Codec2 3200 to D-Star", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Set Mode Codec2 3200 to DMR/NXDN", SET_MODE5D_REQ, SET_MODE5D_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Transcode Codec2 3200 to DMR/NXDN", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Set Mode Codec2 3200 to YSF DN", SET_MODE5E_REQ, SET_MODE5E_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Transcode Codec2 3200 to YSF DN", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+    }
+
+    ret2 = test("Set Mode Codec2 3200 to IMBE", SET_MODE5F_REQ, SET_MODE5F_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode Codec2 3200 to D-Star", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode Codec2 3200 to IMBE", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Set Mode Codec2 3200 to DMR/NXDN", SET_MODE5D_REQ, SET_MODE5D_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    ret2 = test("Set Mode Codec2 3200 to IMBE FEC", SET_MODE5G_REQ, SET_MODE5G_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode Codec2 3200 to DMR/NXDN", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Set Mode Codec2 3200 to YSF DN", SET_MODE5E_REQ, SET_MODE5E_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Transcode Codec2 3200 to YSF DN", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Set Mode Codec2 3200 to IMBE", SET_MODE5F_REQ, SET_MODE5F_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Transcode Codec2 3200 to IMBE", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Set Mode Codec2 3200 to IMBE FEC", SET_MODE5G_REQ, SET_MODE5G_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Transcode Codec2 3200 to IMBE FEC", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, IMBE_FEC_DATA, IMBE_FEC_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode Codec2 3200 to IMBE FEC", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, IMBE_FEC_DATA, IMBE_FEC_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
     printf("\nPCM\n");
 
-    ret = test("Set Mode PCM to D-Star", SET_MODE9A_REQ, SET_MODE9A_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    if (hardware >= 0x01U) {
+        ret2 = test("Set Mode PCM to D-Star", SET_MODE9A_REQ, SET_MODE9A_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Transcode PCM to D-Star", PCM_DATA, PCM_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Set Mode PCM to DMR/NXDN", SET_MODE9B_REQ, SET_MODE9B_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Transcode PCM to DMR/NXDN", PCM_DATA, PCM_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Set Mode PCM to YSF DN", SET_MODE9C_REQ, SET_MODE9C_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+
+        ret2 = test("Transcode PCM to YSF DN", PCM_DATA, PCM_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+    }
+
+    ret2 = test("Set Mode PCM to IMBE", SET_MODE9D_REQ, SET_MODE9D_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode PCM to D-Star", PCM_DATA, PCM_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode PCM to IMBE", PCM_DATA, PCM_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Set Mode PCM to DMR/NXDN", SET_MODE9B_REQ, SET_MODE9B_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    ret2 = test("Set Mode PCM to IMBE FEC", SET_MODE9E_REQ, SET_MODE9E_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode PCM to DMR/NXDN", PCM_DATA, PCM_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode PCM to IMBE FEC", PCM_DATA, PCM_DATA_REQ_LEN, IMBE_FEC_DATA, IMBE_FEC_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Set Mode PCM to YSF DN", SET_MODE9C_REQ, SET_MODE9C_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    ret2 = test("Set Mode PCM to Codec2 3200", SET_MODE9F_REQ, SET_MODE9F_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode PCM to YSF DN", PCM_DATA, PCM_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode PCM to Codec2 3200", PCM_DATA, PCM_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Set Mode PCM to IMBE", SET_MODE9D_REQ, SET_MODE9D_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
+    ret2 = test("Set Mode PCM to PCM", SET_MODE9G_REQ, SET_MODE9G_REQ_LEN, ACK, ACK_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Transcode PCM to IMBE", PCM_DATA, PCM_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
-    if (!ret)
+    ret2 = test("Transcode PCM to PCM", PCM_DATA, PCM_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REQ_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Set Mode PCM to IMBE FEC", SET_MODE9E_REQ, SET_MODE9E_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
+    if (hardware == 0x03U) {
+        printf("\nAMBE3003 Passthrough\n");
 
-    ret = test("Transcode PCM to IMBE FEC", PCM_DATA, PCM_DATA_REQ_LEN, IMBE_FEC_DATA, IMBE_FEC_DATA_REP_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Set Passthrough Mode", SET_MODEPA_REQ, SET_MODEPA_REQ_LEN, ACK, ACK_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Set Mode PCM to Codec2 3200", SET_MODE9F_REQ, SET_MODE9F_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Get Product Id", MODEPB_DATA_REQ, MODEPB_DATA_REQ_LEN, MODEPB_DATA_REP, MODEPB_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Transcode PCM to Codec2 3200", PCM_DATA, PCM_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Get Version", MODEPC_DATA_REQ, MODEPC_DATA_REQ_LEN, MODEPC_DATA_REP, MODEPC_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Set Mode PCM to PCM", SET_MODE9G_REQ, SET_MODE9G_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Get Get CFG", MODEPD_DATA_REQ, MODEPD_DATA_REQ_LEN, MODEPD_DATA_REP, MODEPD_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    ret = test("Transcode PCM to PCM", PCM_DATA, PCM_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REQ_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Set Channel 1 to DMR/NXDN", MODEPE_DATA_REQ, MODEPE_DATA_REQ_LEN, MODEPE_DATA_REP, MODEPE_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
 
-    printf("\nPassthrough\n");
-
-    ret = test("Set Passthrough Mode", SET_MODEPA_REQ, SET_MODEPA_REQ_LEN, ACK, ACK_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Get AMBE3003 Product Id", MODEPB_DATA_REQ, MODEPB_DATA_REQ_LEN, MODEPB_DATA_REP, MODEPB_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Get AMBE3003 Version", MODEPC_DATA_REQ, MODEPC_DATA_REQ_LEN, MODEPC_DATA_REP, MODEPC_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Get AMBE3003 Get CFG", MODEPD_DATA_REQ, MODEPD_DATA_REQ_LEN, MODEPD_DATA_REP, MODEPD_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Set AMBE3003 Channel 1 to DMR/NXDN", MODEPE_DATA_REQ, MODEPE_DATA_REQ_LEN, MODEPE_DATA_REP, MODEPE_DATA_REP_LEN);
-    if (!ret)
-        return 1;
-
-    ret = test("Convert AMBE3003 Channel 1 from DMR/NXDN to PCM", MODEPF_DATA_REQ, MODEPF_DATA_REQ_LEN, MODEPF_DATA_REP, MODEPF_DATA_REP_LEN);
-    if (!ret)
-        return 1;
+        ret2 = test("Convert Channel 1 from DMR/NXDN to PCM", MODEPF_DATA_REQ, MODEPF_DATA_REQ_LEN, MODEPF_DATA_REP, MODEPF_DATA_REP_LEN);
+        if (ret2 == RESULT::ERR)
+            return 1;
+    }
 
     printf("\nError Cases\n");
 
-    ret = test("Set Mode DMR to unknown", SET_MODEN_REQ, SET_MODEN_REQ_LEN, NAK2, NAK2_LEN);
-    if (!ret)
+    ret2 = test("Set Mode DMR to unknown", SET_MODEN_REQ, SET_MODEN_REQ_LEN, NAK2, NAK2_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Send invalid command", INVALID_REQ, INVALID_REQ_LEN, NAK0, NAK0_LEN);
-    if (!ret)
+    ret2 = test("Send invalid command", INVALID_REQ, INVALID_REQ_LEN, NAK0, NAK0_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
-    ret = test("Send malformed command", MALFORMED_REQ, MALFORMED_REQ_LEN, NAK4, NAK4_LEN);
-    if (!ret)
+    ret2 = test("Send malformed command", MALFORMED_REQ, MALFORMED_REQ_LEN, NAK4, NAK4_LEN);
+    if (ret2 == RESULT::ERR)
         return 1;
 
     printf("\nNo tests: %u, ok: %u (%.1f%%), failed: %u (%.1f%%)\n", m_count, m_ok, 100.0F * float(m_ok) / float(m_count), m_failed, 100.0F * float(m_failed) / float(m_count));
@@ -911,10 +961,10 @@ int CTester::run()
     return 0;
 }
 
-bool CTester::test(const char* title, const uint8_t* inData, uint16_t inLen, const uint8_t* outData, uint16_t outLen)
+RESULT CTester::test(const char* title, const uint8_t* inData, uint16_t inLen, const uint8_t* outData, uint16_t outLen, uint8_t* result, uint16_t* resultLen)
 {
-    assert(title != NULL);
-    assert(inData != NULL);
+    assert(title != nullptr);
+    assert(inData != nullptr);
     assert(inLen > 0U);
 
     m_count++;
@@ -923,15 +973,15 @@ bool CTester::test(const char* title, const uint8_t* inData, uint16_t inLen, con
 
     ::fprintf(stdout, "%s", title);
 
-    // dump("Write", inData, inLen);
+    dump("\nWrite", inData, inLen);
 
     stopwatch.start();
 
-    int16_t ret = m_connection->write(inData, inLen);
-    if (ret <= 0) {
+    int16_t ret2 = m_connection->write(inData, inLen);
+    if (ret2 <= 0) {
         ::fprintf(stderr, "Error writing the data to the transcoder\n\n");
         m_failed++;
-        return false;
+        return RESULT::ERR;
     }
 
     uint8_t buffer[400U];
@@ -939,33 +989,40 @@ bool CTester::test(const char* title, const uint8_t* inData, uint16_t inLen, con
     if (len == 0U) {
         printf(", Timeout (200 ms)\n");
         m_failed++;
-        return true;
+        return RESULT::TIMEOUT;
     }
 
     unsigned int elapsed = stopwatch.elapsed();
 
-    // dump("Read", buffer, len);
+    dump("Read", buffer, len);
 
-    if (outData != NULL) {
+    if (result != nullptr && resultLen != nullptr) {
+        ::memcpy(result, buffer, len);
+        *resultLen = len;
+    }
+
+    if (outData != nullptr) {
         if (::memcmp(buffer, outData, outLen) == 0) {
             printf(", OK (%.1f ms)\n", float(elapsed) / 1000.0F);
             m_ok++;
+            return RESULT::PASS;
         } else {
             printf(", Failed (%.1f ms)\n", float(elapsed) / 1000.0F);
             dump("Expected", outData, outLen);
             dump("Read", buffer, len);
             printf("\n");
             m_failed++;
+            return RESULT::FAIL;
         }
     }
 
-    return true;
+    return RESULT::PASS;
 }
 
 void CTester::dump(const char* title, const uint8_t* buffer, uint16_t length) const
 {
-    assert(title != NULL);
-    assert(buffer != NULL);
+    assert(title != nullptr);
+    assert(buffer != nullptr);
     assert(length > 0U);
 
     ::fprintf(stdout, "%s\n", title);
@@ -1001,7 +1058,7 @@ void CTester::dump(const char* title, const uint8_t* buffer, uint16_t length) co
 
 uint16_t CTester::read(uint8_t* buffer, uint16_t timeout)
 {
-    assert(buffer != NULL);
+    assert(buffer != nullptr);
     assert(timeout > 0U);
 
     uint16_t len = 0U;
@@ -1046,7 +1103,7 @@ uint16_t CTester::read(uint8_t* buffer, uint16_t timeout)
         } else {
             unsigned long elapsed = m_stopwatch.elapsed() / 1000U;
             if (elapsed > timeout) {
-                ::fprintf(stderr, "Read has timed out after %u ms\n", timeout);
+                ::fprintf(stderr, "\nRead has timed out after %u ms\n", timeout);
                 return len;
             }
         }
