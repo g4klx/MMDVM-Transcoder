@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2024,2026 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ uint8_t CPCMYSFDN::init(uint8_t n)
 {
   m_n = n;
 
-  ambe.init(m_n, PCM_TO_YSFDN);
+  ambe.init(m_n, AMBE_MODE::PCM_TO_YSFDN);
 
   return 0x00U;
 }
@@ -58,10 +58,10 @@ int16_t CPCMYSFDN::output(uint8_t* buffer)
   uint8_t data[10U];
   AD_STATE ret = ambe.readAMBE(m_n, data);
   switch (ret) {
-      case ADS_NO_DATA:
+      case AD_STATE::NO_DATA:
         return 0;
 
-      case ADS_WRONG_TYPE:
+      case AD_STATE::WRONG_TYPE:
         DEBUG1("PCMYSFDN: Invalid returned data type");
         return -0x06;
 

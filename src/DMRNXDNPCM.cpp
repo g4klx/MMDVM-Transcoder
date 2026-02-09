@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024,2026 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ uint8_t CDMRNXDNPCM::init(uint8_t n)
 {
   m_n = n;
 
-  ambe.init(m_n, DMR_NXDN_TO_PCM);
+  ambe.init(m_n, AMBE_MODE::DMR_NXDN_TO_PCM);
 
   return 0x00U;
 }
@@ -56,10 +56,10 @@ int16_t CDMRNXDNPCM::output(uint8_t* buffer)
 {
   AD_STATE ret = ambe.readPCM(m_n, buffer);
   switch (ret) {
-      case ADS_NO_DATA:
+      case AD_STATE::NO_DATA:
         return 0;
 
-      case ADS_DATA:
+      case AD_STATE::DATA:
         return PCM_DATA_LENGTH;
 
       default:

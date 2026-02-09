@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024,2026 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -182,48 +182,48 @@ AD_STATE CAMBE3003Driver::readAMBE(uint8_t n, uint8_t* ambe)
     case 0U:
       switch (m_length0) {
         case 0U:
-          return ADS_NO_DATA;
+          return AD_STATE::NO_DATA;
 
         case DVSI_PCM_BYTES:
           m_length0 = 0U;
-          return ADS_WRONG_TYPE;
+          return AD_STATE::WRONG_TYPE;
 
         default:
           ::memcpy(ambe, m_buffer0, m_length0);
           m_length0 = 0U;
-          return ADS_DATA;
+          return AD_STATE::DATA;
       }
       break;
 
     case 1U:
       switch (m_length1) {
         case 0U:
-          return ADS_NO_DATA;
+          return AD_STATE::NO_DATA;
 
         case DVSI_PCM_BYTES:
           m_length1 = 0U;
-          return ADS_WRONG_TYPE;
+          return AD_STATE::WRONG_TYPE;
 
         default:
           ::memcpy(ambe, m_buffer1, m_length1);
           m_length1 = 0U;
-          return ADS_DATA;
+          return AD_STATE::DATA;
       }
       break;
 
     default:
       switch (m_length2) {
         case 0U:
-          return ADS_NO_DATA;
+          return AD_STATE::NO_DATA;
 
         case DVSI_PCM_BYTES:
           m_length2 = 0U;
-          return ADS_WRONG_TYPE;
+          return AD_STATE::WRONG_TYPE;
 
         default:
           ::memcpy(ambe, m_buffer2, m_length2);
           m_length2 = 0U;
-          return ADS_DATA;
+          return AD_STATE::DATA;
       }
       break;
   }
@@ -235,48 +235,48 @@ AD_STATE CAMBE3003Driver::readPCM(uint8_t n, uint8_t* pcm)
     case 0U:
       switch (m_length0) {
         case 0U:
-          return ADS_NO_DATA;
+          return AD_STATE::NO_DATA;
 
         case DVSI_PCM_BYTES:
           ::memcpy(pcm, m_buffer0, DVSI_PCM_BYTES);
           m_length0 = 0U;
-          return ADS_DATA;
+          return AD_STATE::DATA;
 
         default:
           m_length0 = 0U;
-          return ADS_WRONG_TYPE;
+          return AD_STATE::WRONG_TYPE;
       }
       break;
 
     case 1U:
       switch (m_length1) {
         case 0U:
-          return ADS_NO_DATA;
+          return AD_STATE::NO_DATA;
 
         case DVSI_PCM_BYTES:
           ::memcpy(pcm, m_buffer1, DVSI_PCM_BYTES);
           m_length1 = 0U;
-          return ADS_DATA;
+          return AD_STATE::DATA;
 
         default:
           m_length1 = 0U;
-          return ADS_WRONG_TYPE;
+          return AD_STATE::WRONG_TYPE;
       }
       break;
 
     default:
       switch (m_length2) {
         case 0U:
-          return ADS_NO_DATA;
+          return AD_STATE::NO_DATA;
 
         case DVSI_PCM_BYTES:
           ::memcpy(pcm, m_buffer2, DVSI_PCM_BYTES);
           m_length2 = 0U;
-          return ADS_DATA;
+          return AD_STATE::DATA;
 
         default:
           m_length2 = 0U;
-          return ADS_WRONG_TYPE;
+          return AD_STATE::WRONG_TYPE;
       }
       break;
   }

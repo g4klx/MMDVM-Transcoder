@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024,2026 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@
 
 #include <cstdint>
 
-enum AMBE_MODE {
-  MODE_NONE,
+enum class AMBE_MODE {
+  NONE,
   DSTAR_TO_PCM,
   YSFDN_TO_PCM,
   DMR_NXDN_TO_PCM,

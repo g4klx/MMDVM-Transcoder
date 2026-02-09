@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023,2024,2025 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024,2025,2026 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -27,10 +27,10 @@
 
 #include <cstdint>
 
-enum AD_STATE {
-  ADS_NO_DATA,
-  ADS_WRONG_TYPE,
-  ADS_DATA
+enum class AD_STATE {
+  NO_DATA,
+  WRONG_TYPE,
+  DATA
 };
 
 class CAMBE3003Driver {

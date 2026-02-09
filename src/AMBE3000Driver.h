@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023,2024,2025 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024,2025,2026 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -28,10 +28,10 @@
 
 #include <cstdint>
 
-enum AD_STATE {
-  ADS_NO_DATA,
-  ADS_WRONG_TYPE,
-  ADS_DATA
+enum class AD_STATE {
+  NO_DATA,
+  WRONG_TYPE,
+  DATA
 };
 
 class CAMBE3000Driver {
@@ -56,9 +56,11 @@ class CAMBE3000Driver {
 
   private:
     uint8_t        m_buffer0[400U];
-    uint8_t        m_buffer1[400U];
     uint16_t       m_length0;
+#if AMBE_TYPE == 2
+    uint8_t        m_buffer1[400U];
     uint16_t       m_length1;
+#endif
     CAMBE3000Utils m_utils;
 
     void     process(uint8_t n, CDVSIDriver& driver, uint16_t& mLength, uint8_t* mBuffer);

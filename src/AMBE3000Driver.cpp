@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023,2024,2025 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024,2025,2026 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -40,9 +40,11 @@ const uint16_t DVSI_PCM_BYTES   = DVSI_PCM_SAMPLES * sizeof(int16_t);
 
 CAMBE3000Driver::CAMBE3000Driver() :
 m_buffer0(),
-m_buffer1(),
 m_length0(0U),
+#if AMBE_TYPE == 2
+m_buffer1(),
 m_length1(0U),
+#endif
 m_utils()
 {
 }
@@ -239,16 +241,16 @@ AD_STATE CAMBE3000Driver::readAMBE(uint8_t n, CDVSIDriver& driver, uint8_t* ambe
 {
   switch (mLength) {
     case 0U:
-      return ADS_NO_DATA;
+      return AD_STATE::NO_DATA;
 
     case DVSI_PCM_BYTES:
       mLength = 0U;
-      return ADS_WRONG_TYPE;
+      return AD_STATE::WRONG_TYPE;
 
     default:
       ::memcpy(ambe, mBuffer, mLength);
       mLength = 0U;
-      return ADS_DATA;
+      return AD_STATE::DATA;
   }
 }
 
@@ -268,16 +270,16 @@ AD_STATE CAMBE3000Driver::readPCM(uint8_t n, CDVSIDriver& driver, uint8_t* pcm, 
 {
   switch (mLength) {
     case 0U:
-      return ADS_NO_DATA;
+      return AD_STATE::NO_DATA;
 
     case DVSI_PCM_BYTES:
       ::memcpy(pcm, mBuffer, DVSI_PCM_BYTES);
       mLength = 0U;
-      return ADS_DATA;
+      return AD_STATE::DATA;
 
     default:
       mLength = 0U;
-      return ADS_WRONG_TYPE;
+      return AD_STATE::WRONG_TYPE;
   }
 }
 
@@ -287,9 +289,11 @@ void CAMBE3000Driver::drain(uint8_t n)
     case 0U:
       m_length0 = 0U;
       break;
+#if AMBE_TYPE == 2
     default:
       m_length1 = 0U;
       break;
+#endif
   }
 }
 

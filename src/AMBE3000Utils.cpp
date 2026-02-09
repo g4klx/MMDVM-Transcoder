@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023,2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2023,2024,2026 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ const uint16_t DVSI_PCM_SAMPLES = 160U;
 const uint16_t DVSI_PCM_BYTES   = DVSI_PCM_SAMPLES * sizeof(int16_t);
 
 CAMBE3000Utils::CAMBE3000Utils() :
-m_mode(MODE_NONE),
+m_mode(AMBE_MODE::NONE),
 m_bytesLen(0U),
 m_bitsLen(0U)
 {
@@ -73,22 +73,22 @@ uint16_t CAMBE3000Utils::createModeChange(AMBE_MODE mode, uint8_t* buffer)
   buffer[length++] = DVSI_TYPE_CONTROL;
 
   switch (mode) {
-    case DSTAR_TO_PCM:
-    case PCM_TO_DSTAR:
+    case AMBE_MODE::DSTAR_TO_PCM:
+    case AMBE_MODE::PCM_TO_DSTAR:
       ::memcpy(buffer + length, DVSI_PKT_DSTAR_FEC, DVSI_PKT_DSTAR_FEC_LEN);
       length += DVSI_PKT_DSTAR_FEC_LEN;
       m_bytesLen = DVSI_PKT_DSTAR_FEC_BYTES_LEN;
       m_bitsLen  = DVSI_PKT_DSTAR_FEC_BITS_LEN;
       break;
-    case DMR_NXDN_TO_PCM:
-    case PCM_TO_DMR_NXDN:
+    case AMBE_MODE::DMR_NXDN_TO_PCM:
+    case AMBE_MODE::PCM_TO_DMR_NXDN:
       ::memcpy(buffer + length, DVSI_PKT_MODE33, DVSI_PKT_MODE33_LEN);
       length += DVSI_PKT_MODE33_LEN;
       m_bytesLen = DVSI_PKT_MODE33_BYTES_LEN;
       m_bitsLen  = DVSI_PKT_MODE33_BITS_LEN;
       break;
-    case YSFDN_TO_PCM:
-    case PCM_TO_YSFDN:
+    case AMBE_MODE::YSFDN_TO_PCM:
+    case AMBE_MODE::PCM_TO_YSFDN:
       ::memcpy(buffer + length, DVSI_PKT_MODE34, DVSI_PKT_MODE34_LEN);
       length += DVSI_PKT_MODE34_LEN;
       m_bytesLen = DVSI_PKT_MODE34_BYTES_LEN;
