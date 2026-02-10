@@ -105,6 +105,7 @@ uint16_t CDVSIDriver::read(uint8_t* buffer)
 
       // The full packet has been received, process it
       if (m_ptr == m_len) {
+        DEBUG1("Read from the chip");
         ::memcpy(buffer, m_buffer, m_len);
         uint16_t length = m_len;
 

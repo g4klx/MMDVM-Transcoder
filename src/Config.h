@@ -25,7 +25,10 @@
 // Select use of debugging messages
 #define	DEBUGGING
 
-// Baud rate for the DVSI AMBE3000/3003 chip(s)
+// Swap the use of two AMBE chips
+#define SWAP_AMBE_CHIPS
+
+// Baud rate for the DVSI chip(s)
 #define DVSI_SPEED          460800
 
 // Number of DVSI AMBE chip(s)

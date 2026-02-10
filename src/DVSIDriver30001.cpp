@@ -21,6 +21,24 @@
 
 #include "Globals.h"
 
+#if defined(SWAP_AMBE_CHIPS)
+
+#if defined(NUCLEO_STM32F722ZE)
+#define USART_TX        PE8     // Arduino D42
+#define USART_RX        PE7     // Arduino D41
+#define AMBE_RESET      PF14    // Arduino D4
+#define AMBE_RTS        PF3     // Arduino A3
+#elif defined(NUCLEO_STM32H723ZG)
+#define USART_TX        PE8     // Arduino D42
+#define USART_RX        PE7     // Arduino D41
+#define AMBE_RESET      PE14    // Arduino D4
+#define AMBE_RTS        PB1     // Arduino A3
+#else
+#error "Unknown hardware"
+#endif
+
+#else
+
 #if defined(NUCLEO_STM32F722ZE)
 #define USART_TX        PG14     // Arduino D1
 #define USART_RX        PG9      // Arduino D0
@@ -34,6 +52,9 @@
 #else
 #error "Unknown hardware"
 #endif
+
+#endif
+
 
 CDVSIDriver30001::CDVSIDriver30001() :
 CDVSIDriver(USART_RX, USART_TX, AMBE_RESET, AMBE_RTS)

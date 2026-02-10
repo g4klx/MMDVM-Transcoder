@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2024 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2024,2026 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,6 +21,34 @@
 #if defined(HAS_LEDS)
 
 #include "Globals.h"
+
+#if defined(SWAP_AMBE_CHIPS)
+
+#if defined(NUCLEO_STM32F722ZE)
+#if AMBE_TYPE == 2
+#define STAT1_LED   PD15      // Arduino D9
+#define STAT2_LED   PD14      // Arduino D10
+#define STAT3_LED   PA7       // Arduino D11
+#define STAT4_LED   PA6       // Arduino D12
+#else
+#define STAT1_LED   PD15      // Arduino D9
+#define STAT2_LED   PD14      // Arduino D10
+#endif
+#elif defined(NUCLEO_STM32H723ZG)
+#if AMBE_TYPE == 2
+#define STAT1_LED   PD15      // Arduino D9
+#define STAT2_LED   PD14      // Arduino D10
+#define STAT3_LED   PB5       // Arduino D11
+#define STAT4_LED   PA6       // Arduino D12
+#else
+#define STAT1_LED   PD15      // Arduino D9
+#define STAT2_LED   PD14      // Arduino D10
+#endif
+#else
+#error "Unknown hardware"
+#endif
+
+#else
 
 #if defined(NUCLEO_STM32F722ZE)
 #if AMBE_TYPE == 2
@@ -45,6 +73,9 @@
 #else
 #error "Unknown hardware"
 #endif
+
+#endif
+
 
 CLEDDriver::CLEDDriver()
 {
