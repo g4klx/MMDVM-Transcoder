@@ -49,8 +49,8 @@ const uint16_t NAK5_LEN = 5U;
 
 const uint8_t  GET_VERSION_REQ[]   = { MARKER, 0x04U, 0x00U, 0x00U};
 const uint16_t GET_VERSION_REQ_LEN = 4U;
-const uint8_t  GET_VERSION_REP[]   = { MARKER, 0x2BU, 0x00U, 0x00U, 0x01U, 0x32U, 0x30U, 0x32U, 0x35U };
-const uint16_t GET_VERSION_REP_LEN = 9U;
+const uint8_t  GET_VERSION_REP[]   = { MARKER, 0x2BU, 0x00U, 0x00U, 0x01U, 0x32U, 0x30U, 0x32U };
+const uint16_t GET_VERSION_REP_LEN = 8U;
 
 const uint8_t  GET_CAPABILITIES_REQ[]   = { MARKER, 0x04U, 0x00U, 0x01U };
 const uint16_t GET_CAPABILITIES_REQ_LEN = 4U;
@@ -973,7 +973,7 @@ RESULT CTester::test(const char* title, const uint8_t* inData, uint16_t inLen, c
 
     ::fprintf(stdout, "%s", title);
 
-    dump("\nWrite", inData, inLen);
+    // dump("\nWrite", inData, inLen);
 
     stopwatch.start();
 
@@ -994,7 +994,7 @@ RESULT CTester::test(const char* title, const uint8_t* inData, uint16_t inLen, c
 
     unsigned int elapsed = stopwatch.elapsed();
 
-    dump("Read", buffer, len);
+    // dump("Read", buffer, len);
 
     if (result != nullptr && resultLen != nullptr) {
         ::memcpy(result, buffer, len);
