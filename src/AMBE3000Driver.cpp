@@ -51,9 +51,11 @@ m_utils()
 
 void CAMBE3000Driver::startup()
 {
+  dvsi1.startup();
   dvsi1.reset();
 
 #if AMBE_TYPE == 2
+  dvsi2.startup();
   dvsi2.reset();
 #endif
 }
@@ -285,16 +287,18 @@ AD_STATE CAMBE3000Driver::readPCM(uint8_t n, CDVSIDriver& driver, uint8_t* pcm, 
 
 void CAMBE3000Driver::drain(uint8_t n)
 {
+#if AMBE_TYPE == 2
   switch (n) {
     case 0U:
       m_length0 = 0U;
       break;
-#if AMBE_TYPE == 2
     default:
       m_length1 = 0U;
       break;
-#endif
   }
+#else
+  m_length1 = 0U;
+#endif
 }
 
 #endif

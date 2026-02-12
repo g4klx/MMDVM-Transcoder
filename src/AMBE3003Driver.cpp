@@ -50,6 +50,7 @@ m_utils()
 
 void CAMBE3003Driver::startup()
 {
+  dvsi.startup();
   dvsi.reset();
 }
 
