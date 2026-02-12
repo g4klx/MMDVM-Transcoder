@@ -26,7 +26,7 @@
 #define	DEBUGGING
 
 // Swap the use of two AMBE chips
-#define SWAP_AMBE_CHIPS
+// #define SWAP_AMBE_CHIPS
 
 // Baud rate for the DVSI chip(s)
 #define DVSI_SPEED          460800

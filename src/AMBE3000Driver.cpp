@@ -297,7 +297,7 @@ void CAMBE3000Driver::drain(uint8_t n)
       break;
   }
 #else
-  m_length1 = 0U;
+  m_length0 = 0U;
 #endif
 }
 
