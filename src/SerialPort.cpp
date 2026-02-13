@@ -159,6 +159,10 @@ const uint8_t MMDVM_DATA                = 0x05U;
 
 const uint8_t MMDVM_DEBUG               = 0xFFU;
 
+const uint8_t CAP_IMBE                  = 0x01U;
+const uint8_t CAP_CODEC2_3200           = 0x02U;
+const uint8_t CAP_ACELP                 = 0x04U;
+
 // These pins connect to the STLink chip and show up as a VCP to the host over USB working ok
 #define USART3_TX PD8
 #define USART3_RX PD9
@@ -232,16 +236,18 @@ void CSerialPort::getVersion()
 
 void CSerialPort::getCapabilities()
 {
-  uint8_t reply[5U];
+  uint8_t reply[10U];
 
   reply[0U] = MMDVM_FRAME_START;
-  reply[1U] = 5U;
+  reply[1U] = 6U;
   reply[2U] = 0U;
   reply[3U] = MMDVM_RETURN_CAPABILITIES;
 
   reply[4U] = AMBE_TYPE;
 
-  SerialUSB.write(reply, 5);
+  reply[5U] = CAP_IMBE | CAP_CODEC2_3200;
+
+  SerialUSB.write(reply, 6);
 }
 
 void CSerialPort::start()
