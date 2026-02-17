@@ -621,9 +621,9 @@ bool CFileConvert::convertDVtoDV()
 			return false;
 		}
 
-		uint16_t len = read(buffer2, 200U);
+		uint16_t len = read(buffer2, 300U);
 		if (len == 0U) {
-			::fprintf(stderr, "Transcode read timeout (200 me)\n");
+			::fprintf(stderr, "Transcode read timeout (300 ms)\n");
 			return false;
 		}
 

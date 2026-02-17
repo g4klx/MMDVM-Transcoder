@@ -54,7 +54,7 @@ const uint16_t GET_VERSION_REP_LEN = 8U;
 
 const uint8_t  GET_CAPABILITIES_REQ[]   = { MARKER, 0x04U, 0x00U, 0x01U };
 const uint16_t GET_CAPABILITIES_REQ_LEN = 4U;
-const uint8_t  GET_CAPABILITIES_REP[]   = { MARKER, 0x06U, 0x00U, 0x01U };
+const uint8_t  GET_CAPABILITIES_REP[]   = { MARKER, 0x07U, 0x00U, 0x01U };
 const uint16_t GET_CAPABILITIES_REP_LEN = 4U;
 
 const uint8_t  PCM_DATA[] = { MARKER, 0x44U, 0x01U, 0x05U, 0x44U, 0xE3U, 0x1EU, 0xE3U, 0x1EU, 0xE5U, 0x97U, 0xF1U, 0x61U, 0x11U,
@@ -134,7 +134,7 @@ const uint16_t SET_MODE1E_REQ_LEN = 6U;
 const uint8_t  SET_MODE1F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x05U };
 const uint16_t SET_MODE1F_REQ_LEN = 6U;
 
-// D-Star to Codec2 3200 Mode Set
+// D-Star to Codec2-3200 Mode Set
 const uint8_t  SET_MODE1G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x01U, 0x06U };
 const uint16_t SET_MODE1G_REQ_LEN = 6U;
 
@@ -164,7 +164,7 @@ const uint16_t SET_MODE2E_REQ_LEN = 6U;
 const uint8_t  SET_MODE2F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x05U };
 const uint16_t SET_MODE2F_REQ_LEN = 6U;
 
-// DMR/NXDN to Codec2 3200 Mode Set
+// DMR/NXDN to Codec2-3200 Mode Set
 const uint8_t  SET_MODE2G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x02U, 0x06U };
 const uint16_t SET_MODE2G_REQ_LEN = 6U;
 
@@ -194,7 +194,7 @@ const uint16_t SET_MODE3E_REQ_LEN = 6U;
 const uint8_t  SET_MODE3F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x05U };
 const uint16_t SET_MODE3F_REQ_LEN = 6U;
 
-// YSF DN to Codec2 3200 Mode Set
+// YSF DN to Codec2-3200 Mode Set
 const uint8_t  SET_MODE3G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x03U, 0x06U };
 const uint16_t SET_MODE3G_REQ_LEN = 6U;
 
@@ -224,7 +224,7 @@ const uint16_t SET_MODE6E_REQ_LEN = 6U;
 const uint8_t  SET_MODE6F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x03U };
 const uint16_t SET_MODE6F_REQ_LEN = 6U;
 
-// IMBE to Codec2 3200 Mode Set
+// IMBE to Codec2-3200 Mode Set
 const uint8_t  SET_MODE6G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x04U, 0x06U };
 const uint16_t SET_MODE6G_REQ_LEN = 6U;
 
@@ -254,37 +254,37 @@ const uint16_t SET_MODE4E_REQ_LEN = 6U;
 const uint8_t  SET_MODE4F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x03U };
 const uint16_t SET_MODE4F_REQ_LEN = 6U;
 
-// IMBE FEC to Codec2 3200 Mode Set
+// IMBE FEC to Codec2-3200 Mode Set
 const uint8_t  SET_MODE4G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x05U, 0x06U };
 const uint16_t SET_MODE4G_REQ_LEN = 6U;
 
-/* Codec2 3200 */
+/* Codec2-3200 */
 
-// Codec2 3200 to PCM Mode Set
+// Codec2-3200 to PCM Mode Set
 const uint8_t  SET_MODE5A_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0xFFU };
 const uint16_t SET_MODE5A_REQ_LEN = 6U;
 
-// Codec2 3200 to Codec2 3200 Mode Set
+// Codec2-3200 to Codec2-3200 Mode Set
 const uint8_t  SET_MODE5B_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x06U };
 const uint16_t SET_MODE5B_REQ_LEN = 6U;
 
-// Codec2 3200 to D-Star Mode Set
+// Codec2-3200 to D-Star Mode Set
 const uint8_t  SET_MODE5C_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x01U };
 const uint16_t SET_MODE5C_REQ_LEN = 6U;
 
-// Codec2 3200 to DMR/NXDN Mode Set
+// Codec2-3200 to DMR/NXDN Mode Set
 const uint8_t  SET_MODE5D_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x02U };
 const uint16_t SET_MODE5D_REQ_LEN = 6U;
 
-// Codec2 3200 to YSF DN Mode Set
+// Codec2-3200 to YSF DN Mode Set
 const uint8_t  SET_MODE5E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x03U };
 const uint16_t SET_MODE5E_REQ_LEN = 6U;
 
-// Codec2 3200 to IMBE Mode Set
+// Codec2-3200 to IMBE Mode Set
 const uint8_t  SET_MODE5F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x04U };
 const uint16_t SET_MODE5F_REQ_LEN = 6U;
 
-// Codec2 3200 to IMBE FEC Mode Set
+// Codec2-3200 to IMBE FEC Mode Set
 const uint8_t  SET_MODE5G_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0x06U, 0x05U };
 const uint16_t SET_MODE5G_REQ_LEN = 6U;
 
@@ -310,7 +310,7 @@ const uint16_t SET_MODE9D_REQ_LEN = 6U;
 const uint8_t  SET_MODE9E_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x05U };
 const uint16_t SET_MODE9E_REQ_LEN = 6U;
 
-// PCM to Codec2 3200 Mode Set
+// PCM to Codec2-3200 Mode Set
 const uint8_t  SET_MODE9F_REQ[]   = { MARKER, 0x06U, 0x00U, 0x02U, 0xFFU, 0x06U };
 const uint16_t SET_MODE9F_REQ_LEN = 6U;
 
@@ -523,15 +523,23 @@ int CTester::run()
         return 1;
     }
 
-    bool hasIMBE   = (result[5U] & 0x01U) == 0x01U;
+    printf("Software vocoders: ");
+    bool hasALaw = (result[5U] & 0x01U) == 0x01U;
+    if (hasALaw)
+        printf("A-Law ");
+    bool hasMuLaw = (result[5U] & 0x02U) == 0x02U;
+    if (hasMuLaw)
+        printf("Mu-Law ");
+    bool hasIMBE = (result[5U] & 0x04U) == 0x04U;
     if (hasIMBE)
-        printf("Has IMBE\n");
-    bool hasCodec2 = (result[5U] & 0x02U) == 0x02U;
+        printf("IMBE ");
+    bool hasCodec2 = (result[5U] & 0x08U) == 0x08U;
     if (hasCodec2)
-        printf("Has Codec2 3200\n");
-    bool hasACELP  = (result[5U] & 0x04U) == 0x04U;
+        printf("Codec2-3200 ");
+    bool hasACELP  = (result[5U] & 0x10U) == 0x10U;
     if (hasACELP)
-        printf("Has ACELP\n");
+        printf("ACELP ");
+    printf("\n");
 
     printf("\nD-Star\n");
 
@@ -590,11 +598,11 @@ int CTester::run()
     }
 
     if (hardware >= 0x01U && hasCodec2) {
-        ret2 = test("Set Mode D-Star to Codec2 3200", SET_MODE1G_REQ, SET_MODE1G_REQ_LEN, ACK, ACK_LEN);
+        ret2 = test("Set Mode D-Star to Codec2-3200", SET_MODE1G_REQ, SET_MODE1G_REQ_LEN, ACK, ACK_LEN);
         if (ret2 == RESULT::ERR)
             return 1;
 
-        ret2 = test("Transcode D-Star to Codec2 3200", DSTAR_DATA, DSTAR_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
+        ret2 = test("Transcode D-Star to Codec2-3200", DSTAR_DATA, DSTAR_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
         if (ret2 == RESULT::ERR)
             return 1;
     }
@@ -656,11 +664,11 @@ int CTester::run()
     }
 
     if (hardware >= 0x01U && hasCodec2) {
-        ret2 = test("Set Mode DMR/NXDN to Codec2 3200", SET_MODE2G_REQ, SET_MODE2G_REQ_LEN, ACK, ACK_LEN);
+        ret2 = test("Set Mode DMR/NXDN to Codec2-3200", SET_MODE2G_REQ, SET_MODE2G_REQ_LEN, ACK, ACK_LEN);
         if (ret2 == RESULT::ERR)
             return 1;
 
-        ret2 = test("Transcode DMR/NXDN to Codec2 3200", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
+        ret2 = test("Transcode DMR/NXDN to Codec2-3200", DMRNXDN_DATA, DMRNXDN_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
         if (ret2 == RESULT::ERR)
             return 1;
     }
@@ -722,11 +730,11 @@ int CTester::run()
     }
 
     if (hardware >= 0x01U && hasCodec2) {
-        ret2 = test("Set Mode YSF DN to Codec2 3200", SET_MODE3G_REQ, SET_MODE3G_REQ_LEN, ACK, ACK_LEN);
+        ret2 = test("Set Mode YSF DN to Codec2-3200", SET_MODE3G_REQ, SET_MODE3G_REQ_LEN, ACK, ACK_LEN);
         if (ret2 == RESULT::ERR)
             return 1;
 
-        ret2 = test("Transcode YSF DN to Codec2 3200", YSFDN_DATA, YSFDN_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
+        ret2 = test("Transcode YSF DN to Codec2-3200", YSFDN_DATA, YSFDN_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
         if (ret2 == RESULT::ERR)
             return 1;
     }
@@ -785,11 +793,11 @@ int CTester::run()
         }
 
         if (hasCodec2) {
-            ret2 = test("Set Mode IMBE to Codec2 3200", SET_MODE6G_REQ, SET_MODE6G_REQ_LEN, ACK, ACK_LEN);
+            ret2 = test("Set Mode IMBE to Codec2-3200", SET_MODE6G_REQ, SET_MODE6G_REQ_LEN, ACK, ACK_LEN);
             if (ret2 == RESULT::ERR)
                 return 1;
 
-            ret2 = test("Transcode IMBE to Codec2 3200", IMBE_DATA, IMBE_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
+            ret2 = test("Transcode IMBE to Codec2-3200", IMBE_DATA, IMBE_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
             if (ret2 == RESULT::ERR)
                 return 1;
         }
@@ -847,75 +855,75 @@ int CTester::run()
         }
 
         if (hasCodec2) {
-            ret2 = test("Set Mode IMBE FEC to Codec2 3200", SET_MODE4G_REQ, SET_MODE4G_REQ_LEN, ACK, ACK_LEN);
+            ret2 = test("Set Mode IMBE FEC to Codec2-3200", SET_MODE4G_REQ, SET_MODE4G_REQ_LEN, ACK, ACK_LEN);
             if (ret2 == RESULT::ERR)
                 return 1;
 
-            ret2 = test("Transcode IMBE FEC to Codec2 3200", IMBE_FEC_DATA, IMBE_FEC_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
+            ret2 = test("Transcode IMBE FEC to Codec2-3200", IMBE_FEC_DATA, IMBE_FEC_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
             if (ret2 == RESULT::ERR)
                 return 1;
         }
     }
 
     if (hasCodec2) {
-        printf("\nCodec2 3200\n");
+        printf("\nCodec2-3200\n");
 
-        ret2 = test("Set Mode Codec2 3200 to PCM", SET_MODE5A_REQ, SET_MODE5A_REQ_LEN, ACK, ACK_LEN);
+        ret2 = test("Set Mode Codec2-3200 to PCM", SET_MODE5A_REQ, SET_MODE5A_REQ_LEN, ACK, ACK_LEN);
         if (ret2 == RESULT::ERR)
             return 1;
 
-        ret2 = test("Transcode Codec2 3200 to PCM", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
+        ret2 = test("Transcode Codec2-3200 to PCM", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, PCM_DATA, PCM_DATA_REP_LEN);
         if (ret2 == RESULT::ERR)
             return 1;
 
-        ret2 = test("Set Mode Codec2 3200 to Codec2 3200", SET_MODE5B_REQ, SET_MODE5B_REQ_LEN, ACK, ACK_LEN);
+        ret2 = test("Set Mode Codec2-3200 to Codec2-3200", SET_MODE5B_REQ, SET_MODE5B_REQ_LEN, ACK, ACK_LEN);
         if (ret2 == RESULT::ERR)
             return 1;
 
-        ret2 = test("Transcode Codec2 3200 to Codec2 3200", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REQ_LEN);
+        ret2 = test("Transcode Codec2-3200 to Codec2-3200", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REQ_LEN);
         if (ret2 == RESULT::ERR)
             return 1;
 
         if (hardware >= 0x01U) {
-            ret2 = test("Set Mode Codec2 3200 to D-Star", SET_MODE5C_REQ, SET_MODE5C_REQ_LEN, ACK, ACK_LEN);
+            ret2 = test("Set Mode Codec2-3200 to D-Star", SET_MODE5C_REQ, SET_MODE5C_REQ_LEN, ACK, ACK_LEN);
             if (ret2 == RESULT::ERR)
                 return 1;
 
-            ret2 = test("Transcode Codec2 3200 to D-Star", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
+            ret2 = test("Transcode Codec2-3200 to D-Star", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, DSTAR_DATA, DSTAR_DATA_REP_LEN);
             if (ret2 == RESULT::ERR)
                 return 1;
 
-            ret2 = test("Set Mode Codec2 3200 to DMR/NXDN", SET_MODE5D_REQ, SET_MODE5D_REQ_LEN, ACK, ACK_LEN);
+            ret2 = test("Set Mode Codec2-3200 to DMR/NXDN", SET_MODE5D_REQ, SET_MODE5D_REQ_LEN, ACK, ACK_LEN);
             if (ret2 == RESULT::ERR)
                 return 1;
 
-            ret2 = test("Transcode Codec2 3200 to DMR/NXDN", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
+            ret2 = test("Transcode Codec2-3200 to DMR/NXDN", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, DMRNXDN_DATA, DMRNXDN_DATA_REP_LEN);
             if (ret2 == RESULT::ERR)
                 return 1;
 
-            ret2 = test("Set Mode Codec2 3200 to YSF DN", SET_MODE5E_REQ, SET_MODE5E_REQ_LEN, ACK, ACK_LEN);
+            ret2 = test("Set Mode Codec2-3200 to YSF DN", SET_MODE5E_REQ, SET_MODE5E_REQ_LEN, ACK, ACK_LEN);
             if (ret2 == RESULT::ERR)
                 return 1;
 
-            ret2 = test("Transcode Codec2 3200 to YSF DN", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
+            ret2 = test("Transcode Codec2-3200 to YSF DN", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, YSFDN_DATA, YSFDN_DATA_REP_LEN);
             if (ret2 == RESULT::ERR)
                 return 1;
         }
 
         if (hasIMBE) {
-            ret2 = test("Set Mode Codec2 3200 to IMBE", SET_MODE5F_REQ, SET_MODE5F_REQ_LEN, ACK, ACK_LEN);
+            ret2 = test("Set Mode Codec2-3200 to IMBE", SET_MODE5F_REQ, SET_MODE5F_REQ_LEN, ACK, ACK_LEN);
             if (ret2 == RESULT::ERR)
                 return 1;
 
-            ret2 = test("Transcode Codec2 3200 to IMBE", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
+            ret2 = test("Transcode Codec2-3200 to IMBE", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, IMBE_DATA, IMBE_DATA_REP_LEN);
             if (ret2 == RESULT::ERR)
                 return 1;
 
-            ret2 = test("Set Mode Codec2 3200 to IMBE FEC", SET_MODE5G_REQ, SET_MODE5G_REQ_LEN, ACK, ACK_LEN);
+            ret2 = test("Set Mode Codec2-3200 to IMBE FEC", SET_MODE5G_REQ, SET_MODE5G_REQ_LEN, ACK, ACK_LEN);
             if (ret2 == RESULT::ERR)
                 return 1;
 
-            ret2 = test("Transcode Codec2 3200 to IMBE FEC", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, IMBE_FEC_DATA, IMBE_FEC_DATA_REP_LEN);
+            ret2 = test("Transcode Codec2-3200 to IMBE FEC", CODEC23200_DATA, CODEC23200_DATA_REQ_LEN, IMBE_FEC_DATA, IMBE_FEC_DATA_REP_LEN);
             if (ret2 == RESULT::ERR)
                 return 1;
         }
@@ -968,11 +976,11 @@ int CTester::run()
     }
 
     if (hasCodec2) {
-        ret2 = test("Set Mode PCM to Codec2 3200", SET_MODE9F_REQ, SET_MODE9F_REQ_LEN, ACK, ACK_LEN);
+        ret2 = test("Set Mode PCM to Codec2-3200", SET_MODE9F_REQ, SET_MODE9F_REQ_LEN, ACK, ACK_LEN);
         if (ret2 == RESULT::ERR)
             return 1;
 
-        ret2 = test("Transcode PCM to Codec2 3200", PCM_DATA, PCM_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
+        ret2 = test("Transcode PCM to Codec2-3200", PCM_DATA, PCM_DATA_REQ_LEN, CODEC23200_DATA, CODEC23200_DATA_REP_LEN);
         if (ret2 == RESULT::ERR)
             return 1;
     }

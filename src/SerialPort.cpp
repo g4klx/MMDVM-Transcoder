@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2013,2015-2021,2023,2024,2025 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2013,2015-2021,2023,2024,2025,2026 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -159,9 +159,11 @@ const uint8_t MMDVM_DATA                = 0x05U;
 
 const uint8_t MMDVM_DEBUG               = 0xFFU;
 
-const uint8_t CAP_IMBE                  = 0x01U;
-const uint8_t CAP_CODEC2_3200           = 0x02U;
-const uint8_t CAP_ACELP                 = 0x04U;
+const uint8_t CAP_ALAW                  = 0x01U;
+const uint8_t CAP_MULAW                 = 0x02U;
+const uint8_t CAP_IMBE                  = 0x04U;
+const uint8_t CAP_CODEC2_3200           = 0x08U;
+const uint8_t CAP_ACELP                 = 0x10U;
 
 // These pins connect to the STLink chip and show up as a VCP to the host over USB working ok
 #define USART3_TX PD8
@@ -239,15 +241,16 @@ void CSerialPort::getCapabilities()
   uint8_t reply[10U];
 
   reply[0U] = MMDVM_FRAME_START;
-  reply[1U] = 6U;
+  reply[1U] = 7U;
   reply[2U] = 0U;
   reply[3U] = MMDVM_RETURN_CAPABILITIES;
 
   reply[4U] = AMBE_TYPE;
 
-  reply[5U] = CAP_IMBE | CAP_CODEC2_3200;
+  reply[5U] = CAP_ALAW | CAP_MULAW | CAP_IMBE | CAP_CODEC2_3200;
+  reply[6U] = 0x00U;
 
-  SerialUSB.write(reply, 6);
+  SerialUSB.write(reply, 7);
 }
 
 void CSerialPort::start()
